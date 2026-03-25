@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/devprofile-api/" />
+  <Folder Name="/devprofile-api/src/">
+    <Project Path="devprofile-api/src/DevProfile.API/DevProfile.API.csproj" />
+  </Folder>
+</Solution>

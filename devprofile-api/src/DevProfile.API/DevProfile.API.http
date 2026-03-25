@@ -1,0 +1,10 @@
+@DevProfile.API_HostAddress = http://localhost:5176
+@username = octocat
+
+GET {{DevProfile.API_HostAddress}}/api/profile/{{username}}
+Accept: application/json
+
+###
+
+GET {{DevProfile.API_HostAddress}}/api/profile/compare?left=octocat&right=torvalds
+Accept: application/json
