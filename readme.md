@@ -44,6 +44,28 @@ Foco do projeto: aprendizado e portfólio júnior.
 - `GET /api/profile/{username}`
 - `GET /api/profile/compare?left=user1&right=user2`
 
+## Exemplos de uso
+
+Perfil completo:
+
+```bash
+curl "http://localhost:5176/api/profile/octocat"
+```
+
+Comparacao entre dois perfis:
+
+```bash
+curl "http://localhost:5176/api/profile/compare?left=octocat&right=torvalds"
+```
+
+Resposta (resumo) do compare:
+
+- `left`: perfil analisado da esquerda
+- `right`: perfil analisado da direita
+- `winnerByScore`: usuario com melhor score (ou `Tie`)
+- `scoreDifference`: diferenca de pontos
+- `summary`: texto explicando o resultado
+
 ## Como rodar (rápido)
 
 ```bash
@@ -54,7 +76,7 @@ dotnet run
 
 API local:
 
-- `http://localhost:5000`
+- `http://localhost:5176`
 
 ## Como funciona o score (resumo)
 
