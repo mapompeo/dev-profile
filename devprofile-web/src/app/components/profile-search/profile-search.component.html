@@ -1,0 +1,52 @@
+<div class="profile-search">
+  <h2>Buscar Perfil</h2>
+  <form (ngSubmit)="searchProfile()" #profileForm="ngForm">
+    <input type="text" [(ngModel)]="username" name="username" placeholder="Usuário do GitHub" required />
+    <button type="submit" [disabled]="loading">Buscar</button>
+  </form>
+
+  <div *ngIf="profile">
+    <h3>{{ profile.name || profile.username }}</h3>
+    <img *ngIf="profile.avatarUrl" [src]="profile.avatarUrl" alt="Avatar" width="80" />
+    <p>{{ profile.bio }}</p>
+    <ul>
+      <li>Repositórios: {{ profile.stats.totalRepositories }}</li>
+      <li>Stars: {{ profile.stats.totalStars }}</li>
+      <li>Commits: {{ profile.stats.totalCommits }}</li>
+      <li>Seguidores: {{ profile.stats.followers }}</li>
+      <li>Seguindo: {{ profile.stats.following }}</li>
+      <li>Stack: {{ profile.analysis.mainStack }}</li>
+      <li>Score: {{ profile.analysis.valueScore }}</li>
+    </ul>
+    <div>
+      <strong>Top Linguagens:</strong>
+      <ul>
+        <li *ngFor="let lang of profile.analysis.topLanguages">
+          {{ lang.name }} ({{ lang.percentage }}%)
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Comparar Perfis</h2>
+  <form (ngSubmit)="compareProfiles()" #compareForm="ngForm">
+    <input type="text" [(ngModel)]="left" name="left" placeholder="Usuário 1" required />
+    <input type="text" [(ngModel)]="right" name="right" placeholder="Usuário 2" required />
+    <button type="submit" [disabled]="loading">Comparar</button>
+  </form>
+
+  <div *ngIf="comparison">
+    <h3>Comparação</h3>
+    <p>{{ comparison.summary }}</p>
+    <ul>
+      <li>{{ comparison.left.username }}: {{ comparison.left.analysis.valueScore }}</li>
+      <li>{{ comparison.right.username }}: {{ comparison.right.analysis.valueScore }}</li>
+      <li>Vencedor: {{ comparison.winnerByScore }}</li>
+      <li>Diferença: {{ comparison.scoreDifference }}</li>
+    </ul>
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+</div>
