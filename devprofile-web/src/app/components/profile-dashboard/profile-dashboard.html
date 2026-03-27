@@ -1,0 +1,156 @@
+<div class="dashboard-page">
+
+  <!-- ─── Top Bar (same max-width as content) ─────────────────────────────── -->
+  <div class="dashboard-topbar">
+    <div class="topbar-inner">
+      <button class="btn-back" (click)="onBack.emit()" aria-label="Voltar ao início">
+        ← Início
+      </button>
+      <button class="btn-export" (click)="onDownload.emit(dashboardElement)">
+        📸 Gerar Imagem
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── Exportable card ──────────────────────────────────────────────────── -->
+  <div class="dashboard-content" #dashboardElement>
+
+    <!-- 1. User Identity -->
+    <div class="user-row">
+      <img [src]="profile.avatarUrl" [alt]="'Avatar de ' + (profile.name || profile.username)" crossorigin="anonymous" />
+      <div class="user-info">
+        <h2>{{ profile.name || profile.username }}</h2>
+        <span class="username">{{ '@' + profile.username }}</span>
+        <span class="bio" *ngIf="profile.bio">{{ profile.bio }}</span>
+      </div>
+    </div>
+
+    <!-- 2. Compact Stats Row -->
+    <div class="stats-compact-row">
+      <div class="stat-comp">
+        <span class="sc-val">{{ profile.stats.totalStars }}</span>
+        <span class="sc-lbl">ESTRELAS</span>
+      </div>
+      <div class="sc-divider"></div>
+      <div class="stat-comp">
+        <span class="sc-val">{{ profile.stats.totalRepositories }}</span>
+        <span class="sc-lbl">REPOS</span>
+      </div>
+      <div class="sc-divider"></div>
+      <div class="stat-comp">
+        <span class="sc-val">{{ profile.stats.totalCommits }}</span>
+        <span class="sc-lbl">COMMITS</span>
+      </div>
+      <ng-container *ngIf="profile.stats.totalForks !== undefined">
+        <div class="sc-divider"></div>
+        <div class="stat-comp">
+          <span class="sc-val">{{ profile.stats.totalForks }}</span>
+          <span class="sc-lbl">FORKS</span>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- 3. Stack & Seniority -->
+    <div class="section-card">
+      <h3 class="section-title">Análise de Stack & Senioridade</h3>
+      <div class="analysis-grid">
+        <div class="analysis-item">
+          <label>&lt;/&gt; Stack Principal</label>
+          <strong class="accent">{{ profile.analysis.mainStack }}</strong>
+          <small>{{ (profile.analysis.stackConfidence * 100).toFixed(0) }}% dos seus repositórios</small>
+        </div>
+        <div class="analysis-item">
+          <label>📈 Senioridade</label>
+          <strong class="accent">{{ profile.analysis.seniorityLevel }}</strong>
+          <small>Score: {{ profile.analysis.seniorityScore }}/100</small>
+        </div>
+        <div class="analysis-item">
+          <label>⏱ Experiência</label>
+          <strong class="accent">{{ profile.analysis.experienceYears }}</strong>
+          <small>{{ profile.analysis.languagesCount }} linguagens dominadas</small>
+        </div>
+      </div>
+
+      <!-- Score bar -->
+      <div class="score-bar-wrap">
+        <div class="score-bar-label">
+          <span>Progresso de senioridade</span>
+          <span class="score-val">{{ profile.analysis.seniorityScore }}/100</span>
+        </div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" [style.width.%]="profile.analysis.seniorityScore"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Top Languages -->
+    <div class="section-card">
+      <h3 class="section-title">Top Linguagens</h3>
+      <div class="lang-list">
+        <div class="lang-row" *ngFor="let lang of profile.analysis.topLanguages; let i = index">
+          <span class="lang-rank">#{{ i + 1 }}</span>
+          <span class="lang-name">{{ lang.name }}</span>
+          <div class="lang-bar-wrap">
+            <div class="lang-bar" [style.width.%]="getLangPercent(lang, profile.analysis.topLanguages)"></div>
+          </div>
+          <span class="lang-meta">{{ lang.repositories }} repos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Valor Agregado -->
+    <div class="section-card value-card" *ngIf="profile.analysis.aggregatedValue">
+      <div class="value-left">
+        <label>💰 Valor de Mercado Estimado</label>
+        <div class="value-big">R$ {{ profile.analysis.aggregatedValue | number:'1.0-0' }}</div>
+        <small>Baseado em senioridade, stack e contribuições</small>
+      </div>
+      <div class="value-right">
+        <label>🎯 Seus Pontos</label>
+        <div class="points-big">{{ profile.analysis.totalScore || profile.analysis.seniorityScore * 12 }}</div>
+      </div>
+    </div>
+
+    <!-- 6. Repositórios Populares -->
+    <div class="section-card" *ngIf="profile.analysis.popularRepositories?.length">
+      <h3 class="section-title">Repositórios Populares</h3>
+      <div class="repo-list">
+        <div class="repo-chip" *ngFor="let repo of profile.analysis.popularRepositories">
+          <span class="repo-dot"></span>
+          {{ repo.name || repo }}
+          <span class="repo-stars" *ngIf="repo.stars">⭐ {{ repo.stars }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Repositórios Bem Estruturados -->
+    <div class="section-card" *ngIf="profile.analysis.wellStructuredRepositories?.length">
+      <h3 class="section-title">Repositórios Bem Estruturados</h3>
+      <div class="repo-list">
+        <div class="repo-chip structured" *ngFor="let repo of profile.analysis.wellStructuredRepositories">
+          <span class="repo-dot"></span>
+          {{ repo.name || repo }}
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Distintivos / Badges -->
+    <div class="section-card" *ngIf="profile.analysis.badges?.length">
+      <h3 class="section-title">Distintivos de Conquista</h3>
+      <div class="badges-grid">
+        <div class="badge-item" *ngFor="let badge of profile.analysis.badges" [class.completed]="badge.completed">
+          <div class="badge-icon" aria-hidden="true">{{ badge.icon || '🏆' }}</div>
+          <div class="badge-label">{{ badge.name }}</div>
+          <div class="badge-desc">{{ badge.description }}</div>
+          <div class="badge-status">{{ badge.completed ? 'Completo ✓' : 'Em progresso' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Card Generator -->
+    <app-card-generator [profile]="profile"></app-card-generator>
+
+  </div>
+  <!-- /dashboard-content -->
+
+</div>

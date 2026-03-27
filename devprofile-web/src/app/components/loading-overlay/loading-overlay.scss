@@ -1,0 +1,35 @@
+@use '../../styles/theme' as *;
+
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: $color-bg;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  gap: 1.5rem;
+
+  .minimal-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid transparent;
+    border-top-color: $color-accent;
+    border-right-color: $color-blue;
+    border-radius: 50%;
+    animation: pureSpin 0.9s linear infinite;
+  }
+
+  .loading-label {
+    color: $color-text-muted;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}
+
+@keyframes pureSpin {
+  100% { transform: rotate(360deg); }
+}

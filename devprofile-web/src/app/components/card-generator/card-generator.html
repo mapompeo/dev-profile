@@ -1,0 +1,168 @@
+<section class="card-gen-section">
+
+  <!-- Header -->
+  <div class="gen-header">
+    <div class="gen-title-row">
+      <span class="gen-sparkle" aria-hidden="true">✦</span>
+      <h3>Gere seu Card</h3>
+    </div>
+    <p class="gen-subtitle">Compartilhe seu perfil de dev nas redes sociais</p>
+  </div>
+
+  <!-- Controls row -->
+  <div class="gen-controls">
+
+    <!-- Format selector -->
+    <div class="ctrl-group">
+      <label class="ctrl-label">Formato</label>
+      <div class="format-tabs">
+        <button
+          *ngFor="let f of formats"
+          class="fmt-tab"
+          [class.active]="selectedFormat === f.id"
+          (click)="setFormat(f.id)"
+          [title]="f.platform">
+          <span class="fmt-icon">{{ f.icon }}</span>
+          <span class="fmt-name">{{ f.label }}</span>
+          <span class="fmt-platform">{{ f.platform }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Theme selector -->
+    <div class="ctrl-group">
+      <label class="ctrl-label">Tema</label>
+      <div class="theme-swatches">
+        <button
+          *ngFor="let t of themes"
+          class="swatch"
+          [class.active]="selectedTheme === t.id"
+          (click)="setTheme(t.id)"
+          [title]="t.label"
+          [style.background]="t.bg"
+          [style.border-color]="selectedTheme === t.id ? t.accentLight : 'transparent'">
+          <span class="swatch-dot" [style.background]="t.accentLight"></span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Card Preview wrapper -->
+  <div class="card-preview-area">
+    <div class="card-preview-frame" [style.aspect-ratio]="format.aspect">
+
+      <!-- ═══ THE ACTUAL CARD ═══ -->
+      <div id="dev-card-preview"
+        class="dev-card"
+        [style.background]="theme.bg"
+        [style.border-color]="theme.border"
+        [ngClass]="'fmt-' + selectedFormat">
+
+        <!-- Decorative gradient blobs -->
+        <div class="card-blob card-blob-1" [style.background]="theme.accent + '22'"></div>
+        <div class="card-blob card-blob-2" [style.background]="theme.accentLight + '11'"></div>
+
+        <!-- ── Header section ── -->
+        <div class="card-header">
+          <div class="card-brand" [style.color]="theme.subtext">
+            <svg width="14" height="14" viewBox="0 0 16 16" [attr.fill]="theme.subtext">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            <span>DevProfile</span>
+          </div>
+
+          <div class="card-user">
+            <img [src]="profile.avatarUrl"
+                 [alt]="profile.name"
+                 crossorigin="anonymous"
+                 class="card-avatar" />
+            <div class="card-user-text">
+              <span class="card-name" [style.color]="theme.text">{{ profile.name || profile.username }}</span>
+              <span class="card-handle" [style.color]="theme.subtext">@{{ profile.username }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Stats row ── -->
+        <div class="card-stats">
+          <div class="card-stat">
+            <span class="cs-val" [style.color]="theme.accentLight">{{ profile.stats.totalStars }}</span>
+            <span class="cs-lbl" [style.color]="theme.subtext">estrelas</span>
+          </div>
+          <div class="cs-sep" [style.background]="theme.border"></div>
+          <div class="card-stat">
+            <span class="cs-val" [style.color]="theme.accentLight">{{ profile.stats.totalRepositories }}</span>
+            <span class="cs-lbl" [style.color]="theme.subtext">repos</span>
+          </div>
+          <div class="cs-sep" [style.background]="theme.border"></div>
+          <div class="card-stat">
+            <span class="cs-val" [style.color]="theme.accentLight">{{ profile.stats.totalCommits }}</span>
+            <span class="cs-lbl" [style.color]="theme.subtext">commits</span>
+          </div>
+        </div>
+
+        <!-- ── Stack badge ── -->
+        <div class="card-stack-row">
+          <div class="stack-pill" [style.background]="theme.accent + '22'" [style.border-color]="theme.accent + '44'">
+            <span [style.color]="theme.accentLight">&lt;/&gt;</span>
+            <span [style.color]="theme.text">{{ profile.analysis.mainStack }}</span>
+          </div>
+          <div class="seniority-pill" [style.background]="theme.surface" [style.border-color]="theme.border">
+            <span [style.color]="theme.subtext">📈</span>
+            <span [style.color]="theme.accentLight">{{ profile.analysis.seniorityLevel }}</span>
+          </div>
+        </div>
+
+        <!-- ── Top Languages ── -->
+        <div class="card-langs" *ngIf="topThreeLangs.length">
+          <div class="cl-title" [style.color]="theme.subtext">Top Linguagens</div>
+          <div class="cl-row" *ngFor="let lang of topThreeLangs; let i = index">
+            <span class="cl-rank" [style.color]="theme.accent">#{{ i + 1 }}</span>
+            <span class="cl-name" [style.color]="theme.text">{{ lang.name }}</span>
+            <div class="cl-bar-track" [style.background]="theme.border">
+              <div class="cl-bar-fill"
+                [style.width.%]="getLangBarWidth(lang)"
+                [style.background]="theme.accent">
+              </div>
+            </div>
+            <span class="cl-repos" [style.color]="theme.subtext">{{ lang.repositories }}</span>
+          </div>
+        </div>
+
+        <!-- ── Completed badges (compact) ── -->
+        <div class="card-badges" *ngIf="completedBadges.length">
+          <span class="cb-tag"
+            *ngFor="let b of completedBadges.slice(0, 3)"
+            [style.background]="theme.accent + '22'"
+            [style.color]="theme.accentLight"
+            [style.border-color]="theme.accent + '44'">
+            {{ b.icon || '🏆' }} {{ b.name }}
+          </span>
+        </div>
+
+        <!-- ── Footer ── -->
+        <div class="card-footer" [style.border-color]="theme.border">
+          <span [style.color]="theme.subtext">devprofile.app</span>
+          <span class="card-year" [style.color]="theme.accent">2025</span>
+        </div>
+
+      </div>
+      <!-- /dev-card -->
+
+    </div>
+    <!-- /frame -->
+
+    <!-- Format label -->
+    <div class="format-label">
+      {{ format.icon }} {{ format.platform }} {{ format.label }} · {{ format.width }}×{{ format.height }}px
+    </div>
+  </div>
+
+  <!-- Export button -->
+  <button class="btn-export-card" (click)="exportCard()" [disabled]="isExporting">
+    <span *ngIf="!isExporting">⬇ Baixar Card</span>
+    <span *ngIf="isExporting">Gerando...</span>
+  </button>
+
+</section>

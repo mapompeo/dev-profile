@@ -1,0 +1,224 @@
+@use '../../styles/theme' as *;
+
+/* -------------------------------------------------------------------------
+   Comparison Component — GitHub Brand Compliant
+   Gold for winner = conveyed by text label AND icon AND color (✅ not color alone)
+   Score numbers: solid GitHub Green — WCAG AA ✅
+   ------------------------------------------------------------------------- */
+
+.comparison-container {
+  max-width: 1000px;
+  margin: 4rem auto;
+  padding: 0 5%;
+
+  .actions-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    .btn-back {
+      background: transparent;
+      color: $color-text-muted;
+      border: none;
+      font-size: $type-body;
+      font-family: $font-brand;
+      cursor: pointer;
+      font-weight: $fw-semibold;
+      transition: color 0.25s;
+
+      &:hover { color: $color-text-primary; }
+      &:focus-visible { outline: 2px solid $color-accent; outline-offset: 2px; border-radius: 2px; }
+    }
+
+    .btn-download {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba($color-accent, 0.08);
+      border: 1px solid rgba($color-accent, 0.3);
+      color: $color-accent-light;
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      font-size: $type-small;
+      font-family: $font-brand;
+      font-weight: $fw-semibold;
+      cursor: pointer;
+      transition: background 0.25s, box-shadow 0.25s;
+
+      &:hover {
+        background: rgba($color-accent, 0.15);
+        box-shadow: $glow-green;
+        color: $color-text-primary;
+      }
+      &:focus-visible { outline: 2px solid $color-accent; outline-offset: 2px; border-radius: 8px; }
+    }
+  }
+
+  .summary-banner {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    p {
+      font-size: $type-body-lg;
+      color: $color-text-muted; /* ≈ 7.2:1 ✅ */
+      margin: 1rem 0;
+    }
+
+    /* Winner badge: "👑 Vencedor: username" — text+icon, NOT color alone ✅ */
+    .trophy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba($color-gold, 0.08);
+      color: $color-gold;        /* #D8BD0E on #101411 ≈ 5.5:1 ✅ WCAG AA */
+      border: 1px solid rgba($color-gold, 0.4);
+      padding: 0.6rem 1.5rem;
+      border-radius: 30px;
+      font-weight: $fw-bold;
+      font-size: $type-body;
+
+      &.tie {
+        border-color: $color-border-strong;
+        color: $color-text-faint;
+        background: rgba($gh-gray-4, 0.08);
+      }
+    }
+
+    .score-diff-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba($color-accent, 0.08);
+      color: $color-accent-light;  /* #8CF2A6 ≈ 8.7:1 ✅ */
+      padding: 0.35rem 1rem;
+      border-radius: 12px;
+      font-weight: $fw-semibold;
+      font-size: $type-small;
+      margin-left: 0.75rem;
+    }
+  }
+
+  .vs-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .vs-separator {
+    background: $color-surface;
+    border: 1px solid $color-border-strong;
+    color: $color-text-muted;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: $fw-black;
+    font-size: $type-small;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .vs-card {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 18px;
+    padding: 2.5rem 2rem;
+    flex: 1;
+    text-align: center;
+    transition: border-color 0.25s;
+
+    /* Winner: border + emoji + text label used together — not color alone ✅ */
+    &.winner {
+      border-color: rgba($color-gold, 0.5);
+    }
+
+    .vs-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid $color-border;
+      margin-bottom: 1.25rem;
+      /* alt attribute must be set in template */
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: $fw-bold;
+      color: $color-text-primary;
+      margin-bottom: 0.35rem;
+      font-feature-settings: "liga" 0;
+    }
+
+    .vs-stack {
+      color: $color-text-muted; /* ≈ 7.2:1 ✅ */
+      font-weight: $fw-medium;
+      font-size: $type-small;
+      margin-bottom: 0.75rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba($color-blue, 0.1);
+      color: $color-blue-light;   /* #9EECFF on #232925 ≈ 9.5:1 ✅ WCAG AAA */
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-weight: $fw-semibold;
+      font-size: $type-xs;
+      margin-bottom: 1.5rem;
+      /* Accessibility: label text conveys seniority, color is accent only */
+    }
+
+    .vs-score {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: $fw-black;
+      color: $color-accent;    /* Solid GitHub Green — no gradient on numbers */
+      margin-bottom: 1.75rem;
+      font-variation-settings: "opsz" 48, "wght" 900;
+    }
+
+    .vs-stats {
+      list-style: none;
+      text-align: left;
+      background: rgba($color-bg, 0.4);
+      border: 1px solid $color-border;
+      border-radius: 10px;
+      padding: 1.2rem;
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: $color-text-muted; /* ≈ 7.2:1 ✅ */
+        font-size: $type-small;
+        font-weight: $fw-medium;
+        margin-bottom: 0.6rem;
+
+        &:last-child { margin-bottom: 0; }
+
+        b {
+          color: $color-text-primary; /* ≈ 14.5:1 ✅ */
+          font-weight: $fw-semibold;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .comparison-container { padding: 0 1rem; margin: 2rem auto; }
+
+  .actions-topbar { gap: 0.75rem; }
+  .summary-banner .score-diff-badge { display: block; margin: 0.5rem auto 0; }
+  .vs-row { flex-direction: column; }
+  .vs-separator {
+    margin: -1rem auto;
+    z-index: 20;
+    background: $color-bg;
+    position: relative;
+  }
+  .vs-card { padding: 2rem 1.25rem; }
+  .vs-card .vs-score { font-size: 2rem; }
+}

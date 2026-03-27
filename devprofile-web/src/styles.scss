@@ -1,1 +1,107 @@
-/* You can add global styles to this file, and also import other style files */
+/* DevProfile Global Styles — GitHub Brand Compliant */
+@use '@fontsource-variable/mona-sans' as *;
+@use 'app/styles/theme' as *;
+
+/* -------------------------------------------------------------------------
+   Reset & Box Model
+   Accessibility: no reliance on color alone; semantic HTML assumed
+   ------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* -------------------------------------------------------------------------
+   Base — GitHub Brand Typography
+   • No manual letter-spacing (Mona Sans has optical size axis)
+   • No ligatures on headlines (set per element below)
+   • font-optical-sizing: auto lets browser pick opsz axis automatically
+   ------------------------------------------------------------------------- */
+html, body {
+  height: 100%;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+
+body {
+  background-color: $color-bg;
+  font-family: $font-brand;
+  font-weight: $fw-regular;
+  font-size: $type-body;
+  line-height: $lh-normal;
+  color: $color-text-primary;  /* #F2F5F3 on #101411 ≈ 14.5:1 ✅ WCAG AAA */
+  overflow-x: hidden;
+}
+
+/* -------------------------------------------------------------------------
+   Headings — GitHub Brand Type Scale
+   • No ligatures (Brand Toolkit: "Don't use ligatures in headlines")
+   • No letter-spacing override (Mona Sans opsz handles spacing)
+   ------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-brand;
+  font-feature-settings: "liga" 0, "calt" 0; /* Disable ligatures */
+  line-height: $lh-tight;
+  color: $color-text-primary;
+}
+
+h1 { font-size: $type-display; font-weight: $fw-extrabold; }
+h2 { font-size: $type-headline; font-weight: $fw-bold; }
+h3 { font-size: $type-h3;       font-weight: $fw-bold; }
+h4 { font-size: $type-body-lg;  font-weight: $fw-semibold; }
+
+/* Body text */
+p, li, span, label, small {
+  font-family: $font-brand;
+  line-height: $lh-normal;
+}
+
+/* Monospace */
+code, pre, kbd {
+  font-family: $font-mono;
+  font-size: 0.9em;
+}
+
+/* Links — always distinguishable beyond color (underline on focus/hover) */
+a {
+  color: $color-accent-light;
+  text-decoration: none;
+
+  &:hover  { text-decoration: underline; }
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* Focus visible — all interactive elements (Accessibility) */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
+}
+
+/* Skip to main content (screen readers) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

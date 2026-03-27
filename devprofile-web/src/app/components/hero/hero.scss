@@ -1,0 +1,333 @@
+@use '../../styles/theme' as *;
+
+/* ==========================================================================
+   Hero — Clean one-screen layout, minimal Copilot Purple accents
+   ========================================================================== */
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 1rem 1.5rem 2rem;
+  /* Matches header-inner width for alignment */
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 1.4rem;
+}
+
+/* --- Badge — tiny and subtle --- */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.85rem;
+  background: transparent;
+  border: 1px solid $color-border-strong;
+  color: $color-text-faint;
+  border-radius: 30px;
+  font-size: $type-xs;
+  font-weight: $fw-medium;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  .badge-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: $color-accent-light;
+    flex-shrink: 0;
+    animation: pulse-dot 2.5s ease infinite;
+  }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* --- Headline — large, tight, mostly white --- */
+.hero-title {
+  font-size: $type-display;
+  font-weight: $fw-extrabold;
+  line-height: $lh-display;
+  color: $color-text-primary;
+  font-feature-settings: "liga" 0;
+  margin: 0;
+
+  /* Purple accent ONLY on the key word — not the whole title */
+  .text-accent {
+    color: $color-accent-light; /* #C898FD — light purple, readable on dark ✅ */
+  }
+}
+
+/* --- Subtitle --- */
+.hero-subtitle {
+  font-size: $type-small;
+  color: $color-text-muted;
+  line-height: $lh-normal;
+  margin: 0;
+  max-width: 460px;
+}
+
+/* -----------------------------------------------------------------------
+   Mode Toggle — Minimal tabs, not pill buttons
+   ----------------------------------------------------------------------- */
+.mode-tabs {
+  display: flex;
+  gap: 0;
+  border: 1px solid $color-border-strong;
+  border-radius: 8px;
+  overflow: hidden;
+  background: $color-surface;
+
+  button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-family: $font-brand;
+    font-size: $type-small;
+    font-weight: $fw-medium;
+    color: $color-text-faint;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+    position: relative;
+
+    /* Separator line between tabs */
+    &:first-child {
+      border-right: 1px solid $color-border-strong;
+    }
+
+    &:hover:not(.active) {
+      color: $color-text-muted;
+    }
+
+    /* Active tab — subtle, don't shout */
+    &.active {
+      background: rgba($color-accent, 0.12);
+      color: $color-accent-light; /* Light purple text — not white, not full purple bg */
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-light;
+      outline-offset: -2px;
+    }
+  }
+}
+
+/* -----------------------------------------------------------------------
+   Form Card — animated container
+   ----------------------------------------------------------------------- */
+.form-card {
+  width: 100%;
+  max-width: 600px;
+
+  &.is-flipping {
+    animation: card-flip 0.5s ease;
+  }
+}
+
+@keyframes card-flip {
+  0%   { transform: rotateY(0deg) scale(1); opacity: 1; }
+  40%  { transform: rotateY(90deg) scale(0.96); opacity: 0; }
+  60%  { transform: rotateY(-90deg) scale(0.96); opacity: 0; }
+  100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+}
+
+/* -----------------------------------------------------------------------
+   Shared form styles
+   ----------------------------------------------------------------------- */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+/* Input wrapper — clean, thin border */
+.input-prefix-wrapper {
+  display: flex;
+  align-items: center;
+  background: $color-surface-alt;
+  border: 1px solid $color-border-strong;
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: rgba($color-accent, 0.5);
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.08);
+  }
+
+  .input-prefix {
+    color: $color-text-faint;
+    font-family: $font-mono;
+    font-size: $type-xs;
+    padding: 0 0 0 0.9rem;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.8rem 0.9rem;
+    color: $color-text-primary;
+    font-size: $type-small;
+    font-family: $font-mono;
+    font-weight: $fw-medium;
+    outline: none;
+    min-width: 0;
+
+    &::placeholder { color: $color-text-faint; }
+  }
+}
+
+/* Single mode — input + button inline */
+.search-form--single {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.5rem;
+
+  .input-prefix-wrapper { flex: 1; }
+}
+
+/* VS mode */
+.search-form--vs {
+  .vs-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .input-prefix-wrapper { flex: 1; }
+  }
+
+  .vs-divider {
+    font-family: $font-mono;
+    font-size: $type-xs;
+    font-weight: $fw-bold;
+    color: $color-text-faint;
+    flex-shrink: 0;
+    padding: 0 0.1rem;
+  }
+}
+
+/* CTA Button — solid, confident */
+.btn-cta {
+  background: $color-accent;    /* Solid purple — not gradient, cleaner */
+  color: #ffffff;
+  border: none;
+  padding: 0.8rem 1.4rem;
+  font-weight: $fw-semibold;
+  font-size: $type-small;
+  font-family: $font-brand;
+  cursor: pointer;
+  border-radius: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.2s, box-shadow 0.2s;
+
+  /* VS mode: full width below inputs */
+  .search-form--vs & {
+    width: 100%;
+    margin-top: 0.1rem;
+  }
+
+  &:hover:not([disabled]) {
+    opacity: 0.9;
+    box-shadow: $glow-purple;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent-light;
+    outline-offset: 2px;
+  }
+
+  &[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+/* -----------------------------------------------------------------------
+   Error
+   ----------------------------------------------------------------------- */
+.error-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba($color-danger, 0.08);
+  border: 1px solid rgba($color-danger, 0.3);
+  color: $color-text-muted;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  font-size: $type-xs;
+
+  &::before { content: "⚠ "; color: $color-danger; }
+}
+
+/* -----------------------------------------------------------------------
+   Trust Stats — minimal, small
+   ----------------------------------------------------------------------- */
+.trust-stats {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  .trust-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+
+    strong {
+      font-size: $type-body;
+      font-weight: $fw-semibold;
+      color: $color-text-primary;
+    }
+
+    span {
+      font-size: $type-xs;
+      color: $color-text-faint;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+  }
+
+  .trust-divider {
+    width: 1px;
+    height: 1.5rem;
+    background: $color-border-strong;
+  }
+}
+
+/* -----------------------------------------------------------------------
+   Responsive
+   ----------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .hero-section { gap: 1.1rem; padding: 1rem; }
+
+  .search-form--single {
+    flex-direction: column;
+    gap: 0.5rem;
+    .btn-cta { width: 100%; }
+  }
+
+  .search-form--vs .vs-inputs {
+    flex-direction: column;
+    .vs-divider { padding: 0.15rem 0; }
+  }
+
+  .trust-stats {
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    .trust-divider { display: none; }
+  }
+}

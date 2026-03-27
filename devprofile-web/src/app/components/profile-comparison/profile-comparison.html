@@ -1,0 +1,113 @@
+<div class="comparison-container dashboard-exportable" #dashboardElement>
+    <div class="actions-topbar" style="margin-top: -20px; margin-bottom: 30px;">
+       <button class="btn-back" (click)="onBack.emit()">⟵ Nova Busca</button>
+       <button class="btn-download" (click)="onDownload.emit(dashboardElement)">📸 Gerar Imagem</button>
+    </div>
+
+    <div class="summary-banner">
+      <div class="trophy-badge" *ngIf="comparison.winnerByScore !== 'Tie'">👑 Vencedor: {{ comparison.winnerByScore }}</div>
+      <div class="trophy-badge tie" *ngIf="comparison.winnerByScore === 'Tie'">⚖️ Empate</div>
+      <p>{{ comparison.summary }}</p>
+      <div class="score-diff-badge">Diferença de {{ comparison.scoreDifference }} pontos</div>
+    </div>
+
+    <div class="vs-row">
+      <!-- Left User -->
+      <div class="vs-card" [class.winner]="comparison.winnerByScore === comparison.left.username">
+        <div class="vs-header">
+          <img class="vs-avatar" [src]="comparison.left.avatarUrl" crossorigin="anonymous" />
+          <div class="vs-header-text">
+            <h3>{{ comparison.left.name || comparison.left.username }}</h3>
+            <span class="badge blue-text">{{ comparison.left.analysis.seniorityLevel }}</span>
+          </div>
+        </div>
+
+        <div class="vs-score">{{ comparison.left.analysis.valueScore }} Pts</div>
+        
+        <div class="stats-compact-row">
+          <div class="stat-comp">
+            <span class="sc-val">{{ comparison.left.stats.totalStars }}</span>
+            <span class="sc-lbl">Estrelas</span>
+          </div>
+          <div class="sc-divider"></div>
+          <div class="stat-comp">
+            <span class="sc-val">{{ comparison.left.stats.totalRepositories }}</span>
+            <span class="sc-lbl">Repos</span>
+          </div>
+          <div class="sc-divider"></div>
+          <div class="stat-comp">
+            <span class="sc-val">{{ comparison.left.stats.totalCommits }}</span>
+            <span class="sc-lbl">Commits</span>
+          </div>
+        </div>
+
+        <div class="vs-details">
+          <div class="vs-detail-item">
+            <label>Stack Principal</label>
+            <span>{{ comparison.left.analysis.mainStack }}</span>
+            <small>{{ (comparison.left.analysis.stackConfidence * 100).toFixed(0) }}% do código</small>
+          </div>
+          <div class="vs-detail-item">
+            <label>Top Linguagem</label>
+            <span *ngIf="comparison.left.analysis.topLanguages?.length > 0">{{ comparison.left.analysis.topLanguages[0].name }}</span>
+            <span *ngIf="!comparison.left.analysis.topLanguages?.length">Nenhuma</span>
+            <small *ngIf="comparison.left.analysis.topLanguages?.length > 0">{{ comparison.left.analysis.topLanguages[0].repoCount }} repos</small>
+          </div>
+          <div class="vs-detail-item">
+            <label>Valor de Mercado</label>
+            <span class="value-text">{{ (comparison.left.analysis.value | currency:'BRL':'R$') || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-separator">VS</div>
+
+      <!-- Right User -->
+      <div class="vs-card" [class.winner]="comparison.winnerByScore === comparison.right.username">
+        <div class="vs-header">
+          <img class="vs-avatar" [src]="comparison.right.avatarUrl" crossorigin="anonymous" />
+          <div class="vs-header-text">
+            <h3>{{ comparison.right.name || comparison.right.username }}</h3>
+            <span class="badge blue-text">{{ comparison.right.analysis.seniorityLevel }}</span>
+          </div>
+        </div>
+        
+        <div class="vs-score">{{ comparison.right.analysis.valueScore }} Pts</div>
+        
+        <div class="stats-compact-row">
+          <div class="stat-comp">
+            <span class="sc-val">{{ comparison.right.stats.totalStars }}</span>
+            <span class="sc-lbl">Estrelas</span>
+          </div>
+          <div class="sc-divider"></div>
+          <div class="stat-comp">
+            <span class="sc-val">{{ comparison.right.stats.totalRepositories }}</span>
+            <span class="sc-lbl">Repos</span>
+          </div>
+          <div class="sc-divider"></div>
+          <div class="stat-comp">
+            <span class="sc-val">{{ comparison.right.stats.totalCommits }}</span>
+            <span class="sc-lbl">Commits</span>
+          </div>
+        </div>
+
+        <div class="vs-details">
+          <div class="vs-detail-item">
+            <label>Stack Principal</label>
+            <span>{{ comparison.right.analysis.mainStack }}</span>
+            <small>{{ (comparison.right.analysis.stackConfidence * 100).toFixed(0) }}% do código</small>
+          </div>
+          <div class="vs-detail-item">
+            <label>Top Linguagem</label>
+            <span *ngIf="comparison.right.analysis.topLanguages?.length > 0">{{ comparison.right.analysis.topLanguages[0].name }}</span>
+            <span *ngIf="!comparison.right.analysis.topLanguages?.length">Nenhuma</span>
+            <small *ngIf="comparison.right.analysis.topLanguages?.length > 0">{{ comparison.right.analysis.topLanguages[0].repoCount }} repos</small>
+          </div>
+          <div class="vs-detail-item">
+            <label>Valor de Mercado</label>
+            <span class="value-text">{{ (comparison.right.analysis.value | currency:'BRL':'R$') || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,171 @@
+<section class="hero-section" aria-labelledby="hero-title">
+
+  <!-- Badge -->
+  <div class="hero-badge">
+    <span class="badge-dot" aria-hidden="true"></span>
+    Gratuito · Sem cadastro · Dados em tempo real
+  </div>
+
+  <!-- Headline — changes by mode -->
+  <h1 id="hero-title" class="hero-title" [class.vs-mode-title]="mode === 'vs'">
+    <ng-container *ngIf="mode === 'single'">
+      Descubra o <span class="text-accent">peso real</span>
+      do seu código
+    </ng-container>
+    <ng-container *ngIf="mode === 'vs'">
+      Quem é o <span class="text-accent">melhor dev?</span>
+    </ng-container>
+  </h1>
+
+  <p class="hero-subtitle" *ngIf="mode === 'single'">
+    Análise de repositórios, commits, linguagens e senioridade.<br>
+    Gere seu card e compare com outros devs.
+  </p>
+  <p class="hero-subtitle" *ngIf="mode === 'vs'">
+    Compare dois perfis do GitHub e descubra quem domina mais.
+  </p>
+
+  <!-- ── Mode Toggle ───────────────────────────────────────────────── -->
+  <div class="mode-tabs" role="tablist">
+    <button
+      role="tab"
+      [attr.aria-selected]="mode === 'single'"
+      [class.active]="mode === 'single'"
+      (click)="setMode('single')"
+      id="tab-single"
+      aria-controls="form-panel">
+      👤 Meu perfil
+    </button>
+    <button
+      role="tab"
+      [attr.aria-selected]="mode === 'vs'"
+      [class.active]="mode === 'vs'"
+      (click)="setMode('vs')"
+      id="tab-vs"
+      aria-controls="form-panel">
+      ⚡ Modo VS
+    </button>
+  </div>
+
+  <!-- ── Animated Form Card ────────────────────────────────────────── -->
+  <div
+    id="form-panel"
+    role="tabpanel"
+    class="form-card"
+    [class.is-flipping]="isAnimating"
+    [attr.aria-labelledby]="mode === 'single' ? 'tab-single' : 'tab-vs'">
+
+    <!-- Single Profile Mode -->
+    <form
+      *ngIf="mode === 'single'"
+      class="search-form search-form--single"
+      (ngSubmit)="submit()"
+      role="search"
+      aria-label="Buscar perfil do GitHub">
+      <label for="github-username" class="sr-only">Username do GitHub</label>
+      <div class="input-prefix-wrapper">
+        <span class="input-prefix" aria-hidden="true">github.com/</span>
+        <input
+          id="github-username"
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          placeholder="seu-username"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          required
+          aria-required="true"
+        />
+      </div>
+      <button type="submit" [disabled]="!username" class="btn-cta">
+        Analisar →
+      </button>
+    </form>
+
+    <!-- VS Mode — face-off layout -->
+    <form
+      *ngIf="mode === 'vs'"
+      class="search-form search-form--vs"
+      (ngSubmit)="submit()"
+      aria-label="Comparar dois perfis do GitHub">
+
+      <div class="vs-battle">
+
+        <!-- Left player -->
+        <div class="vs-player" [class.filled]="leftUser">
+          <div class="vs-player-label">Dev 1</div>
+          <div class="input-prefix-wrapper vs-input-wrapper">
+            <span class="input-prefix" aria-hidden="true">@</span>
+            <input
+              type="text"
+              [(ngModel)]="leftUser"
+              name="leftUser"
+              placeholder="primeiro-dev"
+              autocomplete="off"
+              autocapitalize="off"
+              required
+              aria-label="Primeiro username"
+            />
+          </div>
+        </div>
+
+        <!-- VS badge -->
+        <div class="vs-badge" aria-hidden="true">
+          <span class="vs-text">VS</span>
+        </div>
+
+        <!-- Right player -->
+        <div class="vs-player" [class.filled]="rightUser">
+          <div class="vs-player-label">Dev 2</div>
+          <div class="input-prefix-wrapper vs-input-wrapper">
+            <span class="input-prefix" aria-hidden="true">@</span>
+            <input
+              type="text"
+              [(ngModel)]="rightUser"
+              name="rightUser"
+              placeholder="segundo-dev"
+              autocomplete="off"
+              autocapitalize="off"
+              required
+              aria-label="Segundo username"
+            />
+          </div>
+        </div>
+
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="!leftUser || !rightUser"
+        class="btn-cta btn-cta--vs"
+        [class.btn-ready]="leftUser && rightUser">
+        <span *ngIf="!leftUser || !rightUser">Preencha os dois devs</span>
+        <span *ngIf="leftUser && rightUser">⚡ Iniciar batalha →</span>
+      </button>
+    </form>
+
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error-toast" role="alert">{{ error }}</div>
+
+  <!-- Trust stats -->
+  <div class="trust-stats" aria-label="Estatísticas da plataforma">
+    <div class="trust-item">
+      <strong>12.4k</strong>
+      <span>Perfis analisados</span>
+    </div>
+    <div class="trust-divider" aria-hidden="true"></div>
+    <div class="trust-item">
+      <strong>98M+</strong>
+      <span>Commits processados</span>
+    </div>
+    <div class="trust-divider" aria-hidden="true"></div>
+    <div class="trust-item">
+      <strong>&lt; 2s</strong>
+      <span>Análise média</span>
+    </div>
+  </div>
+
+</section>
