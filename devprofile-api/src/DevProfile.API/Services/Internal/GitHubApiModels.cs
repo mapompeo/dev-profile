@@ -24,6 +24,12 @@ internal sealed class GitHubUserResponse
 
     [JsonPropertyName("public_repos")]
     public int PublicRepos { get; init; }
+    
+    [JsonPropertyName("company")]
+    public string? Company { get; init; }
+
+    [JsonPropertyName("location")]
+    public string? Location { get; init; }
 
     [JsonPropertyName("created_at")]
     public DateTime CreatedAt { get; init; }

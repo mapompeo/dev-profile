@@ -39,11 +39,9 @@ app-header {
 
 /* Lock landing to viewport — no scroll */
 .hero-landing {
-  height: calc(100vh - 72px);
-  overflow: hidden;
+  min-height: calc(100vh - 72px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 /* Floating limits box */

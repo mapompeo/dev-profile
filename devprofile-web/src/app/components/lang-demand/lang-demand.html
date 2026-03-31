@@ -1,0 +1,36 @@
+<div class="demand-wrap">
+  <div class="demand-row header-row">
+    <span class="col-lang">Linguagem</span>
+    <span class="col-demand">Demanda</span>
+    <span class="col-growth">Crescimento</span>
+    <span class="col-yours">No seu perfil</span>
+  </div>
+  <div class="demand-row"
+    *ngFor="let r of rows"
+    [class.in-profile]="r.inProfile"
+    [class.not-in-profile]="!r.inProfile">
+    <span class="col-lang">
+      <span class="lang-marker" [class.mine]="r.inProfile"></span>
+      {{ r.lang }}
+    </span>
+    <span class="col-demand">
+      <span class="demand-badge" [style.color]="demandColor(r.demand)" [style.border-color]="demandColor(r.demand)">
+        {{ r.demand }}
+      </span>
+    </span>
+    <span class="col-growth" [class.positive]="!r.growth.startsWith('-')" [class.negative]="r.growth.startsWith('-')">
+      {{ r.growth }}
+    </span>
+    <span class="col-yours">
+      <ng-container *ngIf="r.inProfile; else notInProfile">
+        <span class="pct-bar-wrap">
+          <span class="pct-bar" [style.width.%]="r.percentage"></span>
+        </span>
+        <span class="pct-val">{{ r.percentage.toFixed(1) }}%</span>
+      </ng-container>
+      <ng-template #notInProfile>
+        <span class="not-in">—</span>
+      </ng-template>
+    </span>
+  </div>
+</div>

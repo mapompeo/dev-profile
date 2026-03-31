@@ -12,5 +12,7 @@ public sealed class GitHubProfileDto
     public int TotalStars { get; init; }
     public int TotalForks { get; init; }
     public int TotalCommits { get; init; }
+    public string? Company { get; init; }
+    public string? Location { get; init; }
     public DateTime CreatedAt { get; init; }
 }

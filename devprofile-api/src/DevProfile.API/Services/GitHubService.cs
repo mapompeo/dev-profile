@@ -52,6 +52,8 @@ public sealed class GitHubService : IGitHubService
             TotalStars = totalStars,
             TotalForks = totalForks,
             TotalCommits = totalCommits,
+            Company = user.Company,
+            Location = user.Location,
             CreatedAt = user.CreatedAt
         };
 
@@ -61,7 +63,7 @@ public sealed class GitHubService : IGitHubService
 
     public async Task<IReadOnlyList<LanguageUsageDto>> GetLanguageDistributionAsync(string username, CancellationToken cancellationToken = default)
     {
-        var cacheKey = $"github:languages:{username.ToLowerInvariant()}";
+        var cacheKey = $"github:v4:languages:{username.ToLowerInvariant()}";
         if (_cache.TryGetValue(cacheKey, out IReadOnlyList<LanguageUsageDto>? cachedLanguages) && cachedLanguages is not null)
         {
             return cachedLanguages;
@@ -106,7 +108,7 @@ public sealed class GitHubService : IGitHubService
 
         var totalBytes = Math.Max(1L, languageBytes.Values.Sum());
         var result = languageBytes
-            .OrderByDescending(x => x.Value)
+            .OrderByDescending(x => reposByLanguage.GetValueOrDefault(x.Key))
             .Select(x => new LanguageUsageDto
             {
                 Name = x.Key,

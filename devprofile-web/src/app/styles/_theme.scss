@@ -69,9 +69,9 @@ $gh-lime-3:   #D8BD0E;
 
 // --- Backgrounds ---
 // Near-pure dark, barely purple-tinted — neutral dominates
-$color-bg:          #0c0c10;  // Very dark, slight purple undertone
-$color-surface:     #141318;  // Cards — slightly lighter
-$color-surface-alt: #1e1b24;  // Inputs — a step up
+$color-bg:          #080b12;  // Deep charcoal/navy instead of flat black
+$color-surface:     #111622;  // Slightly lighter for cards
+$color-surface-alt: #1a1f2e;  // Even lighter for interactive elements
 
 // --- Borders — thin, subtle ---
 $color-border:        rgba(255, 255, 255, 0.06);
@@ -107,8 +107,9 @@ $logo-color-dark: $color-bg;
 // =============================================================================
 // EFFECTS — Minimal, not heavy
 // =============================================================================
-$glass-bg:     rgba(20, 19, 24, 0.7);
-$glass-border: rgba(255, 255, 255, 0.07);
+$glass-bg:     rgba(17, 22, 34, 0.85); // More opaque for better contrast
+$glass-border: rgba(255, 255, 255, 0.1); 
+$glass-border-light: rgba(255, 255, 255, 0.05);
 
 // Glows — very subtle
 $glow-purple:  0 0 20px rgba($gh-copilot-purple, 0.25);

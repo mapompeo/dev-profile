@@ -1,0 +1,40 @@
+<div class="radar-wrap">
+  <svg [attr.viewBox]="'0 0 400 400'" aria-label="Radar de Competências" class="radar-svg">
+    <!-- Grid rings -->
+    <polygon *ngFor="let poly of gridPolygons"
+      [attr.points]="poly"
+      class="radar-grid-ring" />
+
+    <!-- Axis lines -->
+    <line *ngFor="let ax of axisLines"
+      [attr.x1]="cx" [attr.y1]="cy"
+      [attr.x2]="ax.x2" [attr.y2]="ax.y2"
+      class="radar-axis-line" />
+
+    <!-- Data area -->
+    <polygon [attr.points]="dataPolygon" class="radar-data-area" />
+    <polygon [attr.points]="dataPolygon" class="radar-data-stroke" />
+
+    <!-- Data dots -->
+    <circle *ngFor="let ax of axisLines"
+      [attr.cx]="ax.x2 * (ax.value / 100) + cx * (1 - ax.value / 100)"
+      [attr.cy]="ax.y2 * (ax.value / 100) + cy * (1 - ax.value / 100)"
+      r="4" class="radar-dot" />
+
+    <!-- Labels -->
+    <text *ngFor="let ax of axisLines"
+      [attr.x]="ax.lx" [attr.y]="ax.ly"
+      class="radar-label"
+      text-anchor="middle"
+      dominant-baseline="middle">
+      {{ ax.label }}
+    </text>
+    <text *ngFor="let ax of axisLines"
+      [attr.x]="ax.lx" [attr.y]="ax.ly + 14"
+      class="radar-value"
+      text-anchor="middle"
+      dominant-baseline="middle">
+      {{ ax.value }}
+    </text>
+  </svg>
+</div>

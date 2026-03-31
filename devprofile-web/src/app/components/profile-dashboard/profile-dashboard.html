@@ -1,58 +1,106 @@
 <div class="dashboard-page">
 
-  <!-- ─── Top Bar (same max-width as content) ─────────────────────────────── -->
+  <!-- ─── Top Bar ─────────────────────────────────────────────── -->
   <div class="dashboard-topbar">
     <div class="topbar-inner">
       <button class="btn-back" (click)="onBack.emit()" aria-label="Voltar ao início">
         ← Início
       </button>
-      <button class="btn-export" (click)="onDownload.emit(dashboardElement)">
-        📸 Gerar Imagem
-      </button>
+      <div class="topbar-actions">
+        <span class="calc-info">Como são calculados os valores?</span>
+        <button class="btn-export" (click)="onDownload.emit(dashboardElement)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+          Gerar Imagem
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- ─── Exportable card ──────────────────────────────────────────────────── -->
   <div class="dashboard-content" #dashboardElement>
 
-    <!-- 1. User Identity -->
-    <div class="user-row">
+    <!-- 1. User Identity (Centralizado conforme solicitação) -->
+    <div class="user-hero">
       <img [src]="profile.avatarUrl" [alt]="'Avatar de ' + (profile.name || profile.username)" crossorigin="anonymous" />
+      
       <div class="user-info">
         <h2>{{ profile.name || profile.username }}</h2>
-        <span class="username">{{ '@' + profile.username }}</span>
-        <span class="bio" *ngIf="profile.bio">{{ profile.bio }}</span>
-      </div>
-    </div>
-
-    <!-- 2. Compact Stats Row -->
-    <div class="stats-compact-row">
-      <div class="stat-comp">
-        <span class="sc-val">{{ profile.stats.totalStars }}</span>
-        <span class="sc-lbl">ESTRELAS</span>
-      </div>
-      <div class="sc-divider"></div>
-      <div class="stat-comp">
-        <span class="sc-val">{{ profile.stats.totalRepositories }}</span>
-        <span class="sc-lbl">REPOS</span>
-      </div>
-      <div class="sc-divider"></div>
-      <div class="stat-comp">
-        <span class="sc-val">{{ profile.stats.totalCommits }}</span>
-        <span class="sc-lbl">COMMITS</span>
-      </div>
-      <ng-container *ngIf="profile.stats.totalForks !== undefined">
-        <div class="sc-divider"></div>
-        <div class="stat-comp">
-          <span class="sc-val">{{ profile.stats.totalForks }}</span>
-          <span class="sc-lbl">FORKS</span>
+        <a [href]="'https://github.com/' + profile.username" target="_blank" class="username-link">
+          {{ '@' + profile.username }}
+        </a>
+        
+        <div class="user-meta-lines">
+          <div class="meta-item" *ngIf="profile.company">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 4v4"/><path d="M16 4v4"/></svg>
+            {{ profile.company }}
+          </div>
+          <div class="meta-item" *ngIf="profile.location">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ profile.location }}
+          </div>
+          <div class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Ingressou em {{ profile.createdAt | date:'longDate':'':'pt-BR' }}
+          </div>
         </div>
-      </ng-container>
+      </div>
+
+      <div class="hero-stats-row">
+        <div class="hero-stat-item">
+          <span class="stat-v">{{ profile.stats.totalRepositories }}</span>
+          <span class="stat-l">Repositórios</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-v">{{ profile.stats.followers }}</span>
+          <span class="stat-l">Seguidores</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-v">{{ profile.stats.following }}</span>
+          <span class="stat-l">Seguindo</span>
+        </div>
+      </div>
     </div>
 
-    <!-- 3. Stack & Seniority -->
-    <div class="section-card">
-      <h3 class="section-title">Análise de Stack & Senioridade</h3>
+    <!-- 2. Resumo de Métricas (3 Cards) -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="sc-lbl">Total de estrelas</span>
+          <span class="sc-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </span>
+        </div>
+        <span class="sc-val">{{ profile.stats.totalStars }}</span>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="sc-lbl">Total de Repositórios</span>
+          <span class="sc-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          </span>
+        </div>
+        <span class="sc-val">{{ profile.stats.totalRepositories }}</span>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="sc-lbl">Total de Commits</span>
+          <span class="sc-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></svg>
+          </span>
+        </div>
+        <span class="sc-val">{{ profile.stats.totalCommits }}</span>
+      </div>
+    </div>
+
+    <!-- 3. Análise principal de Backend/Frontend + Linguagens -->
+    <div class="section-card giant-card">
+      <div class="giant-card-header">
+        <h3 class="section-title">Análise de Stack & Senioridade</h3>
+        <span class="icon-brackets">&lt;&gt;</span>
+      </div>
+      
       <div class="analysis-grid">
         <div class="analysis-item">
           <label>&lt;/&gt; Stack Principal</label>
@@ -60,97 +108,242 @@
           <small>{{ (profile.analysis.stackConfidence * 100).toFixed(0) }}% dos seus repositórios</small>
         </div>
         <div class="analysis-item">
-          <label>📈 Senioridade</label>
+          <label>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+            Nível de Senioridade
+          </label>
           <strong class="accent">{{ profile.analysis.seniorityLevel }}</strong>
           <small>Score: {{ profile.analysis.seniorityScore }}/100</small>
         </div>
         <div class="analysis-item">
-          <label>⏱ Experiência</label>
+          <label>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Experiência
+          </label>
           <strong class="accent">{{ profile.analysis.experienceYears }}</strong>
           <small>{{ profile.analysis.languagesCount }} linguagens dominadas</small>
         </div>
       </div>
-
-      <!-- Score bar -->
-      <div class="score-bar-wrap">
-        <div class="score-bar-label">
-          <span>Progresso de senioridade</span>
-          <span class="score-val">{{ profile.analysis.seniorityScore }}/100</span>
-        </div>
-        <div class="score-bar-track">
-          <div class="score-bar-fill" [style.width.%]="profile.analysis.seniorityScore"></div>
-        </div>
-      </div>
     </div>
+      
+    <!-- Os novos cards inspirados no CommitWorth -->
+    <div class="cw-grid">
 
-    <!-- 4. Top Languages -->
-    <div class="section-card">
-      <h3 class="section-title">Top Linguagens</h3>
-      <div class="lang-list">
-        <div class="lang-row" *ngFor="let lang of profile.analysis.topLanguages; let i = index">
-          <span class="lang-rank">#{{ i + 1 }}</span>
-          <span class="lang-name">{{ lang.name }}</span>
-          <div class="lang-bar-wrap">
-            <div class="lang-bar" [style.width.%]="getLangPercent(lang, profile.analysis.topLanguages)"></div>
+      <!-- 1. Valor Agregado -->
+      <div class="cw-card">
+        <div class="cw-header">
+          <div class="header-left">
+            <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38ef7d;"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <label>Valor agregado</label>
           </div>
-          <span class="lang-meta">{{ lang.repositories }} repos</span>
+          <span class="tooltip-wrapper" data-tooltip="Estimativa mensal baseada na senioridade (Pesos: Commits 30%, Experiência 20%, Diversidade 20%, Impacto 15%, Consistência 15%) e bônus de até 20% por tempo de carreira.">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </span>
+        </div>
+        <div class="cw-card-content">
+          <div class="cw-value money">
+            R$ {{ profile.analysis.aggregatedValue | number:'1.2-2':'pt-BR' }}
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 5. Valor Agregado -->
-    <div class="section-card value-card" *ngIf="profile.analysis.aggregatedValue">
-      <div class="value-left">
-        <label>💰 Valor de Mercado Estimado</label>
-        <div class="value-big">R$ {{ profile.analysis.aggregatedValue | number:'1.0-0' }}</div>
-        <small>Baseado em senioridade, stack e contribuições</small>
+      <div class="cw-card" *ngIf="!profile.analysis.aggregatedValue">
+        <div class="cw-header">
+          <label>Valor agregado</label>
+        </div>
+        <div class="cw-value money">N/A</div>
       </div>
-      <div class="value-right">
-        <label>🎯 Seus Pontos</label>
-        <div class="points-big">{{ profile.analysis.totalScore || profile.analysis.seniorityScore * 12 }}</div>
-      </div>
-    </div>
 
-    <!-- 6. Repositórios Populares -->
-    <div class="section-card" *ngIf="profile.analysis.popularRepositories?.length">
-      <h3 class="section-title">Repositórios Populares</h3>
-      <div class="repo-list">
-        <div class="repo-chip" *ngFor="let repo of profile.analysis.popularRepositories">
-          <span class="repo-dot"></span>
-          {{ repo.name || repo }}
-          <span class="repo-stars" *ngIf="repo.stars">⭐ {{ repo.stars }}</span>
+      <!-- 2. Linguagens mais utilizadas (Horizontal Chart) -->
+      <div class="cw-card" *ngIf="profile.analysis.topLanguages?.length">
+        <div class="cw-header">
+          <div class="header-left">
+            <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #a78bfa;"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg>
+            <label>Linguagens mais utilizadas</label>
+          </div>
+          <span class="tooltip-wrapper" data-tooltip="As 5 linguagens com maior volume de código e repositórios associados.">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </span>
+        </div>
+        <div class="h-chart">
+          <div class="h-bar-row" *ngFor="let lang of profile.analysis.topLanguages.slice(0,5)">
+            <span class="h-label" [title]="lang.name">{{ lang.name }}</span>
+            <div class="h-track">
+              <div class="h-fill" [style.width.%]="getLangPercent(lang, profile.analysis.topLanguages)" [title]="lang.repositories + ' repositórios (' + lang.percentage + '%)'"></div>
+            </div>
+          </div>
+          <div class="h-chart-axis">
+            <div aria-hidden="true"></div>
+            <div class="axis-labels">
+              <span>0</span>
+              <span>2</span>
+              <span>4</span>
+              <span>6</span>
+              <span>8</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 7. Repositórios Bem Estruturados -->
-    <div class="section-card" *ngIf="profile.analysis.wellStructuredRepositories?.length">
-      <h3 class="section-title">Repositórios Bem Estruturados</h3>
-      <div class="repo-list">
-        <div class="repo-chip structured" *ngFor="let repo of profile.analysis.wellStructuredRepositories">
-          <span class="repo-dot"></span>
-          {{ repo.name || repo }}
+      <!-- 3. Seus Pontos -->
+      <div class="cw-card">
+        <div class="cw-header">
+          <div class="header-left">
+            <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #facc15;"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 7h10"></path><path d="M7 12h10"></path><path d="M7 17h10"></path></svg>
+            <label>Seus Pontos</label>
+          </div>
+          <span class="tooltip-wrapper" data-tooltip="Pontuação baseada em: Commit (1pt), Estrela (15pts), Seguidor (25pts), Fork (20pts), Repositório (50pts). Suba de nível para desbloquear distintivos!">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </span>
+        </div>
+        <div class="cw-card-content">
+          <div class="cw-value money" style="gap: 1rem;">
+            {{ profile.analysis.totalScore | number }}
+            <span class="cw-level-badge">Lvl {{ getLevel(profile.analysis.totalScore) }}</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 8. Distintivos / Badges -->
-    <div class="section-card" *ngIf="profile.analysis.badges?.length">
-      <h3 class="section-title">Distintivos de Conquista</h3>
-      <div class="badges-grid">
-        <div class="badge-item" *ngFor="let badge of profile.analysis.badges" [class.completed]="badge.completed">
-          <div class="badge-icon" aria-hidden="true">{{ badge.icon || '🏆' }}</div>
-          <div class="badge-label">{{ badge.name }}</div>
-          <div class="badge-desc">{{ badge.description }}</div>
-          <div class="badge-status">{{ badge.completed ? 'Completo ✓' : 'Em progresso' }}</div>
+      <!-- 4. Total Forks -->
+      <div class="cw-card">
+        <div class="cw-header">
+          <div class="header-left">
+            <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #7c3aed;"><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg>
+            <label>Total de Forks</label>
+          </div>
+          <span class="tooltip-wrapper" data-tooltip="Soma total de forks realizados em seus repositórios públicos.">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </span>
+        </div>
+        <div class="cw-card-content">
+          <div class="cw-value money">
+            {{ profile.stats.totalForks || 0 }}
+          </div>
         </div>
       </div>
+
+      <!-- 5. Radar de Competências -->
+      <div class="cw-card">
+        <div class="cw-header">
+          <div class="header-left">
+            <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #a78bfa;"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
+            <label>Radar de Competências</label>
+          </div>
+          <span class="tooltip-wrapper" data-tooltip="Análise multidimensional de performance técnica e consistência no GitHub.">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </span>
+        </div>
+        <div class="cw-card-content visual-content">
+          <app-chart-radar [radar]="profile.analysis.radar"></app-chart-radar>
+        </div>
+      </div>
+
+      <!-- 6. Identidade Tech -->
+      <div class="cw-card">
+        <div class="cw-header">
+          <div class="header-left">
+            <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #60a5fa;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <label>Identidade Tech</label>
+          </div>
+          <span class="tooltip-wrapper" data-tooltip="Distribuição percentual de tecnologias baseada em categorias (Front/Back/DevOps).">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </span>
+        </div>
+        <div class="cw-card-content visual-content">
+          <app-chart-donut [breakdown]="profile.analysis.stackBreakdown" [centerLabel]="profile.analysis.mainStack"></app-chart-donut>
+        </div>
+      </div>
+
     </div>
 
-    <!-- 9. Card Generator -->
-    <app-card-generator [profile]="profile"></app-card-generator>
+    <!-- Restante do conteúdo (Badges e Card Generator) -->
+    <div class="bottom-grid" *ngIf="profile.analysis.badges?.length">
+
+      <!-- Distintivos / Badges -->
+      <div class="section-card badges-card full-col">
+        <h3 class="section-title">Distintivos de Conquista</h3>
+        <div class="badges-grid-compact">
+          <div class="badge-item-mini" *ngFor="let badge of profile.analysis.badges" [class.completed]="badge.completed">
+            <div class="badge-icon-mini" aria-hidden="true">
+              <svg *ngIf="!badge.icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+              <span *ngIf="badge.icon">{{ badge.icon }}</span>
+            </div>
+            <div class="badge-label-mini">{{ badge.name }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /bottom-grid -->
+
+    <!-- ═══ SEÇÃO DE GRÁFICOS AVANÇADOS ════════════════════════════════════ -->
+    <div class="advanced-section">
+
+      <!-- 1. Pitch Profissional (Full Width) -->
+      <div class="cw-card" style="grid-column: 1 / -1; min-height: auto;">
+        <div class="cw-header">
+          <div class="header-left">
+            <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #60a5fa;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <label>Pitch Profissional</label>
+          </div>
+          <span class="tooltip-wrapper" data-tooltip="Apresentação executiva gerada automaticamente com base no seu perfil.">
+            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </span>
+        </div>
+        <div class="cw-card-content" style="padding: 1rem 0;">
+          <app-career-pitch [profile]="profile"></app-career-pitch>
+        </div>
+      </div>
+
+      <!-- 2. Demanda + Projeção (2 per row) -->
+      <div class="cw-grid">
+        <!-- Mapa de Demanda -->
+        <div class="cw-card">
+          <div class="cw-header">
+            <div class="header-left">
+              <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38ef7d;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              <label>Demanda de Mercado</label>
+            </div>
+            <span class="tooltip-wrapper" data-tooltip="Comparativo das suas linguagens vs. demanda do mercado brasileiro em 2025.">
+              <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </span>
+          </div>
+          <div class="cw-card-content visual-content">
+            <app-lang-demand [topLanguages]="profile.analysis.topLanguagesAll || profile.analysis.topLanguages">
+            </app-lang-demand>
+          </div>
+        </div>
+
+        <!-- Projeção de Carreira -->
+        <div class="cw-card">
+          <div class="cw-header">
+            <div class="header-left">
+              <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #facc15;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+              <label>Projeção de Carreira</label>
+            </div>
+            <span class="tooltip-wrapper" data-tooltip="Estimativa de evolução técnica baseada no seu ritmo de contribuição atual.">
+              <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </span>
+          </div>
+          <div class="cw-card-content visual-content">
+            <app-career-projection
+              [analysis]="profile.analysis"
+              [stats]="profile.stats">
+            </app-career-projection>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /advanced-section -->
+
+    <!-- Card Generator -->
+    <div style="margin-top: 1.5rem;">
+      <app-card-generator [profile]="profile"></app-card-generator>
+    </div>
 
   </div>
   <!-- /dashboard-content -->
 
 </div>
+

@@ -1,0 +1,27 @@
+<div class="proj-wrap">
+  <!-- Rhythm indicator -->
+  <div class="rhythm-row">
+    <span class="rhythm-label">Ritmo atual:</span>
+    <span class="rhythm-badge">{{ rhythm }}</span>
+    <span class="rhythm-suggestion">{{ suggestion }}</span>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline">
+    <div class="tl-item" *ngFor="let m of milestones; let last = last" [class.reached]="m.reached">
+      <!-- Node -->
+      <div class="tl-node-col">
+        <div class="tl-node">
+          <svg *ngIf="m.reached" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <div class="tl-line" *ngIf="!last"></div>
+      </div>
+      <!-- Content -->
+      <div class="tl-content">
+        <div class="tl-title">{{ m.title }}</div>
+        <div class="tl-desc">{{ m.description }}</div>
+        <div class="tl-time" [class.tl-time--done]="m.reached">{{ m.timeLabel }}</div>
+      </div>
+    </div>
+  </div>
+</div>

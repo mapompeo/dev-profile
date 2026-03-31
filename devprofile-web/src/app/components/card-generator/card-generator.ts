@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import html2canvas from 'html2canvas';
 
-export type CardFormat = 'story' | 'post' | 'linkedin' | 'twitter';
-export type CardTheme = 'copilot' | 'github' | 'aurora' | 'terminal' | 'ocean' | 'sunrise';
+export type CardFormat = 'story' | 'post';
+export type CardTheme = 'dark' | 'light';
 
 interface FormatConfig {
   id: CardFormat;
@@ -37,51 +37,31 @@ interface ThemeConfig {
 export class CardGenerator implements OnInit {
   @Input() profile: any;
 
-  /* ── Formats ─────────────────────────────────────────────────────────── */
+  /* ── Ultra-Dense Formats (Strict 1080px base) ───────────────────────── */
   readonly formats: FormatConfig[] = [
-    { id: 'story',   label: 'Story',   icon: '📱', platform: 'Instagram',  aspect: '9/16',   width: 1080, height: 1920 },
-    { id: 'post',    label: 'Post',    icon: '🟫', platform: 'Instagram',  aspect: '1/1',    width: 1080, height: 1080 },
-    { id: 'linkedin',label: 'LinkedIn',icon: '💼', platform: 'LinkedIn',   aspect: '1.91/1', width: 1200, height: 628  },
-    { id: 'twitter', label: 'Twitter', icon: '🐦', platform: 'Twitter/X',  aspect: '16/9',   width: 1200, height: 675  },
+    { id: 'post',    label: 'Post',    icon: 'instagram', platform: 'Feed (1:1)',  aspect: '1/1',    width: 1080, height: 1080 },
+    { id: 'story',   label: 'Story',   icon: 'instagram', platform: 'Story (9:16)',  aspect: '9/16',   width: 1080, height: 1920 },
   ];
 
-  /* ── Themes ──────────────────────────────────────────────────────────── */
+  /* ── Modern Tech Themes ─────────────────────────────────────────────── */
   readonly themes: ThemeConfig[] = [
     {
-      id: 'copilot', label: 'Copilot',
-      bg: '#0c0c10', surface: '#1a1625', accent: '#8534F3', accentLight: '#C898FD',
-      text: '#F2F5F3', subtext: '#909692', border: 'rgba(255,255,255,0.08)'
-    },
-    {
-      id: 'github', label: 'GitHub',
-      bg: '#0d1117', surface: '#161b22', accent: '#0FBF3E', accentLight: '#8CF2A6',
+      id: 'dark', label: 'Modo Escuro',
+      bg: '#0a0a0f', surface: '#16161e', accent: '#8957e5', accentLight: '#d2a8ff',
       text: '#e6edf3', subtext: '#7d8590', border: 'rgba(255,255,255,0.08)'
     },
     {
-      id: 'aurora', label: 'Aurora',
-      bg: '#0a001a', surface: '#130028', accent: '#B870FF', accentLight: '#e0aaff',
-      text: '#F2F5F3', subtext: '#9d8fb8', border: 'rgba(184,112,255,0.15)'
-    },
-    {
-      id: 'terminal', label: 'Terminal',
-      bg: '#000000', surface: '#0d0d0d', accent: '#00FF41', accentLight: '#80FF80',
-      text: '#ffffff', subtext: '#666666', border: 'rgba(0,255,65,0.2)'
-    },
-    {
-      id: 'ocean', label: 'Ocean',
-      bg: '#020b18', surface: '#0a1929', accent: '#3094FF', accentLight: '#9EECFF',
-      text: '#e8f4fd', subtext: '#7eb0d4', border: 'rgba(48,148,255,0.15)'
-    },
-    {
-      id: 'sunrise', label: 'Sunrise',
-      bg: '#120808', surface: '#1e0f0f', accent: '#FE4C25', accentLight: '#F4A876',
-      text: '#fdf1e8', subtext: '#a07060', border: 'rgba(254,76,37,0.15)'
-    },
+      id: 'light', label: 'Modo Claro',
+      bg: '#ffffff', surface: '#f6f8fa', accent: '#0969da', accentLight: '#54aeff',
+      text: '#1f2328', subtext: '#656d76', border: 'rgba(31,35,40,0.08)'
+    }
   ];
 
-  selectedFormat: CardFormat = 'story';
-  selectedTheme: CardTheme  = 'copilot';
+  selectedFormat: CardFormat = 'post';
+  selectedTheme: CardTheme  = 'dark';
   isExporting = false;
+  showModal = false;
+  generatedImageUrl: string | null = null;
 
   get format(): FormatConfig {
     return this.formats.find(f => f.id === this.selectedFormat)!;
@@ -91,14 +71,32 @@ export class CardGenerator implements OnInit {
     return this.themes.find(t => t.id === this.selectedTheme)!;
   }
 
-  /* Top 3 languages for card */
-  get topThreeLangs(): any[] {
-    return (this.profile?.analysis?.topLanguages || []).slice(0, 3);
+  get badgeTitle(): string {
+    const score = this.profile?.analysis?.seniorityScore || 0;
+    if (score >= 80) return 'Arquiteto do GitHub';
+    if (score >= 60) return 'Líder Técnico';
+    if (score >= 35) return 'Engenheiro de Software';
+    return 'Desenvolvedor Altamente Ativo';
   }
 
-  /* Top completed badge */
-  get completedBadges(): any[] {
-    return (this.profile?.analysis?.badges || []).filter((b: any) => b.completed);
+  get formattedWorth(): string {
+    const val = this.profile?.analysis?.aggregatedValue || 0;
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  }
+
+  get topFiveLangs(): any[] {
+    return (this.profile?.analysis?.topLanguagesAll || []).slice(0, 5);
+  }
+
+  get radarCompetencies(): any[] {
+    const r = this.profile?.analysis?.radar || {};
+    return [
+      { label: 'Consistência', value: r.consistency   || 0 },
+      { label: 'Velocidade',   value: r.velocity      || 0 },
+      { label: 'Diversidade',  value: r.diversity     || 0 },
+      { label: 'Popularidade', value: r.popularity    || 0 },
+      { label: 'Colaboração',  value: r.collaboration || 0 }
+    ];
   }
 
   ngOnInit() {}
@@ -106,32 +104,88 @@ export class CardGenerator implements OnInit {
   setFormat(id: CardFormat) { this.selectedFormat = id; }
   setTheme(id: CardTheme)   { this.selectedTheme  = id; }
 
-  async exportCard() {
+  async generateAndOpen() {
+    if (!this.profile) return;
     this.isExporting = true;
-    const el = document.getElementById('dev-card-preview');
-    if (!el) { this.isExporting = false; return; }
+    
+    // ── WYSIWYG Approach: Capture the ACTIVE PREVIEW directly ───────
+    // This ensures what the user sees is exactly what they get.
+    const previewEl = document.querySelector('.scaler-contain');
+    if (!previewEl) {
+      this.isExporting = false;
+      return;
+    }
 
     try {
-      const canvas = await html2canvas(el, {
-        scale: 2,
+      // Small pause for state stability
+      await new Promise(r => setTimeout(r, 400));
+
+      const rect = previewEl.getBoundingClientRect();
+      const targetWidth = 1080;
+      // Calculate scale to reach exactly 1080px width
+      const captureScale = (targetWidth / rect.width) * window.devicePixelRatio;
+
+      const canvas = await html2canvas(previewEl as HTMLElement, {
+        scale: captureScale, 
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
         backgroundColor: this.theme.bg,
-        width:  this.format.width  / 3, // preview width
-        height: this.format.height / 3, // preview height
+        logging: false,
+        imageTimeout: 15000,
       });
 
-      const link = document.createElement('a');
-      link.download = `devprofile-card-${this.selectedFormat}-${this.selectedTheme}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      this.generatedImageUrl = canvas.toDataURL('image/png', 1.0);
+      this.showModal = true;
+    } catch (err) {
+      console.error('Falha ao gerar captura de alta fidelidade:', err);
     } finally {
       this.isExporting = false;
     }
   }
 
-  getLangBarWidth(lang: any): number {
-    const langs = this.topThreeLangs;
+  async share(platform: string) {
+    if (!this.generatedImageUrl) return;
+
+    if (platform === 'download') {
+      const link = document.createElement('a');
+      link.download = `dev-profile-${this.selectedFormat}.png`;
+      link.href = this.generatedImageUrl;
+      link.click();
+      return;
+    }
+
+    if (platform === 'native' && navigator.share) {
+      try {
+        const response = await fetch(this.generatedImageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'card.png', { type: 'image/png' });
+        await navigator.share({
+          files: [file],
+          title: 'Meu Perfil DevProfile',
+          text: 'Minhas estatísticas Git!'
+        });
+      } catch (err) { console.error('Share Error:', err); }
+      return;
+    }
+
+    const text = encodeURIComponent('Minhas estatísticas GitHub @DevProfile');
+    const url = encodeURIComponent(window.location.href);
+
+    const shareLinks: Record<string, string> = {
+      twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+      whatsapp: `https://api.whatsapp.com/send?text=${text}%20${url}`
+    };
+
+    if (shareLinks[platform]) {
+      window.open(shareLinks[platform], '_blank');
+    }
+  }
+
+  closeModal() { this.showModal = false; this.generatedImageUrl = null; }
+
+  getLangFill(lang: any): number {
+    const langs = this.topFiveLangs;
     if (!langs.length) return 0;
     const max = Math.max(...langs.map((l: any) => l.repositories ?? 0));
     return max > 0 ? ((lang.repositories ?? 0) / max) * 100 : 0;

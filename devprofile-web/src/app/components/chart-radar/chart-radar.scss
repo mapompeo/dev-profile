@@ -1,0 +1,59 @@
+@use '../../styles/theme' as *;
+
+.radar-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.radar-svg {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  overflow: visible;
+}
+
+.radar-grid-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 1;
+}
+
+.radar-axis-line {
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 1;
+}
+
+.radar-data-area {
+  fill: rgba(124, 58, 237, 0.35);
+}
+
+.radar-data-stroke {
+  fill: none;
+  stroke: #a78bfa;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.radar-dot {
+  fill: #c4b5fd;
+  stroke: #0c0c10;
+  stroke-width: 2;
+}
+
+.radar-label {
+  font-size: 13px;
+  fill: #fff;
+  font-family: 'Mona Sans', system-ui, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.radar-value {
+  font-size: 14px;
+  fill: #A78BFA;
+  font-family: 'Mona Sans', system-ui, sans-serif;
+  font-weight: 800;
+}

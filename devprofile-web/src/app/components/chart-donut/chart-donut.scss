@@ -1,0 +1,73 @@
+.donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.donut-chart {
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.donut-chart svg { overflow: visible; }
+
+.donut-slice {
+  cursor: pointer;
+  transition: stroke-width 0.2s, opacity 0.2s;
+  &:hover { stroke-width: 38; }
+}
+
+.donut-center-title {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #f1f0ff;
+  font-family: 'Mona Sans', system-ui, sans-serif;
+}
+
+.donut-center-sub {
+  font-size: 10px;
+  fill: rgba(255,255,255,0.45);
+  font-family: 'Mona Sans', system-ui, sans-serif;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: background 0.15s;
+
+  &.active,
+  &:hover { background: rgba(255,255,255,0.06); }
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  flex: 1;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.legend-val {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Mona Sans', monospace;
+}

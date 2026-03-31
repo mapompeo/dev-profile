@@ -1,171 +1,143 @@
-<section class="hero-section" aria-labelledby="hero-title">
-
-  <!-- Badge -->
-  <div class="hero-badge">
-    <span class="badge-dot" aria-hidden="true"></span>
-    Gratuito · Sem cadastro · Dados em tempo real
-  </div>
-
-  <!-- Headline — changes by mode -->
-  <h1 id="hero-title" class="hero-title" [class.vs-mode-title]="mode === 'vs'">
-    <ng-container *ngIf="mode === 'single'">
-      Descubra o <span class="text-accent">peso real</span>
-      do seu código
-    </ng-container>
-    <ng-container *ngIf="mode === 'vs'">
-      Quem é o <span class="text-accent">melhor dev?</span>
-    </ng-container>
-  </h1>
-
-  <p class="hero-subtitle" *ngIf="mode === 'single'">
-    Análise de repositórios, commits, linguagens e senioridade.<br>
-    Gere seu card e compare com outros devs.
-  </p>
-  <p class="hero-subtitle" *ngIf="mode === 'vs'">
-    Compare dois perfis do GitHub e descubra quem domina mais.
-  </p>
-
-  <!-- ── Mode Toggle ───────────────────────────────────────────────── -->
-  <div class="mode-tabs" role="tablist">
-    <button
-      role="tab"
-      [attr.aria-selected]="mode === 'single'"
-      [class.active]="mode === 'single'"
-      (click)="setMode('single')"
-      id="tab-single"
-      aria-controls="form-panel">
-      👤 Meu perfil
-    </button>
-    <button
-      role="tab"
-      [attr.aria-selected]="mode === 'vs'"
-      [class.active]="mode === 'vs'"
-      (click)="setMode('vs')"
-      id="tab-vs"
-      aria-controls="form-panel">
-      ⚡ Modo VS
-    </button>
-  </div>
-
-  <!-- ── Animated Form Card ────────────────────────────────────────── -->
-  <div
-    id="form-panel"
-    role="tabpanel"
-    class="form-card"
-    [class.is-flipping]="isAnimating"
-    [attr.aria-labelledby]="mode === 'single' ? 'tab-single' : 'tab-vs'">
-
-    <!-- Single Profile Mode -->
-    <form
-      *ngIf="mode === 'single'"
-      class="search-form search-form--single"
-      (ngSubmit)="submit()"
-      role="search"
-      aria-label="Buscar perfil do GitHub">
-      <label for="github-username" class="sr-only">Username do GitHub</label>
-      <div class="input-prefix-wrapper">
-        <span class="input-prefix" aria-hidden="true">github.com/</span>
-        <input
-          id="github-username"
-          type="text"
-          [(ngModel)]="username"
-          name="username"
-          placeholder="seu-username"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-          required
-          aria-required="true"
-        />
-      </div>
-      <button type="submit" [disabled]="!username" class="btn-cta">
-        Analisar →
-      </button>
-    </form>
-
-    <!-- VS Mode — face-off layout -->
-    <form
-      *ngIf="mode === 'vs'"
-      class="search-form search-form--vs"
-      (ngSubmit)="submit()"
-      aria-label="Comparar dois perfis do GitHub">
-
-      <div class="vs-battle">
-
-        <!-- Left player -->
-        <div class="vs-player" [class.filled]="leftUser">
-          <div class="vs-player-label">Dev 1</div>
-          <div class="input-prefix-wrapper vs-input-wrapper">
-            <span class="input-prefix" aria-hidden="true">@</span>
-            <input
-              type="text"
-              [(ngModel)]="leftUser"
-              name="leftUser"
-              placeholder="primeiro-dev"
-              autocomplete="off"
-              autocapitalize="off"
-              required
-              aria-label="Primeiro username"
-            />
-          </div>
-        </div>
-
-        <!-- VS badge -->
-        <div class="vs-badge" aria-hidden="true">
-          <span class="vs-text">VS</span>
-        </div>
-
-        <!-- Right player -->
-        <div class="vs-player" [class.filled]="rightUser">
-          <div class="vs-player-label">Dev 2</div>
-          <div class="input-prefix-wrapper vs-input-wrapper">
-            <span class="input-prefix" aria-hidden="true">@</span>
-            <input
-              type="text"
-              [(ngModel)]="rightUser"
-              name="rightUser"
-              placeholder="segundo-dev"
-              autocomplete="off"
-              autocapitalize="off"
-              required
-              aria-label="Segundo username"
-            />
-          </div>
-        </div>
-
+<section class="home-hero-split">
+  
+  <div class="hero-split-host">
+    <!-- LEFT: Text & Input -->
+    <div class="hero-left">
+      <div class="hero-badge-pill" [class.vs-mode]="mode === 'vs'">
+        <svg class="pill-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <span>Seu card 100% gratuito!</span>
       </div>
 
-      <button
-        type="submit"
-        [disabled]="!leftUser || !rightUser"
-        class="btn-cta btn-cta--vs"
-        [class.btn-ready]="leftUser && rightUser">
-        <span *ngIf="!leftUser || !rightUser">Preencha os dois devs</span>
-        <span *ngIf="leftUser && rightUser">⚡ Iniciar batalha →</span>
-      </button>
-    </form>
+      <h1 class="hero-main-title">
+        <ng-container *ngIf="mode === 'single'">
+          Descubra o <span class="text-glow">Valor Técnico</span> das suas contribuições no <span class="text-accent">GitHub!</span>
+        </ng-container>
+        <ng-container *ngIf="mode === 'vs'">
+          Desafie a senioridade: <span class="text-glow">Quem domina</span> o ecossistema de <span class="text-accent">Código?</span>
+        </ng-container>
+      </h1>
 
+      <!-- Integrated Input Area (WYSISYG Style) -->
+      <div class="hero-input-area" [class.is-vs]="mode === 'vs'">
+        
+        <!-- ── Premium Sliding Toggle ── -->
+        <div class="glass-toggle-host" role="tablist">
+          <div class="toggle-indicator" [class.pos-right]="mode === 'vs'"></div>
+          <button
+            class="toggle-btn"
+            [class.active]="mode === 'single'"
+            (click)="setMode('single')"
+            role="tab"
+            [attr.aria-selected]="mode === 'single'">
+            Meu Perfil
+          </button>
+          <button
+            class="toggle-btn"
+            [class.active]="mode === 'vs'"
+            (click)="setMode('vs')"
+            role="tab"
+            [attr.aria-selected]="mode === 'vs'">
+            Modo VS
+          </button>
+        </div>
+
+        <form (ngSubmit)="submit()" class="integrated-form">
+          <!-- Single Mode: Unified Pill -->
+          <ng-container *ngIf="mode === 'single'">
+            <div class="input-wrapper-pill single-main">
+              <input
+                type="text"
+                [(ngModel)]="username"
+                name="username"
+                placeholder="Digite seu nickname do github"
+                autocomplete="off"
+                required
+              />
+              <button type="submit" [disabled]="!username" class="btn-action-main">
+                <svg class="btn-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
+                <span>Saber agora</span>
+              </button>
+            </div>
+          </ng-container>
+
+          <!-- VS Mode: Battle Arena Box -->
+          <ng-container *ngIf="mode === 'vs'">
+            <div class="battle-arena">
+              <div class="contender-slot left-side">
+                <label>Contender 1</label>
+                <div class="slot-pill">
+                  <span class="at">@</span>
+                  <input type="text" [(ngModel)]="leftUser" name="leftUser" placeholder="username-1" required />
+                </div>
+              </div>
+
+              <div class="battle-orb-center">
+                <span class="orb-shine"></span>
+                <span class="orb-txt">VS</span>
+              </div>
+
+              <div class="contender-slot right-side">
+                <label>Contender 2</label>
+                <div class="slot-pill">
+                  <span class="at">@</span>
+                  <input type="text" [(ngModel)]="rightUser" name="rightUser" placeholder="username-2" required />
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" [disabled]="!leftUser || !rightUser" class="btn-action-main vs-full-cta">
+              Iniciar Batalha de Código
+              <svg class="btn-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
+            </button>
+          </ng-container>
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT: Graphical Logic -->
+    <div class="hero-right">
+      <div class="brand-cube" [style.background]="'rgba(137, 87, 229, 0.05)'">
+        <svg class="main-gh-logo" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      </div>
+      <div class="glow-orb-primary"></div>
+    </div>
   </div>
 
-  <!-- Error -->
-  <div *ngIf="error" class="error-toast" role="alert">{{ error }}</div>
+  <!-- HOW IT WORKS: 3 Clean Cards -->
+  <div class="how-it-works">
+    <header class="section-head">
+      <h2>Como funciona?</h2>
+    </header>
 
-  <!-- Trust stats -->
-  <div class="trust-stats" aria-label="Estatísticas da plataforma">
-    <div class="trust-item">
-      <strong>12.4k</strong>
-      <span>Perfis analisados</span>
-    </div>
-    <div class="trust-divider" aria-hidden="true"></div>
-    <div class="trust-item">
-      <strong>98M+</strong>
-      <span>Commits processados</span>
-    </div>
-    <div class="trust-divider" aria-hidden="true"></div>
-    <div class="trust-item">
-      <strong>&lt; 2s</strong>
-      <span>Análise média</span>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="card-ico-box">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
+        </div>
+        <h3>Mapeie seu Código</h3>
+        <p>Conecte sua conta e deixe nossa IA processar anos de commits, tecnologias e complexidade técnica em segundos.</p>
+      </div>
+
+      <div class="how-card">
+        <div class="card-ico-box">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <h3>Engenharia de Valor</h3>
+        <p>Calculamos seu 'CommitWorth' através de algoritmos de senioridade, impacto em repositórios e relevância no ecossistema.</p>
+      </div>
+
+      <div class="how-card">
+        <div class="card-ico-box">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+        </div>
+        <h3>Destaque sua Carreira</h3>
+        <p>Exporte cards em alta resolução (1080p) otimizados para atrair recrutadores e tech leads no LinkedIn e Twitter.</p>
+      </div>
     </div>
   </div>
+
+  <footer class="home-minimal-foot">
+    <span>Feito com profissionalismo por Antigravity</span>
+  </footer>
 
 </section>

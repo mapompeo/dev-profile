@@ -1,0 +1,117 @@
+.proj-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rhythm-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(124, 58, 237, 0.06);
+  border-radius: 8px;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+}
+
+.rhythm-label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+}
+
+.rhythm-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #a78bfa;
+  padding: 0.1rem 0.55rem;
+  background: rgba(124, 58, 237, 0.15);
+  border-radius: 99px;
+}
+
+.rhythm-suggestion {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  font-style: italic;
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tl-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.25rem 0;
+
+  &.reached .tl-node {
+    background: #7c3aed;
+    border-color: #a78bfa;
+    color: #fff;
+  }
+  &.reached .tl-title { color: #f1f0ff; }
+  &.reached .tl-line  { background: rgba(124,58,237,0.5); }
+}
+
+.tl-node-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.tl-node {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+.tl-line {
+  flex: 1;
+  width: 2px;
+  min-height: 24px;
+  background: rgba(255,255,255,0.08);
+  margin: 4px 0;
+}
+
+.tl-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-bottom: 1.25rem;
+}
+
+.tl-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+}
+
+.tl-desc {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.tl-time {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fbbf24;
+  font-family: 'Mona Sans', monospace;
+  margin-top: 0.15rem;
+
+  &.tl-time--done {
+    color: #34d399;
+  }
+}
