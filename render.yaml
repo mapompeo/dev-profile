@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: devprofile-api
+    env: docker
+    dockerContext: .
+    dockerfilePath: Dockerfile.api
+    plan: free # Usa o plano gratuito que "dorme"
+    healthCheckPath: /api/profile/health # Se você tiver um endpoint de health check
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:8080 # Ou use o $PORT se preferir
+      - key: DOTNET_ENVIRONMENT
+        value: Production
+      - key: GitHub__AppName
+        value: DevProfile
+      - key: GitHub__Token
+        sync: false # O usuário deve preencher no painel do Render
+      - key: AllowedOrigins
+        value: "*"

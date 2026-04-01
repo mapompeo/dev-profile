@@ -7,6 +7,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DefaultPolicy", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:4200", 
+                "https://devprofile.vercel.app", // Placeholder (User can update after deploy)
+                builder.Configuration["AllowedOrigins"] ?? ""
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddHttpClient<IGitHubService, GitHubService>((provider, client) =>
 {
@@ -33,6 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("DefaultPolicy");
 app.MapControllers();
 
 app.Run();

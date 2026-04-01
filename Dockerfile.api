@@ -1,0 +1,20 @@
+# Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /source
+
+# Copy everything and restore
+COPY devprofile-api/ .
+RUN dotnet restore "src/DevProfile.API/DevProfile.API.csproj"
+
+# Publish
+RUN dotnet publish "src/DevProfile.API/DevProfile.API.csproj" -c Release -o /app --no-restore
+
+# Runtime Stage
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+COPY --from=build /app .
+
+# Expose port and start
+EXPOSE 80
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "DevProfile.API.dll"]
