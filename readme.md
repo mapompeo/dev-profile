@@ -1,100 +1,98 @@
-# DevProfile
+# 🚀 DevProfile
 
-Projeto simples para analisar perfis públicos do GitHub e gerar um resumo técnico com score.
+**DevProfile** é uma plataforma de análise de performance e senioridade para desenvolvedores, baseadamente em dados reais do GitHub. Através de um motor de pontuação proprietário (Score Engine), o projeto transforma estatísticas brutas em um resumo visual elegante e comparativo.
 
-![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+[![Deploy with Vercel](https://vercel.com/button)](https://dev-profile-one.vercel.app)
+![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet)
+![Angular](https://img.shields.io/badge/Angular-21.0-DD0031?style=for-the-badge&logo=angular)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker)
 
-## Sobre
+---
 
-O DevProfile consulta a API do GitHub e retorna:
+## 🌟 Funcionalidades
 
-- métricas básicas (repositórios, stars, commits)
-- linguagens mais usadas
-- stack principal estimada
-- score de 0 a 100
+- **🔍 Análise de Perfil Profundo**: Extração automática de métricas como total de commits, estrelas, seguidores e diversidade de linguagens.
+- **📊 Radar Técnico**: Visualização 360º de consistência, diversidade, popularidade, estrutura, colaboração e velocidade.
+- **⚖️ Modo VS (Comparação)**: Compare dois perfis lado a lado e descubra quem leva a melhor em pontuação técnica.
+- **🧬 Seniority Engine**: Estimativa de nível de senioridade (Júnior, Pleno, Sênior) baseada em complexidade de stack e tempo de conta.
+- **🖼️ Exportação de Card**: Gere um resumo visual do seu perfil pronto para compartilhar (via html2canvas).
 
-Foco do projeto: aprendizado e portfólio júnior.
+---
 
-## Status atual
+## 🛠️ Stack Tecnológica
 
-- Backend Web API funcionando
-- MVP de endpoints implementado
-- Score Engine v1 implementado
-- Cache em memória ativo
-- Comparação entre perfis implementada
-- Frontend ainda não iniciado neste repositório
+### Backend (Engine)
+- **Framework**: .NET 10.0 (ASP.NET Core)
+- **Padrão**: Web API RESTful com Injeção de Dependência.
+- **Serviços Externos**: Integração nativa com GitHub API v3.
+- **Cache**: Implementação de `IMemoryCache` para performance otimizada.
 
-## Stack atual
+### Frontend (UI/UX)
+- **Framework**: Angular (Standalone Components)
+- **Design System**: Glassmorphism UI com foco em legibilidade e densidade de dados.
+- **Gráficos**: Integração com bibliotecas de visualização para radares e donuts.
+- **Estilo**: SCSS avançado com variáveis dinâmicas e animações fluidas.
 
-### Backend
+---
 
-- .NET 10
-- ASP.NET Core 10
-- HttpClient
-- Swagger (OpenAPI)
-- Cache em memória (`IMemoryCache`)
+## 🏗️ Arquitetura do Projeto
 
-### Frontend (planejado)
+O projeto utiliza uma estrutura desacoplada em monorepo:
 
-- A definir
-
-## Endpoints
-
-- `GET /api/profile/{username}`
-- `GET /api/profile/compare?left=user1&right=user2`
-
-## Exemplos de uso
-
-Perfil completo:
-
-```bash
-curl "http://localhost:5176/api/profile/octocat"
+```text
+📂 dev-profile
+├── 📂 devprofile-api   # Backend .NET 10
+│   ├── 📂 src         # Controllers, Services, Models, DTOs
+│   └── Dockerfile.api # Configuração para deploy em container
+├── 📂 devprofile-web   # Frontend Angular
+│   ├── 📂 src         # Components, Services, Styles
+│   └── vercel.json    # Configurações de roteamento SPA
+└── render.yaml        # Automação de deploy para o backend
 ```
 
-Comparacao entre dois perfis:
+---
 
+## 🚀 Como Rodar Localmente
+
+### 1. Pré-requisitos
+- .NET 10.0 SDK instalado
+- Node.js (v20+) e Angular CLI instalados
+
+### 2. Clonar e Iniciar
 ```bash
-curl "http://localhost:5176/api/profile/compare?left=octocat&right=torvalds"
-```
+# Clone o repositório
+git clone https://github.com/mapompeo/dev-profile.git
 
-Resposta (resumo) do compare:
-
-- `left`: perfil analisado da esquerda
-- `right`: perfil analisado da direita
-- `winnerByScore`: usuario com melhor score (ou `Tie`)
-- `scoreDifference`: diferenca de pontos
-- `summary`: texto explicando o resultado
-
-## Como rodar (rápido)
-
-```bash
+# Iniciando o Backend
 cd devprofile-api/src/DevProfile.API
-dotnet restore
 dotnet run
+
+# Iniciando o Frontend (em outro terminal)
+cd devprofile-web
+npm install
+npm start
 ```
 
-API local:
+---
 
-- `http://localhost:5176`
+## ☁️ Deploy na Nuvem
 
-## Como funciona o score (resumo)
+Este projeto está configurado para um workflow de **CI/CD Moderno**:
 
-O score combina atividade, tempo de conta, diversidade de linguagens e impacto (stars/forks). Resultado final entre 0 e 100.
+- **Backend**: Hospedado no **Render** via Docker. O `render.yaml` gerencia o blueprint automaticamente.
+- **Frontend**: Hospedado na **Vercel**. O `vercel.json` gerencia o proxy reverso para a API, eliminando problemas de CORS.
 
-## Roadmap curto
+### Variáveis de Ambiente Necessárias:
+- `GitHub__Token`: Seu Personal Access Token do GitHub.
+- `GitHub__AppName`: `DevProfile` (identificador da aplicação).
+- `ASPNETCORE_URLS`: `http://+:8080` (para rodar no container).
 
-- Comparação entre perfis (ok)
-- Evoluir API com novos endpoints somente se o produto exigir
+---
 
-## Contribuição
+## 📄 Licença
 
-PRs são bem-vindos.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-1. Crie uma branch: `git checkout -b feat/minha-feature`
-2. Faça commit: `git commit -m "feat: minha feature"`
-3. Abra o Pull Request
+---
 
-## Licença
-
-MIT
+<p align="center">Desenvolvido com ❤️ por <a href="https://github.com/mapompeo">Matheus Pompeo</a></p>

@@ -8,7 +8,7 @@ import html2canvas from 'html2canvas';
 import { Header } from '../header/header';
 import { Hero } from '../hero/hero';
 
-import { LoadingOverlay } from '../loading-overlay/loading-overlay';
+import { LoadingOverlay, LoadingStatus } from '../loading-overlay/loading-overlay';
 import { ProfileDashboard } from '../profile-dashboard/profile-dashboard';
 import { ProfileComparison } from '../profile-comparison/profile-comparison';
 
@@ -48,6 +48,9 @@ export class ProfileSearchComponent implements AfterViewInit, OnDestroy {
   loading: boolean = false;
   error: string | null = null;
   isJsonView: boolean = false;
+  loadingStatus: LoadingStatus = LoadingStatus.IDLE;
+
+  private wakingUpTimer: any;
 
   // ─── Canvas state ───────────────────────────────────────────────────────────
   private ctx!: CanvasRenderingContext2D;
@@ -267,6 +270,7 @@ export class ProfileSearchComponent implements AfterViewInit, OnDestroy {
   resetView(navigate: boolean = true) {
     this.profile = null;
     this.comparison = null;
+    this.loading = false;
     this.error = null;
     this.isJsonView = false;
     if (navigate) {
@@ -279,12 +283,20 @@ export class ProfileSearchComponent implements AfterViewInit, OnDestroy {
     this.loading = true;
     this.error = null;
     this.comparison = null;
+    this.loadingStatus = LoadingStatus.ANALYZING;
+
+    this.startWakingUpTimer();
 
     this.http.get(`/api/profile/${user}`).subscribe({
-      next: (data) => { this.profile = data; this.loading = false; },
+      next: (data) => { 
+        this.profile = data; 
+        this.loading = false;
+        this.clearWakingUpTimer();
+      },
       error: (err) => {
         this.error = err.error?.message || 'Erro ao buscar perfil. Verifique se o usuário existe.';
         this.loading = false;
+        this.clearWakingUpTimer();
       }
     });
   }
@@ -293,14 +305,38 @@ export class ProfileSearchComponent implements AfterViewInit, OnDestroy {
     this.loading = true;
     this.error = null;
     this.profile = null;
+    this.loadingStatus = LoadingStatus.ANALYZING;
+
+    this.startWakingUpTimer();
 
     this.http.get(`/api/profile/compare?left=${user1}&right=${user2}`).subscribe({
-      next: (data) => { this.comparison = data; this.loading = false; },
+      next: (data) => { 
+        this.comparison = data; 
+        this.loading = false;
+        this.clearWakingUpTimer();
+      },
       error: (err) => {
         this.error = err.error?.message || 'Erro ao buscar dados. Verifique os usuários.';
         this.loading = false;
+        this.clearWakingUpTimer();
       }
     });
+  }
+
+  private startWakingUpTimer() {
+    this.clearWakingUpTimer();
+    this.wakingUpTimer = setTimeout(() => {
+      if (this.loading) {
+        this.loadingStatus = LoadingStatus.WAKING_UP;
+      }
+    }, 3000); // If no response in 3s, show waking up
+  }
+
+  private clearWakingUpTimer() {
+    if (this.wakingUpTimer) {
+      clearTimeout(this.wakingUpTimer);
+      this.wakingUpTimer = null;
+    }
   }
 
   downloadAsImage(element: HTMLElement) {

@@ -19,8 +19,13 @@
     </app-hero>
   </div>
 
-  <!-- Loading Screen Overlay -->
-  <app-loading-overlay *ngIf="loading"></app-loading-overlay>
+  <!-- Loading Screen Overlay (Show on loading OR error) -->
+  <app-loading-overlay 
+      *ngIf="loading || error" 
+      [error]="error"
+      [status]="loadingStatus"
+      (onBack)="resetView()">
+  </app-loading-overlay>
 
   <!-- Main Dashboard -->
   <app-profile-dashboard 
