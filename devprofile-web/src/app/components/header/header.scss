@@ -1,7 +1,7 @@
 @use '../../styles/theme' as *;
 
 /* Shared layout-width — matches hero content width */
-$content-width: 600px;
+$content-width: 1200px;
 
 /* Header: full-width bar with inner container */
 .header-bar {
@@ -18,7 +18,7 @@ $content-width: 600px;
   width: 100%;
   max-width: $content-width;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;

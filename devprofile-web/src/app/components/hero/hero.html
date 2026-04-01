@@ -60,35 +60,35 @@
             </div>
           </ng-container>
 
-          <!-- VS Mode: Battle Arena Box -->
+          <!-- VS Mode: Unified Pill -->
           <ng-container *ngIf="mode === 'vs'">
-            <div class="battle-arena">
-              <div class="contender-slot left-side">
-                <label>Contender 1</label>
-                <div class="slot-pill">
-                  <span class="at">@</span>
-                  <input type="text" [(ngModel)]="leftUser" name="leftUser" placeholder="username-1" required />
+            <div class="input-wrapper-pill vs-main">
+              <div class="contender-input-pair">
+                <input
+                  type="text"
+                  [(ngModel)]="leftUser"
+                  name="leftUser"
+                  placeholder="github-user-1"
+                  autocomplete="off"
+                  required
+                />
+                <div class="vs-divider">
+                  <span class="vs-txt">VS</span>
                 </div>
+                <input
+                  type="text"
+                  [(ngModel)]="rightUser"
+                  name="rightUser"
+                  placeholder="github-user-2"
+                  autocomplete="off"
+                  required
+                />
               </div>
-
-              <div class="battle-orb-center">
-                <span class="orb-shine"></span>
-                <span class="orb-txt">VS</span>
-              </div>
-
-              <div class="contender-slot right-side">
-                <label>Contender 2</label>
-                <div class="slot-pill">
-                  <span class="at">@</span>
-                  <input type="text" [(ngModel)]="rightUser" name="rightUser" placeholder="username-2" required />
-                </div>
-              </div>
+              <button type="submit" [disabled]="!leftUser || !rightUser" class="btn-action-main">
+                <svg class="btn-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
+                <span>Desafiar</span>
+              </button>
             </div>
-
-            <button type="submit" [disabled]="!leftUser || !rightUser" class="btn-action-main vs-full-cta">
-              Iniciar Batalha de Código
-              <svg class="btn-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
-            </button>
           </ng-container>
         </form>
       </div>

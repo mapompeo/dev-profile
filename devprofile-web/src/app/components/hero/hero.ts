@@ -22,11 +22,11 @@ export class Hero {
 
   setMode(newMode: 'single' | 'vs') {
     if (this.mode === newMode || this.isAnimating) return;
+    this.mode = newMode; // Instant state change
     this.isAnimating = true;
     setTimeout(() => {
-      this.mode = newMode;
       this.isAnimating = false;
-    }, 300); // Half of the spin animation duration
+    }, 400); // Animation duration
   }
 
   submit() {
