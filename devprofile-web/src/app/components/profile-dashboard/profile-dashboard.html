@@ -1,20 +1,5 @@
 <div class="dashboard-page">
 
-  <!-- ─── Top Bar ─────────────────────────────────────────────── -->
-  <div class="dashboard-topbar">
-    <div class="topbar-inner">
-      <button class="btn-back" (click)="onBack.emit()" aria-label="Voltar ao início">
-        ← Início
-      </button>
-      <div class="topbar-actions">
-        <span class="calc-info">Como são calculados os valores?</span>
-        <button class="btn-export" (click)="onDownload.emit(dashboardElement)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
-          Gerar Imagem
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- ─── Exportable card ──────────────────────────────────────────────────── -->
   <div class="dashboard-content" #dashboardElement>

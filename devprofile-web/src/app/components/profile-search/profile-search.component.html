@@ -1,31 +1,24 @@
 <div class="app-container" #appContainer>
 
-  <!-- Aurora animated background -->
-  <canvas class="bg-canvas" #bgCanvas aria-hidden="true"></canvas>
-
-  <!-- Header — only on landing page; dashboard has its own sticky topbar -->
+  <!-- Header — always visible across all states -->
   <app-header
-      *ngIf="!profile && !comparison && !loading"
-      [isMainView]="false"
+      [isMainView]="!!(profile || comparison)"
       (onHome)="resetView()">
   </app-header>
 
-  <!-- Landing Page — single viewport, no scroll -->
-  <div class="hero-landing" *ngIf="!profile && !comparison && !loading && !isJsonView">
+  <!-- Landing Page — single viewport, no scroll. Remains alive during loading phase now -->
+  <div class="hero-landing" *ngIf="!profile && !comparison && !isJsonView">
     <app-hero 
         [error]="error"
+        [loading]="loading"
+        [status]="loadingStatus"
+        (onErrorClear)="error = null"
         (onSearch)="searchProfile($event)"
         (onCompare)="handleCompare($event)">
     </app-hero>
   </div>
 
-  <!-- Loading Screen Overlay (Show on loading OR error) -->
-  <app-loading-overlay 
-      *ngIf="loading || error" 
-      [error]="error"
-      [status]="loadingStatus"
-      (onBack)="resetView()">
-  </app-loading-overlay>
+
 
   <!-- Main Dashboard -->
   <app-profile-dashboard 

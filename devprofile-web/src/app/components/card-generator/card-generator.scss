@@ -180,3 +180,65 @@
   background: #fff; color: #000; border: none; border-radius: 22px; padding: 2rem; font-size: 1.4rem; font-weight: 800; cursor: pointer;
   transition: all 0.3s; &:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
 }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ultra-studio { padding: 2rem 0; }
+
+  .studio-layout { gap: 2rem; }
+
+  /* Header */
+  .studio-header {
+    h2 { font-size: 2rem; }
+    p { font-size: 1rem; }
+  }
+
+  /* Preview halo */
+  .preview-halo {
+    height: 480px;
+    border-radius: 32px;
+    padding: 1.5rem;
+  }
+
+  /* Controls */
+  .control-box {
+    padding: 1.5rem;
+    gap: 1.5rem;
+    border-radius: 24px;
+  }
+
+  .tab-btn { padding: 0.75rem; font-size: 0.9rem; }
+
+  .btn-generate-ultra {
+    padding: 1.2rem;
+    font-size: 1.1rem;
+    border-radius: 18px;
+  }
+
+  /* Modal */
+  .ultra-modal-overlay { padding: 1rem; }
+  .ultra-modal-window {
+    border-radius: 28px;
+    max-width: 100%;
+  }
+  .win-body-render {
+    padding: 2rem 1.5rem;
+    gap: 2rem;
+  }
+  .win-header {
+    h2 { font-size: 1.6rem; }
+    p { font-size: 0.9rem; }
+  }
+  .win-preview-frame { border-radius: 20px; }
+  .soc-icon { width: 60px; height: 60px; border-radius: 18px; svg { width: 26px; height: 26px; } }
+  .btn-download-high { padding: 1.2rem; font-size: 1.1rem; border-radius: 16px; }
+  .win-close-act { top: 1rem; right: 1rem; width: 42px; height: 42px; font-size: 1.6rem; }
+}
+
+@media (max-width: 480px) {
+  .studio-header h2 { font-size: 1.6rem; }
+  .preview-halo { height: 380px; border-radius: 24px; padding: 1rem; }
+  .control-box { padding: 1.25rem; gap: 1rem; border-radius: 20px; }
+  .social-row { gap: 1rem; }
+  .soc-icon { width: 52px; height: 52px; border-radius: 14px; svg { width: 22px; height: 22px; } }
+}

@@ -1,41 +1,43 @@
 <section class="home-hero-split">
-  
+
   <div class="hero-split-host">
     <!-- LEFT: Text & Input -->
     <div class="hero-left">
       <div class="hero-badge-pill" [class.vs-mode]="mode === 'vs'">
-        <svg class="pill-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        <span>Seu card 100% gratuito!</span>
+        <svg class="pill-ico" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+        </svg>
+        <span *ngIf="mode === 'single'">Mapeie sua senioridade técnica!</span>
+        <span *ngIf="mode === 'vs'">Compare quem domina o código!</span>
       </div>
 
       <h1 class="hero-main-title">
         <ng-container *ngIf="mode === 'single'">
-          Descubra o <span class="text-glow">Valor Técnico</span> das suas contribuições no <span class="text-accent">GitHub!</span>
+          <span class="title-line">Descubra o</span>
+          <span class="title-line"><span class="text-glow">Valor Técnico</span></span>
+          <span class="title-line">das suas contribuições</span>
+          <span class="title-line">no <span class="text-accent">GitHub!</span></span>
         </ng-container>
         <ng-container *ngIf="mode === 'vs'">
-          Desafie a senioridade: <span class="text-glow">Quem domina</span> o ecossistema de <span class="text-accent">Código?</span>
+          <span class="title-line">Desafie a senioridade:</span>
+          <span class="title-line"><span class="text-glow">Quem domina</span></span>
+          <span class="title-line">o ecossistema de</span>
+          <span class="title-line"><span class="text-accent">Código?</span></span>
         </ng-container>
       </h1>
 
       <!-- Integrated Input Area (WYSISYG Style) -->
       <div class="hero-input-area" [class.is-vs]="mode === 'vs'">
-        
+
         <!-- ── Premium Sliding Toggle ── -->
         <div class="glass-toggle-host" role="tablist">
           <div class="toggle-indicator" [class.pos-right]="mode === 'vs'"></div>
-          <button
-            class="toggle-btn"
-            [class.active]="mode === 'single'"
-            (click)="setMode('single')"
-            role="tab"
+          <button class="toggle-btn" [class.active]="mode === 'single'" (click)="setMode('single')" role="tab"
             [attr.aria-selected]="mode === 'single'">
             Meu Perfil
           </button>
-          <button
-            class="toggle-btn"
-            [class.active]="mode === 'vs'"
-            (click)="setMode('vs')"
-            role="tab"
+          <button class="toggle-btn" [class.active]="mode === 'vs'" (click)="setMode('vs')" role="tab"
             [attr.aria-selected]="mode === 'vs'">
             Modo VS
           </button>
@@ -45,17 +47,14 @@
           <!-- Single Mode: Unified Pill -->
           <ng-container *ngIf="mode === 'single'">
             <div class="input-wrapper-pill single-main">
-              <input
-                type="text"
-                [(ngModel)]="username"
-                name="username"
-                placeholder="Digite seu nickname do github"
-                autocomplete="off"
-                required
-              />
-              <button type="submit" [disabled]="!username" class="btn-action-main">
-                <svg class="btn-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
-                <span>Saber agora</span>
+              <input type="text" [(ngModel)]="username" name="username" placeholder="github-user"
+                autocomplete="off" required [disabled]="loading" (ngModelChange)="clearError()" />
+              <button type="submit" [disabled]="!username || loading" class="btn-action-main" [class.is-loading]="loading">
+                <svg *ngIf="!loading" class="btn-ico" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13 2v8h8L11 22v-8H3L13 2z" />
+                </svg>
+                <svg *ngIf="loading" class="btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                <span>{{ loading ? currentLoadingMessage : 'Saber agora' }}</span>
               </button>
             </div>
           </ng-container>
@@ -64,40 +63,41 @@
           <ng-container *ngIf="mode === 'vs'">
             <div class="input-wrapper-pill vs-main">
               <div class="contender-input-pair">
-                <input
-                  type="text"
-                  [(ngModel)]="leftUser"
-                  name="leftUser"
-                  placeholder="github-user-1"
-                  autocomplete="off"
-                  required
-                />
+                <input type="text" [(ngModel)]="leftUser" name="leftUser" placeholder="github-user-1" autocomplete="off"
+                  required [disabled]="loading" (ngModelChange)="clearError()" />
                 <div class="vs-divider">
                   <span class="vs-txt">VS</span>
                 </div>
-                <input
-                  type="text"
-                  [(ngModel)]="rightUser"
-                  name="rightUser"
-                  placeholder="github-user-2"
-                  autocomplete="off"
-                  required
-                />
+                <input type="text" [(ngModel)]="rightUser" name="rightUser" placeholder="github-user-2"
+                  autocomplete="off" required [disabled]="loading" (ngModelChange)="clearError()" />
               </div>
-              <button type="submit" [disabled]="!leftUser || !rightUser" class="btn-action-main">
-                <svg class="btn-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
-                <span>Desafiar</span>
+              <button type="submit" [disabled]="!leftUser || !rightUser || loading" class="btn-action-main" [class.is-loading]="loading">
+                <svg *ngIf="!loading" class="btn-ico" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13 2v8h8L11 22v-8H3L13 2z" />
+                </svg>
+                <svg *ngIf="loading" class="btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                <span>{{ loading ? currentLoadingMessage : 'Desafiar' }}</span>
               </button>
             </div>
           </ng-container>
         </form>
+
+        <!-- Seamless Local Error Component -->
+        <div class="hero-error-banner" *ngIf="error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>{{ error }}</span>
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT: Graphical Logic -->
+    <!-- RIGHT: Graphical Logic with Mouse Tracking Area -->
     <div class="hero-right">
-      <div class="brand-cube" [style.background]="'rgba(137, 87, 229, 0.05)'">
-        <svg class="main-gh-logo" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      <div class="brand-cube"
+        [style.transform]="'perspective(1000px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) translate3d(' + translateX + 'px, ' + translateY + 'px, 50px)'">
+        <svg class="main-gh-logo" viewBox="0 0 16 16" fill="currentColor">
+          <path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+        </svg>
       </div>
       <div class="glow-orb-primary"></div>
     </div>
@@ -112,32 +112,64 @@
     <div class="how-grid">
       <div class="how-card">
         <div class="card-ico-box">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v8h8L11 22v-8H3L13 2z"/></svg>
+          <!-- Single: Bolt | VS: Crossed Swords -->
+          <svg *ngIf="mode === 'single'" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2v8h8L11 22v-8H3L13 2z" />
+          </svg>
+          <svg *ngIf="mode === 'vs'" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3L4 11h5v8h6v-8h5L12 3z M12 5.8L17.2 11H15v8h-6v-8H6.8L12 5.8z" />
+          </svg>
         </div>
-        <h3>Mapeie seu Código</h3>
-        <p>Conecte sua conta e deixe nossa IA processar anos de commits, tecnologias e complexidade técnica em segundos.</p>
+        <h3 *ngIf="mode === 'single'">Mapeie seu Código</h3>
+        <h3 *ngIf="mode === 'vs'">Arena de Duelos</h3>
+
+        <p *ngIf="mode === 'single'">Analise anos de commits e tecnologias em segundos com nossa inteligência
+          processual.</p>
+        <p *ngIf="mode === 'vs'">Compare sua trajetória técnica com outros devs e descubra quem possui maior impacto
+          real.</p>
       </div>
 
       <div class="how-card">
         <div class="card-ico-box">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          <!-- Single: Info | VS: Metrics -->
+          <svg *ngIf="mode === 'single'" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+          </svg>
+          <svg *ngIf="mode === 'vs'" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zM16.2 11H19v8h-2.8v-8z" />
+          </svg>
         </div>
-        <h3>Engenharia de Valor</h3>
-        <p>Calculamos seu 'CommitWorth' através de algoritmos de senioridade, impacto em repositórios e relevância no ecossistema.</p>
+        <h3 *ngIf="mode === 'single'">Engenharia de Valor</h3>
+        <h3 *ngIf="mode === 'vs'">Métricas Lado a Lado</h3>
+
+        <p *ngIf="mode === 'single'">Calculamos seu impacto no ecossistema através de métricas avançadas de senioridade
+          técnica.</p>
+        <p *ngIf="mode === 'vs'">Analisamos senioridade e contribuições simultaneamente para definir a autoridade
+          técnica.</p>
       </div>
 
       <div class="how-card">
         <div class="card-ico-box">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+          <!-- Single: Share | VS: Trophy -->
+          <svg *ngIf="mode === 'single'" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
+          </svg>
+          <svg *ngIf="mode === 'vs'" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.95V19H7v2h10v-2h-4v-3.11c1.63-.32 2.98-1.45 3.61-2.95C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 10V7h2v3H5zm14 0h-2V7h2v3z" />
+          </svg>
         </div>
-        <h3>Destaque sua Carreira</h3>
-        <p>Exporte cards em alta resolução (1080p) otimizados para atrair recrutadores e tech leads no LinkedIn e Twitter.</p>
+        <h3 *ngIf="mode === 'single'">Destaque sua Carreira</h3>
+        <h3 *ngIf="mode === 'vs'">Prove sua Senioridade</h3>
+
+        <p *ngIf="mode === 'single'">Cards em alta resolução otimizados para atrair tech leads no LinkedIn e Twitter.
+        </p>
+        <p *ngIf="mode === 'vs'">Cards comparativos exclusivos para compartilhar duelos técnicos no LinkedIn e Twitter.
+        </p>
       </div>
     </div>
   </div>
-
-  <footer class="home-minimal-foot">
-    <span>Feito com profissionalismo por Antigravity</span>
-  </footer>
 
 </section>

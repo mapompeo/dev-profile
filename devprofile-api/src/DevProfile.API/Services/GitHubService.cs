@@ -73,7 +73,10 @@ public sealed class GitHubService : IGitHubService
         var languageBytes = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
         var reposByLanguage = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var repo in repos.Where(r => !r.IsFork))
+        var nonForkRepos = repos.Where(r => !r.IsFork).ToList();
+
+        // Fetch all repository languages in parallel instead of sequentially
+        var languageTasks = nonForkRepos.Select(async repo =>
         {
             using var response = await _httpClient.GetAsync($"repos/{repo.Owner.Login}/{repo.Name}/languages", cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -82,27 +85,28 @@ public sealed class GitHubService : IGitHubService
                     repo.Owner.Login,
                     repo.Name,
                     response.StatusCode);
-                continue;
+                return new Dictionary<string, long>();
             }
 
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            var map = await JsonSerializer.DeserializeAsync<Dictionary<string, long>>(stream, JsonOptions, cancellationToken)
-                      ?? new Dictionary<string, long>();
+            return await JsonSerializer.DeserializeAsync<Dictionary<string, long>>(stream, JsonOptions, cancellationToken)
+                   ?? new Dictionary<string, long>();
+        });
 
+        var allMaps = await Task.WhenAll(languageTasks);
+
+        foreach (var map in allMaps)
+        {
             foreach (var entry in map)
             {
                 var language = entry.Key;
                 var bytes = entry.Value;
 
                 if (!languageBytes.TryAdd(language, bytes))
-                {
                     languageBytes[language] += bytes;
-                }
 
                 if (!reposByLanguage.TryAdd(language, 1))
-                {
                     reposByLanguage[language] += 1;
-                }
             }
         }
 
@@ -176,34 +180,32 @@ public sealed class GitHubService : IGitHubService
             return 0;
         }
 
-        var totalCommits = 0;
-        foreach (var repo in candidateRepos)
+        // Fetch all commit counts in parallel instead of sequentially
+        var commitTasks = candidateRepos.Select(async repo =>
         {
             using var response = await _httpClient.GetAsync(
                 $"repos/{repo.Owner.Login}/{repo.Name}/commits?author={username}&per_page=1",
                 cancellationToken);
 
             if (!response.IsSuccessStatusCode)
-            {
-                continue;
-            }
+                return 0;
 
             if (response.Headers.TryGetValues("Link", out var values))
             {
                 var link = values.FirstOrDefault() ?? string.Empty;
                 var lastPage = TryReadLastPage(link);
                 if (lastPage > 0)
-                {
-                    totalCommits += lastPage;
-                    continue;
-                }
+                    return lastPage;
             }
 
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             var commits = await JsonSerializer.DeserializeAsync<List<object>>(stream, JsonOptions, cancellationToken)
                           ?? new List<object>();
-            totalCommits += commits.Count;
-        }
+            return commits.Count;
+        });
+
+        var commitCounts = await Task.WhenAll(commitTasks);
+        var totalCommits = commitCounts.Sum();
 
         if (repos.Count > candidateRepos.Count && totalCommits > 0)
         {

@@ -1,8 +1,4 @@
 <div class="comparison-container dashboard-exportable" #dashboardElement>
-    <div class="actions-topbar" style="margin-top: -20px; margin-bottom: 30px;">
-       <button class="btn-back" (click)="onBack.emit()">⟵ Nova Busca</button>
-       <button class="btn-download" (click)="onDownload.emit(dashboardElement)">📸 Gerar Imagem</button>
-    </div>
 
     <div class="summary-banner">
       <div class="trophy-badge" *ngIf="comparison.winnerByScore !== 'Tie'">👑 Vencedor: {{ comparison.winnerByScore }}</div>

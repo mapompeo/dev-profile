@@ -10,16 +10,6 @@
   cursor: default;
 }
 
-/* Full-screen background canvas */
-.bg-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none; /* Canvas never intercepts clicks */
-}
 
 /* All content sits above the canvas */
 app-header,
@@ -37,11 +27,20 @@ app-header {
   z-index: 10;
 }
 
-/* Lock landing to viewport — no scroll */
+/* Lock landing to viewport — no scroll on large screens */
 .hero-landing {
-  min-height: calc(100vh - 72px);
+  height: calc(100vh - 68px); /* Exactly the remaining screen height */
   display: flex;
   flex-direction: column;
+  justify-content: center; /* Vertically center the app-hero component */
+  overflow: hidden; /* Guarantee no scrollbars here */
+
+  @media (max-width: 1024px) {
+    height: auto;
+    min-height: calc(100vh - 68px);
+    overflow: visible; /* Restores the scrollbar for mobile/tablet where the stacking exceeds the screen */
+    padding-top: 2rem;
+  }
 }
 
 /* Floating limits box */

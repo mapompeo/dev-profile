@@ -103,3 +103,29 @@
   color: rgba(255,255,255,0.25);
   font-size: 0.8rem;
 }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .demand-row {
+    /* 2-col layout: language name + demand badge. Growth and bar hidden. */
+    grid-template-columns: 1fr auto;
+    gap: 0.4rem;
+  }
+
+  /* Hide growth column and the "no seu perfil" bar column on mobile */
+  .col-growth,
+  .col-yours,
+  .demand-row.header-row .col-growth,
+  .demand-row.header-row .col-yours {
+    display: none;
+  }
+
+  .col-lang {
+    font-size: 0.75rem;
+  }
+
+  .demand-badge {
+    font-size: 0.62rem;
+    padding: 0.12rem 0.45rem;
+  }
+}
