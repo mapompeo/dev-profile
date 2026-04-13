@@ -1,224 +1,592 @@
 @use '../../styles/theme' as *;
 
-/* -------------------------------------------------------------------------
-   Comparison Component — GitHub Brand Compliant
-   Gold for winner = conveyed by text label AND icon AND color (✅ not color alone)
-   Score numbers: solid GitHub Green — WCAG AA ✅
-   ------------------------------------------------------------------------- */
+$page-width: 1040px;
+
+@mixin glass-card {
+  background: rgba($color-surface, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    border-color: rgba($color-accent-light, 0.2);
+  }
+}
 
 .comparison-container {
-  max-width: 1000px;
-  margin: 4rem auto;
-  padding: 0 5%;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top center, rgba($gh-purple-5, 0.1), transparent 70%), $color-bg;
+  padding: 1rem 0 4rem;
+}
 
-  .actions-topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
+.summary-banner {
+  max-width: $page-width;
+  margin: 0 auto 2rem;
+  text-align: center;
 
-    .btn-back {
-      background: transparent;
-      color: $color-text-muted;
-      border: none;
-      font-size: $type-body;
-      font-family: $font-brand;
-      cursor: pointer;
-      font-weight: $fw-semibold;
-      transition: color 0.25s;
-
-      &:hover { color: $color-text-primary; }
-      &:focus-visible { outline: 2px solid $color-accent; outline-offset: 2px; border-radius: 2px; }
-    }
-
-    .btn-download {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba($color-accent, 0.08);
-      border: 1px solid rgba($color-accent, 0.3);
-      color: $color-accent-light;
-      padding: 0.45rem 1rem;
-      border-radius: 8px;
-      font-size: $type-small;
-      font-family: $font-brand;
-      font-weight: $fw-semibold;
-      cursor: pointer;
-      transition: background 0.25s, box-shadow 0.25s;
-
-      &:hover {
-        background: rgba($color-accent, 0.15);
-        box-shadow: $glow-green;
-        color: $color-text-primary;
-      }
-      &:focus-visible { outline: 2px solid $color-accent; outline-offset: 2px; border-radius: 8px; }
-    }
-  }
-
-  .summary-banner {
-    text-align: center;
-    margin-bottom: 3rem;
-
-    p {
-      font-size: $type-body-lg;
-      color: $color-text-muted; /* ≈ 7.2:1 ✅ */
-      margin: 1rem 0;
-    }
-
-    /* Winner badge: "👑 Vencedor: username" — text+icon, NOT color alone ✅ */
-    .trophy-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba($color-gold, 0.08);
-      color: $color-gold;        /* #D8BD0E on #101411 ≈ 5.5:1 ✅ WCAG AA */
-      border: 1px solid rgba($color-gold, 0.4);
-      padding: 0.6rem 1.5rem;
-      border-radius: 30px;
-      font-weight: $fw-bold;
-      font-size: $type-body;
-
-      &.tie {
-        border-color: $color-border-strong;
-        color: $color-text-faint;
-        background: rgba($gh-gray-4, 0.08);
-      }
-    }
-
-    .score-diff-badge {
-      display: inline-flex;
-      align-items: center;
-      background: rgba($color-accent, 0.08);
-      color: $color-accent-light;  /* #8CF2A6 ≈ 8.7:1 ✅ */
-      padding: 0.35rem 1rem;
-      border-radius: 12px;
-      font-weight: $fw-semibold;
-      font-size: $type-small;
-      margin-left: 0.75rem;
-    }
-  }
-
-  .vs-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-  }
-
-  .vs-separator {
-    background: $color-surface;
-    border: 1px solid $color-border-strong;
+  p {
+    font-size: $type-body-lg;
     color: $color-text-muted;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
+    margin: 1rem 0;
+  }
+
+  .trophy-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba($color-gold, 0.08);
+    color: $color-gold;
+    border: 1px solid rgba($color-gold, 0.4);
+    padding: 0.6rem 1.5rem;
+    border-radius: 30px;
+    font-weight: $fw-bold;
+    font-size: $type-body;
+
+    &.tie {
+      border-color: $color-border-strong;
+      color: $color-text-faint;
+      background: rgba($gh-gray-4, 0.08);
+    }
+  }
+
+  .score-diff-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba($color-accent, 0.08);
+    color: $color-accent-light;
+    padding: 0.35rem 1rem;
+    border-radius: 12px;
+    font-weight: $fw-semibold;
+    font-size: $type-small;
+  }
+}
+
+.vs-grid {
+  max-width: $page-width;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.compare-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+
+  &.winner {
+    border-color: rgba($color-gold, 0.5);
+  }
+}
+
+.vs-separator {
+  align-self: center;
+  margin-top: 0;
+  background: $color-surface;
+  border: 1px solid $color-border-strong;
+  color: $color-text-muted;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $fw-black;
+  font-size: $type-small;
+  flex-shrink: 0;
+}
+
+.dashboard-content {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.user-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 0 1.5rem;
+  text-align: center;
+
+  .avatar-orbit-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: $fw-black;
-    font-size: $type-small;
-    flex-shrink: 0;
-    z-index: 10;
+    margin-bottom: 0.5rem;
+
+    img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid rgba($color-accent, 0.5);
+      object-fit: cover;
+      box-shadow:
+        0 0 0 6px rgba($color-accent, 0.08),
+        0 0 40px rgba($color-accent, 0.25);
+      position: relative;
+      z-index: 2;
+    }
   }
 
-  .vs-card {
-    background: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: 18px;
-    padding: 2.5rem 2rem;
-    flex: 1;
-    text-align: center;
-    transition: border-color 0.25s;
+  .orbit-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
 
-    /* Winner: border + emoji + text label used together — not color alone ✅ */
-    &.winner {
-      border-color: rgba($color-gold, 0.5);
-    }
+  .orbit-ring--1 {
+    width: 155px;
+    height: 155px;
+    border: 2px solid transparent;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        rgba(139, 92, 246, 0.9) 35%,
+        rgba(59, 130, 246, 0.6) 55%,
+        transparent 70%
+      )
+      border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    transform: rotateX(70deg) rotateZ(0deg);
+    animation: orbit-spin-1 3.5s linear infinite;
+    filter: blur(0.5px) drop-shadow(0 0 6px rgba(139, 92, 246, 0.8));
+  }
 
-    .vs-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 2px solid $color-border;
-      margin-bottom: 1.25rem;
-      /* alt attribute must be set in template */
-    }
+  .orbit-ring--2 {
+    width: 150px;
+    height: 150px;
+    border: 1.5px solid transparent;
+    background: conic-gradient(
+        from 120deg,
+        transparent 0%,
+        rgba(236, 72, 153, 0.7) 30%,
+        rgba(251, 146, 60, 0.5) 50%,
+        transparent 65%
+      )
+      border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    transform: rotateX(65deg) rotateZ(60deg);
+    animation: orbit-spin-2 5.5s linear infinite;
+    filter: blur(0.5px) drop-shadow(0 0 5px rgba(236, 72, 153, 0.6));
+  }
 
-    h3 {
-      font-size: 1.5rem;
-      font-weight: $fw-bold;
-      color: $color-text-primary;
-      margin-bottom: 0.35rem;
-      font-feature-settings: "liga" 0;
-    }
+  .orbit-ring--3 {
+    width: 158px;
+    height: 158px;
+    border: 1px solid transparent;
+    background: conic-gradient(
+        from 240deg,
+        transparent 0%,
+        rgba(96, 165, 250, 0.5) 25%,
+        rgba(167, 139, 250, 0.4) 45%,
+        transparent 60%
+      )
+      border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    transform: rotateX(78deg) rotateZ(120deg);
+    animation: orbit-spin-3 8s linear infinite;
+    filter: blur(0.5px) drop-shadow(0 0 4px rgba(96, 165, 250, 0.4));
+  }
 
-    .vs-stack {
-      color: $color-text-muted; /* ≈ 7.2:1 ✅ */
-      font-weight: $fw-medium;
-      font-size: $type-small;
-      margin-bottom: 0.75rem;
-    }
+  .user-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 
-    .badge {
-      display: inline-block;
-      background: rgba($color-blue, 0.1);
-      color: $color-blue-light;   /* #9EECFF on #232925 ≈ 9.5:1 ✅ WCAG AAA */
-      padding: 0.3rem 1rem;
-      border-radius: 20px;
-      font-weight: $fw-semibold;
-      font-size: $type-xs;
-      margin-bottom: 1.5rem;
-      /* Accessibility: label text conveys seniority, color is accent only */
-    }
-
-    .vs-score {
-      font-size: clamp(2rem, 4vw, 2.8rem);
+    h2 {
+      font-size: 2.25rem;
       font-weight: $fw-black;
-      color: $color-accent;    /* Solid GitHub Green — no gradient on numbers */
-      margin-bottom: 1.75rem;
-      font-variation-settings: "opsz" 48, "wght" 900;
+      color: $color-text-primary;
+      margin: 0;
+      line-height: 1.1;
     }
 
-    .vs-stats {
-      list-style: none;
-      text-align: left;
-      background: rgba($color-bg, 0.4);
-      border: 1px solid $color-border;
-      border-radius: 10px;
-      padding: 1.2rem;
+    .username-link {
+      display: inline-block;
+      color: $color-accent-light;
+      font-size: 1.1rem;
+      font-weight: $fw-medium;
+      text-decoration: none;
+      margin-bottom: 0.25rem;
+      font-family: $font-mono;
+    }
 
-      li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: $color-text-muted; /* ≈ 7.2:1 ✅ */
-        font-size: $type-small;
-        font-weight: $fw-medium;
-        margin-bottom: 0.6rem;
+    .user-meta-lines {
+      margin-top: 0;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1rem;
+      align-items: center;
+      color: $color-text-muted;
+      font-size: $type-small;
+      max-width: 480px;
+    }
 
-        &:last-child { margin-bottom: 0; }
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      color: $color-text-muted;
+      font-size: $type-xs;
+      white-space: nowrap;
+      text-decoration: none;
 
-        b {
-          color: $color-text-primary; /* ≈ 14.5:1 ✅ */
-          font-weight: $fw-semibold;
-        }
+      &:not(:last-child)::after {
+        content: '|';
+        margin-left: 1rem;
+        opacity: 0.2;
+        font-weight: 200;
+      }
+
+      svg {
+        width: 13px;
+        height: 13px;
+        opacity: 0.6;
+      }
+    }
+
+    a.meta-link {
+      color: inherit;
+      transition:
+        color 0.2s,
+        opacity 0.2s;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        color: $color-accent-light;
+      }
+
+      &:focus-visible {
+        outline: 2px solid $color-accent-light;
+        outline-offset: 3px;
       }
     }
   }
 }
 
-@media (max-width: 900px) {
-  .comparison-container { padding: 0 1rem; margin: 2rem auto; }
+.hero-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 0.75rem;
+  padding: 0.6rem 2.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
-  .actions-topbar { gap: 0.75rem; }
-  .summary-banner .score-diff-badge { display: block; margin: 0.5rem auto 0; }
-  .vs-row { flex-direction: column; }
-  .vs-separator {
-    margin: -1rem auto;
-    z-index: 20;
-    background: $color-bg;
-    position: relative;
+  .hero-stat-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .stat-v {
+      font-size: 1.25rem;
+      font-weight: $fw-black;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .stat-l {
+      font-size: 0.65rem;
+      color: $color-text-faint;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   }
-  .vs-card { padding: 2rem 1.25rem; }
-  .vs-card .vs-score { font-size: 2rem; }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.stat-card {
+  @include glass-card;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+
+    .sc-lbl {
+      font-size: $type-body;
+      font-weight: $fw-bold;
+      color: $color-text-primary;
+      line-height: 1.15;
+    }
+
+    .sc-icon {
+      font-size: 1.25rem;
+      color: $color-accent-light;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+  }
+
+  .sc-val {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    font-family: $font-brand;
+    letter-spacing: -0.04em;
+    text-shadow: 0 0 12px rgba($color-accent-light, 0.15);
+  }
+}
+
+.section-card {
+  @include glass-card;
+  padding: 1.5rem;
+}
+
+.section-title {
+  font-size: $type-body;
+  font-weight: $fw-bold;
+  color: $color-text-primary;
+  margin: 0 0 1.25rem;
+}
+
+.giant-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+
+  .giant-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1rem;
+
+    .section-title {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    .icon-brackets {
+      font-family: $font-mono;
+      color: $color-text-faint;
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.analysis-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-size: $type-small;
+    color: $color-text-primary;
+    font-weight: $fw-semibold;
+  }
+
+  strong.accent {
+    font-size: 1.75rem;
+    font-weight: $fw-bold;
+    color: $color-accent-light;
+  }
+
+  small {
+    font-size: $type-xs;
+    color: $color-text-faint;
+    line-height: 1.4;
+  }
+}
+
+.cw-card {
+  @include glass-card;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .cw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      label {
+        font-size: $type-body;
+        font-weight: $fw-bold;
+        color: $color-text-primary;
+        margin: 0;
+      }
+    }
+  }
+
+  .cw-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &.languages-content {
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+  }
+
+  .cw-value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 3.25rem;
+    font-family: $font-brand;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+
+    &.money {
+      color: #38ef7d;
+      text-shadow: 0 0 20px rgba(56, 239, 125, 0.2);
+    }
+  }
+}
+
+.lang-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: rgba($color-bg, 0.28);
+  border: 1px solid rgba($color-border, 0.75);
+
+  .lang-name {
+    color: $color-text-primary;
+    font-weight: $fw-semibold;
+  }
+
+  .lang-count {
+    color: $color-text-faint;
+    font-size: $type-xs;
+  }
+}
+
+@keyframes orbit-spin-1 {
+  to {
+    transform: rotateX(70deg) rotateZ(360deg);
+  }
+}
+
+@keyframes orbit-spin-2 {
+  to {
+    transform: rotateX(65deg) rotateZ(420deg);
+  }
+}
+
+@keyframes orbit-spin-3 {
+  to {
+    transform: rotateX(78deg) rotateZ(540deg);
+  }
+}
+
+@media (max-width: 1100px) {
+  .vs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vs-separator {
+    margin: 0 auto;
+  }
+
+  .stats-grid,
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .comparison-container {
+    padding-top: 0.5rem;
+  }
+
+  .summary-banner,
+  .vs-grid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .cw-value {
+    font-size: 2.4rem;
+  }
+
+  .stat-card {
+    .stat-header {
+      .sc-lbl {
+        min-height: 0;
+      }
+    }
+  }
 }

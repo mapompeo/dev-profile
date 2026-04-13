@@ -6,7 +6,12 @@
 
     <!-- 1. User Identity (Centralizado conforme solicitação) -->
     <div class="user-hero">
-      <img [src]="profile.avatarUrl" [alt]="'Avatar de ' + (profile.name || profile.username)" crossorigin="anonymous" />
+      <div class="avatar-orbit-wrap">
+        <div class="orbit-ring orbit-ring--1"></div>
+        <div class="orbit-ring orbit-ring--2"></div>
+        <div class="orbit-ring orbit-ring--3"></div>
+        <img [src]="profile.avatarUrl" [alt]="'Avatar de ' + (profile.name || profile.username)" crossorigin="anonymous" />
+      </div>
       
       <div class="user-info">
         <h2>{{ profile.name || profile.username }}</h2>
@@ -15,18 +20,32 @@
         </a>
         
         <div class="user-meta-lines">
-          <div class="meta-item" *ngIf="profile.company">
+          <a class="meta-item meta-link"
+             *ngIf="profile.company"
+             [href]="'https://www.google.com/search?q=' + encodeURIComponent(profile.company)"
+             target="_blank"
+             rel="noopener noreferrer"
+             [title]="'Pesquisar ' + profile.company + ' no Google'">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 4v4"/><path d="M16 4v4"/></svg>
             {{ profile.company }}
-          </div>
-          <div class="meta-item" *ngIf="profile.location">
+          </a>
+          <a class="meta-item meta-link"
+             *ngIf="profile.location"
+             [href]="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(profile.location)"
+             target="_blank"
+             rel="noopener noreferrer"
+             [title]="'Ver ' + profile.location + ' no Google Maps'">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
             {{ profile.location }}
-          </div>
-          <div class="meta-item">
+          </a>
+          <a class="meta-item meta-link"
+             [href]="getCalendarUrl(profile.createdAt)"
+             target="_blank"
+             rel="noopener noreferrer"
+             title="Ver data no Google Calendar">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Ingressou em {{ profile.createdAt | date:'longDate':'':'pt-BR' }}
-          </div>
+          </a>
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
 
 import { Header } from '../header/header';
@@ -11,6 +12,8 @@ import { Hero } from '../hero/hero';
 import { LoadingStatus } from '../hero/hero';
 import { ProfileDashboard } from '../profile-dashboard/profile-dashboard';
 import { ProfileComparison } from '../profile-comparison/profile-comparison';
+
+const DEFAULT_FAVICON_URL = 'https://img.icons8.com/ios11/512/FFFFFF/github.png';
 
 @Component({
   selector: 'app-profile-search',
@@ -39,8 +42,9 @@ export class ProfileSearchComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+    private titleService: Title
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -79,7 +83,7 @@ export class ProfileSearchComponent implements OnInit {
     this.fetchProfile(user, true);
   }
 
-  handleCompare(event: {left: string, right: string}) {
+  handleCompare(event: { left: string, right: string }) {
     if (!event.left || !event.right) return;
     // Fetch directly without navigating first — keeps Hero alive & in VS mode
     this.fetchComparison(event.left, event.right, true);
@@ -91,9 +95,27 @@ export class ProfileSearchComponent implements OnInit {
     this.loading = false;
     this.error = null;
     this.isJsonView = false;
+    this.setDefaultTitle();
     if (navigate) {
       this.router.navigate(['/']);
     }
+  }
+
+  // ─── Title & Favicon ────────────────────────────────────────────────────────
+  private setDefaultTitle() {
+    this.titleService.setTitle('DevProfile — Mapeie sua Senioridade Técnica');
+    this.setFavicon(DEFAULT_FAVICON_URL);
+  }
+
+  private setProfileTitle(profile: any) {
+    const name = profile?.name || profile?.username || 'Usuário';
+    this.titleService.setTitle(`${name} | DevProfile`);
+    this.setFavicon(DEFAULT_FAVICON_URL);
+  }
+
+  private setFavicon(href: string) {
+    const link = document.getElementById('app-favicon') as HTMLLinkElement;
+    if (link) link.href = href;
   }
 
   // ─── Data Fetching ──────────────────────────────────────────────────────────
@@ -106,10 +128,11 @@ export class ProfileSearchComponent implements OnInit {
     this.startWakingUpTimer();
 
     this.http.get(`/api/profile/${user}`).subscribe({
-      next: (data) => { 
-        this.profile = data; 
+      next: (data) => {
+        this.profile = data;
         this.loading = false;
         this.clearWakingUpTimer();
+        this.setProfileTitle(data);
         // Navigate to shareable URL only after success
         if (pushUrl) this.router.navigate(['/dashboard', user], { replaceUrl: true });
       },
@@ -130,8 +153,8 @@ export class ProfileSearchComponent implements OnInit {
     this.startWakingUpTimer();
 
     this.http.get(`/api/profile/compare?left=${user1}&right=${user2}`).subscribe({
-      next: (data) => { 
-        this.comparison = data; 
+      next: (data) => {
+        this.comparison = data;
         this.loading = false;
         this.clearWakingUpTimer();
         // Navigate to shareable URL only after success

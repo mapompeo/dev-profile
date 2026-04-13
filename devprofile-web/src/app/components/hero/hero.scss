@@ -368,40 +368,278 @@
   opacity: 0.85;
 }
 
-/* --- Right Column: Branding Graphic --- */
+/* ─── Right Column: Language Fusion Scene ──────────────────────── */
 .hero-right {
-  flex: 0.4; 
-  @media (max-width: 1024px) { display: none !important; } 
-  display: flex; align-items: center; justify-content: center;
+  flex: 0.5;
+  @media (max-width: 1024px) { display: none !important; }
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-
-  .brand-cube {
-    width: 280px; height: 280px;
-    border-radius: 60px;
-    border: 2px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(40px);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-    position: relative; z-index: 2;
-    transition: transform 0.1s ease-out; /* Transição curta para o mouse */
-    transform-style: preserve-3d;
-    .main-gh-logo { width: 120px; height: 120px; color: #8957e5; opacity: 0.9; }
-
-    @media (max-width: 768px) { width: 220px; height: 220px; .main-gh-logo { width: 90px; height: 90px; } }
-  }
 
   .glow-orb-primary {
     position: absolute;
     width: 150%; height: 150%;
-    background: radial-gradient(circle, rgba($color-accent, 0.3) 0%, transparent 65%);
-    filter: blur(80px); opacity: 0.4;
+    background: radial-gradient(circle, rgba($color-accent, 0.20) 0%, transparent 65%);
+    filter: blur(80px);
+    opacity: 0.4;
     animation: orb-float 8s infinite alternate ease-in-out;
+    pointer-events: none;
   }
 }
 
 @keyframes orb-float {
   from { transform: scale(1) translate(0, 0); }
-  to { transform: scale(1.1) translate(20px, -20px); }
+  to   { transform: scale(1.1) translate(12px, -12px); }
+}
+
+/* ─── Master Timeline ─────────────────────────────────────────── */
+// Total loop:  14s
+// Phase 1  0.0s –  4.0s  → icons appear + converge  (29%)
+// Phase 2  4.0s –  5.5s  → explosion                (39%)
+// Phase 3  5.5s – 12.0s  → GH float                 (86%)
+// Phase 4 12.0s – 14.0s  → fade out                 (100%)
+
+$cycle: 14s;
+
+/* ─── Scene Container ─────────────────────────────────────────── */
+.lang-scene {
+  position: relative;
+  width: 380px;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PHASE 1 — Language Orbs  (appear staggered → converge to center)
+   ═══════════════════════════════════════════════════════════════ */
+.l-orb {
+  position: absolute;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  pointer-events: none;
+  animation: lang-converge $cycle ease-in-out infinite;
+  filter: drop-shadow(0 0 6px var(--glow));
+
+  svg { width: 100%; height: 100%; border-radius: 10px; }
+}
+
+// Each orb gets: start angle, radius, glow color, stagger delay
+.lo-1  { --a: 0deg;   --r: 170px; --glow: #3178c6; animation-delay: 0.0s;  }
+.lo-2  { --a: 36deg;  --r: 165px; --glow: #f7df1e; animation-delay: 0.18s; }
+.lo-3  { --a: 72deg;  --r: 175px; --glow: #3572A5; animation-delay: 0.36s; }
+.lo-4  { --a: 108deg; --r: 160px; --glow: #61dafb; animation-delay: 0.54s; }
+.lo-5  { --a: 144deg; --r: 170px; --glow: #264de4; animation-delay: 0.72s; }
+.lo-6  { --a: 180deg; --r: 168px; --glow: #e34c26; animation-delay: 0.10s; }
+.lo-7  { --a: 216deg; --r: 172px; --glow: #00ADD8; animation-delay: 0.45s; }
+.lo-8  { --a: 252deg; --r: 163px; --glow: #7F52FF; animation-delay: 0.63s; }
+.lo-9  { --a: 288deg; --r: 175px; --glow: #2496ED; animation-delay: 0.30s; }
+.lo-10 { --a: 324deg; --r: 167px; --glow: #ce4a08; animation-delay: 0.80s; }
+
+@keyframes lang-converge {
+  // hidden
+  0%   { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(0); opacity: 0; }
+  // pop in at outer radius
+  8%   { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(1); opacity: 1; }
+  // hold
+  14%  { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(1); opacity: 1; }
+  // converge to center (29% = 4s)
+  28%  { transform: rotate(calc(var(--a) + 80deg)) translateX(0px) rotate(calc(-1 * (var(--a) + 80deg))) scale(0.55); opacity: 0.85; }
+  // vanish at center
+  30%  { transform: rotate(calc(var(--a) + 90deg)) translateX(0px) rotate(calc(-1 * (var(--a) + 90deg))) scale(0); opacity: 0; }
+  // stay hidden
+  100% { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(0); opacity: 0; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PHASE 2 — Fusion Explosion
+   ═══════════════════════════════════════════════════════════════ */
+.fusion-burst {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.fb-1 {
+  width: 10px; height: 10px;
+  box-shadow: 0 0 60px 30px rgba(139,92,246,0.7);
+  animation: burst-ring-1 $cycle ease-out infinite;
+}
+
+.fb-2 {
+  width: 10px; height: 10px;
+  box-shadow: 0 0 50px 25px rgba(96,165,250,0.5);
+  animation: burst-ring-2 $cycle ease-out infinite;
+}
+
+.fusion-core {
+  position: absolute;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: white;
+  animation: core-flash $cycle ease-out infinite;
+}
+
+@keyframes burst-ring-1 {
+  0%, 28%  { transform: scale(0); opacity: 0; }
+  29%      { transform: scale(0); opacity: 0; }
+  33%      { transform: scale(8); opacity: 0.9; }
+  40%      { transform: scale(14); opacity: 0; }
+  100%     { opacity: 0; }
+}
+
+@keyframes burst-ring-2 {
+  0%, 29%  { transform: scale(0); opacity: 0; }
+  31%      { transform: scale(0); opacity: 0; }
+  36%      { transform: scale(10); opacity: 0.7; }
+  44%      { transform: scale(16); opacity: 0; }
+  100%     { opacity: 0; }
+}
+
+@keyframes core-flash {
+  0%, 28%  { transform: scale(0); opacity: 0; }
+  29%      { transform: scale(0); opacity: 0; }
+  31%      { transform: scale(1); opacity: 1; background: #fff; box-shadow: 0 0 40px 20px rgba(255,255,255,0.9), 0 0 80px 40px rgba(139,92,246,0.6); }
+  35%      { transform: scale(3); opacity: 0.8; background: #e9d5ff; }
+  40%      { transform: scale(1); opacity: 0; }
+  100%     { opacity: 0; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PHASE 3 — GitHub Logo Emerge, Float & Orbital Rings
+   ═══════════════════════════════════════════════════════════════ */
+.gh-stage {
+  position: absolute;
+  width: 260px; height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: gh-stage-vis $cycle linear infinite;
+}
+
+@keyframes gh-stage-vis {
+  0%, 36%  { opacity: 0; }
+  40%      { opacity: 1; }
+  86%      { opacity: 1; }
+  93%      { opacity: 0; }
+  100%     { opacity: 0; }
+}
+
+/* ── Glow backdrop ── */
+.gh-glow {
+  position: absolute;
+  width: 250px; height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(139,92,246,0.2) 0%,
+    rgba(88,28,235,0.08) 40%,
+    transparent 70%);
+  animation: gh-glow-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes gh-glow-pulse {
+  from { transform: scale(0.9); opacity: 0.6; }
+  to   { transform: scale(1.1); opacity: 1; }
+}
+
+/* ── Orbital rings ── */
+.gh-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.gh-ring--1 {
+  width: 220px; height: 220px;
+  box-shadow:
+    0 0 0 1.5px rgba(139,92,246,0.45),
+    0 0 12px 2px rgba(139,92,246,0.25);
+  animation: gh-r1 5s linear infinite;
+}
+@keyframes gh-r1 {
+  from { transform: rotateX(70deg) rotateZ(0deg); }
+  to   { transform: rotateX(70deg) rotateZ(360deg); }
+}
+
+.gh-ring--2 {
+  width: 190px; height: 190px;
+  box-shadow:
+    0 0 0 1px rgba(96,165,250,0.35),
+    0 0 10px 2px rgba(96,165,250,0.15);
+  animation: gh-r2 7.5s linear infinite reverse;
+}
+@keyframes gh-r2 {
+  from { transform: rotateX(60deg) rotateZ(40deg); }
+  to   { transform: rotateX(60deg) rotateZ(400deg); }
+}
+
+/* ── Sparkle particles ── */
+.gh-spark {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #c4b5fd;
+  pointer-events: none;
+}
+
+.gsp-1 { --sx:  80px; --sy: -60px; animation: sparkle 2.0s 0.0s ease-in-out infinite; }
+.gsp-2 { --sx: -90px; --sy:  40px; animation: sparkle 2.5s 0.7s ease-in-out infinite; }
+.gsp-3 { --sx:  30px; --sy:  95px; animation: sparkle 1.8s 1.2s ease-in-out infinite; }
+.gsp-4 { --sx: -70px; --sy: -80px; animation: sparkle 2.2s 0.3s ease-in-out infinite; }
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: translate(var(--sx, 0), var(--sy, 0)) scale(0); }
+  50%      { opacity: 1; transform: translate(var(--sx, 0), var(--sy, 0)) scale(1.5); box-shadow: 0 0 8px 2px rgba(196,181,253,0.8); }
+}
+
+/* ── GitHub Floater (the logo itself) ── */
+.gh-floater {
+  position: relative;
+  z-index: 5;
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #1a0533 0%, #0a0014 50%, #000 100%);
+  box-shadow:
+    0 0 0 3px rgba(139,92,246,0.5),
+    0 0 30px rgba(139,92,246,0.6),
+    0 0 60px rgba(139,92,246,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: gh-emerge $cycle cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+
+  .gh-logo-svg {
+    width: 54px; height: 54px;
+    color: #d8b4fe;
+    filter: drop-shadow(0 0 8px rgba(167,139,250,0.9))
+            drop-shadow(0 0 20px rgba(139,92,246,0.5));
+  }
+}
+
+@keyframes gh-emerge {
+  // hidden
+  0%, 35%  { transform: scale(0); opacity: 0; }
+  // elastic pop
+  38%      { transform: scale(1.25); opacity: 1; }
+  40%      { transform: scale(0.9); }
+  42%      { transform: scale(1.05); }
+  44%      { transform: scale(1); }
+  // idle float: gentle bob
+  50%      { transform: translateY(-6px); }
+  56%      { transform: translateY(4px); }
+  62%      { transform: translateY(-5px); }
+  68%      { transform: translateY(3px); }
+  74%      { transform: translateY(-4px); }
+  80%      { transform: translateY(5px); }
+  84%      { transform: translateY(-2px) scale(1); opacity: 1; }
+  // fade out
+  92%      { transform: scale(0.8); opacity: 0; }
+  100%     { transform: scale(0); opacity: 0; }
 }
 
 /* --- Section: HOW IT WORKS --- */

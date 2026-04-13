@@ -117,15 +117,126 @@ $page-width: 1040px;
   padding: 2rem 0 1.5rem; // Reduced padding
   text-align: center;
   
-  img {
-    width: 120px; // Smaller image for compactness
-    height: 120px;
-    border-radius: 50%;
-    border: 4px solid rgba($color-accent, 0.4);
-    object-fit: cover;
-    box-shadow: 0 0 30px rgba($color-accent, 0.2);
+  // ─── Black-hole orbital wrapper ─────────────────────────────────────────
+  .avatar-orbit-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 0.5rem;
+
+    img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid rgba($color-accent, 0.5);
+      object-fit: cover;
+      box-shadow:
+        0 0 0 6px rgba($color-accent, 0.08),
+        0 0 40px rgba($color-accent, 0.25);
+      position: relative;
+      z-index: 2;
+    }
   }
+
+  // Shared ring base
+  .orbit-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  // Ring 1 — main equatorial ring, fast purple/blue glow
+  .orbit-ring--1 {
+    width: 155px;
+    height: 155px;
+    border: 2px solid transparent;
+    background:
+      conic-gradient(
+        from 0deg,
+        transparent 0%,
+        rgba(139, 92, 246, 0.9) 35%,
+        rgba(59, 130, 246, 0.6) 55%,
+        transparent 70%
+      ) border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    transform: rotateX(70deg) rotateZ(0deg);
+    animation: orbit-spin-1 3.5s linear infinite;
+    filter: blur(0.5px) drop-shadow(0 0 6px rgba(139, 92, 246, 0.8));
+  }
+
+  // Ring 2 — tilted orbit, slower, warm orange/pink
+  .orbit-ring--2 {
+    width: 150px;
+    height: 150px;
+    border: 1.5px solid transparent;
+    background:
+      conic-gradient(
+        from 120deg,
+        transparent 0%,
+        rgba(236, 72, 153, 0.7) 30%,
+        rgba(251, 146, 60, 0.5) 50%,
+        transparent 65%
+      ) border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    transform: rotateX(65deg) rotateZ(60deg);
+    animation: orbit-spin-2 5.5s linear infinite;
+    filter: blur(0.5px) drop-shadow(0 0 5px rgba(236, 72, 153, 0.6));
+  }
+
+  // Ring 3 — thin outer halo, very slow, ice blue
+  .orbit-ring--3 {
+    width: 158px;
+    height: 158px;
+    border: 1px solid transparent;
+    background:
+      conic-gradient(
+        from 240deg,
+        transparent 0%,
+        rgba(96, 165, 250, 0.5) 25%,
+        rgba(167, 139, 250, 0.4) 45%,
+        transparent 60%
+      ) border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    transform: rotateX(75deg) rotateZ(-40deg);
+    animation: orbit-spin-3 8s linear infinite reverse;
+    filter: blur(0.3px) drop-shadow(0 0 4px rgba(96, 165, 250, 0.5));
+  }
+
+  @keyframes orbit-spin-1 {
+    to { transform: rotateX(70deg) rotateZ(360deg); }
+  }
+  @keyframes orbit-spin-2 {
+    to { transform: rotateX(65deg) rotateZ(calc(60deg + 360deg)); }
+  }
+  @keyframes orbit-spin-3 {
+    to { transform: rotateX(75deg) rotateZ(calc(-40deg - 360deg)); }
+  }
+
 
   .user-info {
     display: flex;
@@ -176,6 +287,25 @@ $page-width: 1040px;
           margin-left: 1rem;
           opacity: 0.2;
           font-weight: 200;
+        }
+      }
+
+      // Clickable variant
+      a.meta-link {
+        text-decoration: none;
+        color: inherit;
+        transition: color 0.2s, opacity 0.2s;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+          color: $color-accent-light;
+          svg { opacity: 1; }
+        }
+
+        &:focus-visible {
+          outline: 2px solid $color-accent-light;
+          outline-offset: 3px;
         }
       }
     }

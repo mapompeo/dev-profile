@@ -39,5 +39,20 @@ export class ProfileDashboard {
     // Every 1000 points = 1 level
     return Math.floor(score / 1000) + 1;
   }
+
+  /** Exposes the native encodeURIComponent to the template */
+  encodeURIComponent(value: string): string {
+    return encodeURIComponent(value ?? '');
+  }
+
+  /** Opens Google Calendar on the exact date the user joined GitHub */
+  getCalendarUrl(createdAt: string | Date): string {
+    if (!createdAt) return 'https://calendar.google.com';
+    const date = new Date(createdAt);
+    const y = date.getUTCFullYear();
+    const m = date.getUTCMonth() + 1;
+    const d = date.getUTCDate();
+    return `https://calendar.google.com/calendar/r/day/${y}/${m}/${d}`;
+  }
 }
 

@@ -90,17 +90,71 @@
       </div>
     </div>
 
-    <!-- RIGHT: Graphical Logic with Mouse Tracking Area -->
+    <!-- RIGHT: Language Fusion Animation -->
     <div class="hero-right">
-      <div class="brand-cube"
-        [style.transform]="'perspective(1000px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) translate3d(' + translateX + 'px, ' + translateY + 'px, 50px)'">
-        <svg class="main-gh-logo" viewBox="0 0 16 16" fill="currentColor">
-          <path
-            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-        </svg>
-      </div>
+      <div class="lang-scene">
+
+        <!-- ── Phase 1: Language icons converging ── -->
+        <div class="l-orb lo-1">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#3178c6"/><text x="20" y="27" font-size="13" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">TS</text></svg>
+        </div>
+        <div class="l-orb lo-2">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="0" fill="#f7df1e"/><text x="21" y="28" font-size="14" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">JS</text></svg>
+        </div>
+        <div class="l-orb lo-3">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#3572A5"/><text x="20" y="27" font-size="14" font-weight="900" fill="#ffd43b" text-anchor="middle" font-family="monospace">Py</text></svg>
+        </div>
+        <div class="l-orb lo-4">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#20232a"/><ellipse cx="20" cy="20" rx="18" ry="6.5" fill="none" stroke="#61dafb" stroke-width="2.2"/><ellipse cx="20" cy="20" rx="18" ry="6.5" fill="none" stroke="#61dafb" stroke-width="2.2" transform="rotate(60 20 20)"/><ellipse cx="20" cy="20" rx="18" ry="6.5" fill="none" stroke="#61dafb" stroke-width="2.2" transform="rotate(120 20 20)"/><circle cx="20" cy="20" r="2.8" fill="#61dafb"/></svg>
+        </div>
+        <div class="l-orb lo-5">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#264de4"/><text x="20" y="28" font-size="11" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">CSS</text></svg>
+        </div>
+        <div class="l-orb lo-6">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#e34c26"/><text x="20" y="27" font-size="10" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">HTML</text></svg>
+        </div>
+        <div class="l-orb lo-7">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#00ADD8"/><text x="20" y="28" font-size="13" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">Go</text></svg>
+        </div>
+        <div class="l-orb lo-8">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#7F52FF"/><text x="20" y="27" font-size="11" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">Kt</text></svg>
+        </div>
+        <div class="l-orb lo-9">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#2496ED"/><text x="20" y="27" font-size="10" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">🐳</text></svg>
+        </div>
+        <div class="l-orb lo-10">
+          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#ce4a08"/><text x="20" y="28" font-size="13" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">Rs</text></svg>
+        </div>
+
+        <!-- ── Phase 2: Fusion explosion ── -->
+        <div class="fusion-burst fb-1"></div>
+        <div class="fusion-burst fb-2"></div>
+        <div class="fusion-core"></div>
+
+        <!-- ── Phase 3-4: GitHub emerge & float ── -->
+        <div class="gh-stage">
+          <!-- background glow -->
+          <div class="gh-glow"></div>
+          <!-- orbital rings (only visible during float) -->
+          <div class="gh-ring gh-ring--1"></div>
+          <div class="gh-ring gh-ring--2"></div>
+          <!-- sparkle particles -->
+          <div class="gh-spark gsp-1"></div>
+          <div class="gh-spark gsp-2"></div>
+          <div class="gh-spark gsp-3"></div>
+          <div class="gh-spark gsp-4"></div>
+          <!-- the logo floats inside the stage -->
+          <div class="gh-floater">
+            <svg class="gh-logo-svg" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+          </div>
+        </div>
+
+      </div><!-- /lang-scene -->
       <div class="glow-orb-primary"></div>
     </div>
+
   </div>
 
   <!-- HOW IT WORKS: 3 Clean Cards -->
