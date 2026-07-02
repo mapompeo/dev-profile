@@ -43,10 +43,10 @@ export class ProfileService {
     constructor(private http: HttpClient) { }
 
     getProfile(username: string): Observable<ProfileResponse> {
-        return this.http.get<ProfileResponse>(`/api/profile/${username}`);
+        return this.http.get<ProfileResponse>(`/api/profile/${encodeURIComponent(username)}`);
     }
 
     compareProfiles(left: string, right: string): Observable<ProfileComparison> {
-        return this.http.get<ProfileComparison>(`/api/profile/compare?left=${left}&right=${right}`);
+        return this.http.get<ProfileComparison>(`/api/profile/compare?left=${encodeURIComponent(left)}&right=${encodeURIComponent(right)}`);
     }
 }

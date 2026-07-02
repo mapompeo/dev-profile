@@ -55,9 +55,9 @@ export class ProfileSearchComponent implements OnInit {
       // If user wants raw JSON, redirect directly to the backend API
       if (this.isJsonView) {
         if (user1 && user2) {
-          window.location.href = `/api/profile/compare?left=${user1}&right=${user2}`;
+          window.location.href = `/api/profile/compare?left=${encodeURIComponent(user1)}&right=${encodeURIComponent(user2)}`;
         } else if (user1) {
-          window.location.href = `/api/profile/${user1}`;
+          window.location.href = `/api/profile/${encodeURIComponent(user1)}`;
         }
         return;
       }
@@ -127,7 +127,7 @@ export class ProfileSearchComponent implements OnInit {
 
     this.startWakingUpTimer();
 
-    this.http.get(`/api/profile/${user}`).subscribe({
+    this.http.get(`/api/profile/${encodeURIComponent(user)}`).subscribe({
       next: (data) => {
         this.profile = data;
         this.loading = false;
@@ -152,7 +152,7 @@ export class ProfileSearchComponent implements OnInit {
 
     this.startWakingUpTimer();
 
-    this.http.get(`/api/profile/compare?left=${user1}&right=${user2}`).subscribe({
+    this.http.get(`/api/profile/compare?left=${encodeURIComponent(user1)}&right=${encodeURIComponent(user2)}`).subscribe({
       next: (data) => {
         this.comparison = data;
         this.loading = false;

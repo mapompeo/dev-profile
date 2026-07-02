@@ -1,4 +1,5 @@
 using DevProfile.API.Models.DTOs;
+using DevProfile.API.Services.Internal;
 using DevProfile.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,10 @@ public sealed class ProfileController : ControllerBase
         {
             return NotFound(new { message = ex.Message });
         }
+        catch (GitHubRateLimitExceededException ex)
+        {
+            return StatusCode(StatusCodes.Status429TooManyRequests, new { message = ex.Message });
+        }
     }
 
     [HttpGet("compare")]
@@ -58,8 +63,12 @@ public sealed class ProfileController : ControllerBase
 
         try
         {
-            var leftProfile = await _scoreEngine.BuildProfileResponseAsync(leftUsername, cancellationToken);
-            var rightProfile = await _scoreEngine.BuildProfileResponseAsync(rightUsername, cancellationToken);
+            var leftTask = _scoreEngine.BuildProfileResponseAsync(leftUsername, cancellationToken);
+            var rightTask = _scoreEngine.BuildProfileResponseAsync(rightUsername, cancellationToken);
+            await Task.WhenAll(leftTask, rightTask);
+
+            var leftProfile = leftTask.Result;
+            var rightProfile = rightTask.Result;
 
             var leftScore = leftProfile.Analysis.ValueScore;
             var rightScore = rightProfile.Analysis.ValueScore;
@@ -79,6 +88,10 @@ public sealed class ProfileController : ControllerBase
         catch (KeyNotFoundException ex)
         {
             return NotFound(new { message = ex.Message });
+        }
+        catch (GitHubRateLimitExceededException ex)
+        {
+            return StatusCode(StatusCodes.Status429TooManyRequests, new { message = ex.Message });
         }
     }
 

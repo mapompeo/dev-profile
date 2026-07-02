@@ -133,6 +133,7 @@ public sealed class GitHubService : IGitHubService
             throw new KeyNotFoundException($"GitHub user '{username}' not found.");
         }
 
+        ThrowIfRateLimited(response);
         response.EnsureSuccessStatusCode();
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
         var user = await JsonSerializer.DeserializeAsync<GitHubUserResponse>(stream, JsonOptions, cancellationToken);
@@ -153,6 +154,7 @@ public sealed class GitHubService : IGitHubService
         while (true)
         {
             using var response = await _httpClient.GetAsync($"users/{username}/repos?per_page=100&page={page}&sort=updated", cancellationToken);
+            ThrowIfRateLimited(response);
             response.EnsureSuccessStatusCode();
 
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -214,6 +216,19 @@ public sealed class GitHubService : IGitHubService
         }
 
         return totalCommits;
+    }
+
+    private static void ThrowIfRateLimited(HttpResponseMessage response)
+    {
+        var isRateLimit = response.StatusCode == HttpStatusCode.TooManyRequests ||
+            (response.StatusCode == HttpStatusCode.Forbidden &&
+             response.Headers.TryGetValues("X-RateLimit-Remaining", out var remaining) &&
+             remaining.FirstOrDefault() == "0");
+
+        if (isRateLimit)
+        {
+            throw new GitHubRateLimitExceededException();
+        }
     }
 
     private static int TryReadLastPage(string linkHeader)

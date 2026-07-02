@@ -30,16 +30,14 @@ export class CareerPitch implements OnChanges {
     const commits    = p.stats?.totalCommits ?? 0;
     const stars      = p.stats?.totalStars ?? 0;
     const repos      = p.stats?.totalRepositories ?? 0;
-    const topRepo    = p.analysis.popularRepositories?.[0]?.name || '';
 
     const yearsLabel = years === '0-2' ? 'menos de 2 anos' : `${years} anos`;
-    const repoMention = topRepo ? `, com destaque para o projeto "${topRepo}"` : '';
     const starsMention = stars > 0 ? ` e ${stars} estrela${stars !== 1 ? 's' : ''} recebidas` : '';
 
     this.pitch =
       `${name} é um dev ${level} com ${yearsLabel} de experiência, ` +
       `especializado em ${stack} (${langs}). ` +
-      `Acumulou ${commits.toLocaleString('pt-BR')} commits distribuídos em ${repos} repositórios públicos${starsMention}${repoMention}. ` +
+      `Acumulou ${commits.toLocaleString('pt-BR')} commits distribuídos em ${repos} repositórios públicos${starsMention}. ` +
       `Score de senioridade: ${p.analysis.seniorityScore}/100.`;
   }
 

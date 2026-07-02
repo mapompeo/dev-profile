@@ -48,6 +48,7 @@
           <ng-container *ngIf="mode === 'single'">
             <div class="input-wrapper-pill single-main">
               <input type="text" [(ngModel)]="username" name="username" placeholder="github-user"
+                aria-label="Usuário do GitHub"
                 autocomplete="off" required [disabled]="loading" (ngModelChange)="clearError()" />
               <button type="submit" [disabled]="!username || loading" class="btn-action-main" [class.is-loading]="loading">
                 <svg *ngIf="!loading" class="btn-ico" viewBox="0 0 24 24" fill="currentColor">
@@ -64,11 +65,13 @@
             <div class="input-wrapper-pill vs-main">
               <div class="contender-input-pair">
                 <input type="text" [(ngModel)]="leftUser" name="leftUser" placeholder="github-user-1" autocomplete="off"
+                  aria-label="Primeiro usuário do GitHub"
                   required [disabled]="loading" (ngModelChange)="clearError()" />
                 <div class="vs-divider">
                   <span class="vs-txt">VS</span>
                 </div>
                 <input type="text" [(ngModel)]="rightUser" name="rightUser" placeholder="github-user-2"
+                  aria-label="Segundo usuário do GitHub"
                   autocomplete="off" required [disabled]="loading" (ngModelChange)="clearError()" />
               </div>
               <button type="submit" [disabled]="!leftUser || !rightUser || loading" class="btn-action-main" [class.is-loading]="loading">

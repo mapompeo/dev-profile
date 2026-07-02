@@ -52,21 +52,13 @@ export class ChartRadar implements OnChanges {
     }).join(' ');
   }
 
-  private inflate(v: number): number {
-    if (v <= 0) return 0;
-    if (v >= 100) return 100;
-    // Boost formula to map 35 -> ~67. (v / 100)^0.38 * 100
-    return Math.round(Math.pow(v / 100, 0.38) * 100);
-  }
-
   private build() {
     this.gridPolygons = this.levels.map(l => this.toPolygon(l));
 
     const rawValues = this.axes.map(a => Math.min(100, Math.max(0, this.radar?.[a.key] ?? this.radar?.[a.key.charAt(0).toUpperCase() + a.key.slice(1)] ?? 0)));
-    const inflatedValues = rawValues.map(v => this.inflate(v));
 
     this.dataPolygon = this.axes.map((_, i) => {
-      const p = this.point(inflatedValues[i], i);
+      const p = this.point(rawValues[i], i);
       return `${p.x},${p.y}`;
     }).join(' ');
 
@@ -81,7 +73,7 @@ export class ChartRadar implements OnChanges {
         label: a.label,
         lx:   this.cx + (this.r + lPad) * Math.cos(angle),
         ly:   this.cy + (this.r + lPad) * Math.sin(angle),
-        value: inflatedValues[i]
+        value: rawValues[i]
       };
     });
   }
