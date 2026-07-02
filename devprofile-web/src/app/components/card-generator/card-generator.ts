@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import html2canvas from 'html2canvas';
+import { Profile, LanguageUsage } from '../../models/profile.models';
+import { captureElementAsPngDataUrl, downloadDataUrl } from '../../utils/image-export';
 
 export type CardFormat = 'story' | 'post';
 export type CardTheme = 'dark' | 'light';
@@ -34,8 +35,10 @@ interface ThemeConfig {
   templateUrl: './card-generator.html',
   styleUrls: ['./card-generator.scss']
 })
-export class CardGenerator implements OnInit {
-  @Input() profile: any;
+export class CardGenerator {
+  @Input({ required: true }) profile!: Profile;
+
+  @ViewChild('scalerContain') scalerContain?: ElementRef<HTMLElement>;
 
   /* ── Ultra-Dense Formats (Strict 1080px base) ───────────────────────── */
   readonly formats: FormatConfig[] = [
@@ -72,7 +75,7 @@ export class CardGenerator implements OnInit {
   }
 
   get badgeTitle(): string {
-    const score = this.profile?.analysis?.seniorityScore || 0;
+    const score = this.profile.analysis.seniorityScore || 0;
     if (score >= 80) return 'Arquiteto do GitHub';
     if (score >= 60) return 'Líder Técnico';
     if (score >= 35) return 'Engenheiro de Software';
@@ -80,16 +83,16 @@ export class CardGenerator implements OnInit {
   }
 
   get formattedWorth(): string {
-    const val = this.profile?.analysis?.aggregatedValue || 0;
+    const val = this.profile.analysis.aggregatedValue || 0;
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   }
 
-  get topFiveLangs(): any[] {
-    return (this.profile?.analysis?.topLanguagesAll || []).slice(0, 5);
+  get topFiveLangs(): LanguageUsage[] {
+    return (this.profile.analysis.topLanguagesAll || []).slice(0, 5);
   }
 
-  get radarCompetencies(): any[] {
-    const r = this.profile?.analysis?.radar || {};
+  get radarCompetencies(): { label: string; value: number }[] {
+    const r = this.profile.analysis.radar;
     return [
       { label: 'Consistência', value: r.consistency   || 0 },
       { label: 'Velocidade',   value: r.velocity      || 0 },
@@ -99,18 +102,15 @@ export class CardGenerator implements OnInit {
     ];
   }
 
-  ngOnInit() {}
-
   setFormat(id: CardFormat) { this.selectedFormat = id; }
   setTheme(id: CardTheme)   { this.selectedTheme  = id; }
 
   async generateAndOpen() {
-    if (!this.profile) return;
     this.isExporting = true;
     
     // ── WYSIWYG Approach: Capture the ACTIVE PREVIEW directly ───────
     // This ensures what the user sees is exactly what they get.
-    const previewEl = document.querySelector('.scaler-contain');
+    const previewEl = this.scalerContain?.nativeElement;
     if (!previewEl) {
       this.isExporting = false;
       return;
@@ -125,16 +125,11 @@ export class CardGenerator implements OnInit {
       // Calculate scale to reach exactly 1080px width
       const captureScale = (targetWidth / rect.width) * window.devicePixelRatio;
 
-      const canvas = await html2canvas(previewEl as HTMLElement, {
-        scale: captureScale, 
-        useCORS: true,
-        allowTaint: false,
+      this.generatedImageUrl = await captureElementAsPngDataUrl(previewEl, {
+        scale: captureScale,
         backgroundColor: this.theme.bg,
-        logging: false,
         imageTimeout: 15000,
       });
-
-      this.generatedImageUrl = canvas.toDataURL('image/png', 1.0);
       this.showModal = true;
     } catch (err) {
       console.error('Falha ao gerar captura de alta fidelidade:', err);
@@ -147,10 +142,7 @@ export class CardGenerator implements OnInit {
     if (!this.generatedImageUrl) return;
 
     if (platform === 'download') {
-      const link = document.createElement('a');
-      link.download = `dev-profile-${this.selectedFormat}.png`;
-      link.href = this.generatedImageUrl;
-      link.click();
+      downloadDataUrl(this.generatedImageUrl, `dev-profile-${this.selectedFormat}.png`);
       return;
     }
 
@@ -184,10 +176,10 @@ export class CardGenerator implements OnInit {
 
   closeModal() { this.showModal = false; this.generatedImageUrl = null; }
 
-  getLangFill(lang: any): number {
+  getLangFill(lang: LanguageUsage): number {
     const langs = this.topFiveLangs;
     if (!langs.length) return 0;
-    const max = Math.max(...langs.map((l: any) => l.repositories ?? 0));
+    const max = Math.max(...langs.map(l => l.repositories ?? 0));
     return max > 0 ? ((lang.repositories ?? 0) / max) * 100 : 0;
   }
 }

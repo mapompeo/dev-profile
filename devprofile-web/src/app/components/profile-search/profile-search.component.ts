@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import html2canvas from 'html2canvas';
 
 import { Header } from '../header/header';
 import { Hero } from '../hero/hero';
@@ -12,6 +10,9 @@ import { Hero } from '../hero/hero';
 import { LoadingStatus } from '../hero/hero';
 import { ProfileDashboard } from '../profile-dashboard/profile-dashboard';
 import { ProfileComparison } from '../profile-comparison/profile-comparison';
+import { ProfileService } from '../../services/profile.service';
+import { Profile, ProfileComparisonResult } from '../../models/profile.models';
+import { captureElementAsPngDataUrl, downloadDataUrl } from '../../utils/image-export';
 
 const DEFAULT_FAVICON_URL = 'https://img.icons8.com/ios11/512/FFFFFF/github.png';
 
@@ -30,17 +31,17 @@ const DEFAULT_FAVICON_URL = 'https://img.icons8.com/ios11/512/FFFFFF/github.png'
   styleUrls: ['./profile-search.component.scss']
 })
 export class ProfileSearchComponent implements OnInit {
-  profile: any = null;
-  comparison: any = null;
+  profile: Profile | null = null;
+  comparison: ProfileComparisonResult | null = null;
   loading: boolean = false;
   error: string | null = null;
   isJsonView: boolean = false;
   loadingStatus: LoadingStatus = LoadingStatus.IDLE;
 
-  private wakingUpTimer: any;
+  private wakingUpTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
-    private http: HttpClient,
+    private profileService: ProfileService,
     private route: ActivatedRoute,
     private router: Router,
     private titleService: Title
@@ -107,7 +108,7 @@ export class ProfileSearchComponent implements OnInit {
     this.setFavicon(DEFAULT_FAVICON_URL);
   }
 
-  private setProfileTitle(profile: any) {
+  private setProfileTitle(profile: Profile) {
     const name = profile?.name || profile?.username || 'Usuário';
     this.titleService.setTitle(`${name} | DevProfile`);
     this.setFavicon(DEFAULT_FAVICON_URL);
@@ -127,7 +128,7 @@ export class ProfileSearchComponent implements OnInit {
 
     this.startWakingUpTimer();
 
-    this.http.get(`/api/profile/${encodeURIComponent(user)}`).subscribe({
+    this.profileService.getProfile(user).subscribe({
       next: (data) => {
         this.profile = data;
         this.loading = false;
@@ -152,7 +153,7 @@ export class ProfileSearchComponent implements OnInit {
 
     this.startWakingUpTimer();
 
-    this.http.get(`/api/profile/compare?left=${encodeURIComponent(user1)}&right=${encodeURIComponent(user2)}`).subscribe({
+    this.profileService.compareProfiles(user1, user2).subscribe({
       next: (data) => {
         this.comparison = data;
         this.loading = false;
@@ -184,13 +185,9 @@ export class ProfileSearchComponent implements OnInit {
     }
   }
 
-  downloadAsImage(element: HTMLElement) {
+  async downloadAsImage(element: HTMLElement) {
     if (!element) return;
-    html2canvas(element, { backgroundColor: '#0c0c10', scale: 2 }).then(canvas => {
-      const link = document.createElement('a');
-      link.download = `devprofile-${new Date().getTime()}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
+    const dataUrl = await captureElementAsPngDataUrl(element);
+    downloadDataUrl(dataUrl, `devprofile-${Date.now()}.png`);
   }
 }

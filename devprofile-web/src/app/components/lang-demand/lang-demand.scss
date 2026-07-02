@@ -1,3 +1,5 @@
+@use '../../styles/theme' as *;
+
 .demand-wrap {
   display: flex;
   flex-direction: column;
@@ -57,7 +59,7 @@
   font-size: 0.68rem;
   font-weight: 700;
   border: 1px solid currentColor;
-  border-radius: 99px;
+  border-radius: $radius-pill;
   white-space: nowrap;
 }
 
@@ -80,7 +82,7 @@
   flex: 1;
   height: 4px;
   background: rgba(255,255,255,0.07);
-  border-radius: 99px;
+  border-radius: $radius-pill;
   overflow: hidden;
 }
 
@@ -88,7 +90,7 @@
   display: block;
   height: 100%;
   background: #7c3aed;
-  border-radius: 99px;
+  border-radius: $radius-pill;
   max-width: 100%;
 }
 

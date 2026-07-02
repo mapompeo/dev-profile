@@ -1,5 +1,6 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { StackBreakdown } from '../../models/profile.models';
 
 interface DonutSlice {
   label: string;
@@ -9,6 +10,26 @@ interface DonutSlice {
   dashArray: string;
 }
 
+const CATEGORIES: (keyof StackBreakdown)[] = ['frontend', 'backend', 'devOps', 'mobile', 'data', 'scripts'];
+
+const PALETTE: Record<keyof StackBreakdown, string> = {
+  frontend: '#a78bfa',
+  backend:  '#60a5fa',
+  devOps:   '#34d399',
+  mobile:   '#fb923c',
+  data:     '#f472b6',
+  scripts:  '#94a3b8',
+};
+
+const LABELS: Record<keyof StackBreakdown, string> = {
+  frontend: 'Frontend',
+  backend:  'Backend',
+  devOps:   'DevOps',
+  mobile:   'Mobile',
+  data:     'Data',
+  scripts:  'Scripts',
+};
+
 @Component({
   selector: 'app-chart-donut',
   standalone: true,
@@ -16,43 +37,29 @@ interface DonutSlice {
   templateUrl: './chart-donut.html',
   styleUrls: ['./chart-donut.scss']
 })
-export class ChartDonut implements OnChanges {
-  @Input() breakdown: any = {};
-  @Input() centerLabel = '';
+export class ChartDonut {
+  breakdown = input<StackBreakdown | null>(null);
+  centerLabel = input('');
 
   readonly r = 70;
   readonly circumference = 2 * Math.PI * this.r;
 
-  slices: DonutSlice[] = [];
   hoveredSlice: DonutSlice | null = null;
 
-  private readonly palette: Record<string, string> = {
-    Frontend: '#a78bfa',
-    Backend:  '#60a5fa',
-    DevOps:   '#34d399',
-    Mobile:   '#fb923c',
-    Data:     '#f472b6',
-    Scripts:  '#94a3b8',
-  };
-
-  ngOnChanges(): void {
-    this.build();
-  }
-
-  private build() {
-    const categories = ['Frontend', 'Backend', 'DevOps', 'Mobile', 'Data', 'Scripts'];
-    const values = categories.map(c => (this.breakdown?.[c] ?? this.breakdown?.[c.toLowerCase()] ?? 0) as number);
+  readonly slices = computed<DonutSlice[]>(() => {
+    const breakdown = this.breakdown();
+    const values = CATEGORIES.map(c => breakdown?.[c] ?? 0);
     const total = values.reduce((a, b) => a + b, 0) || 1;
 
     let offset = 0;
-    this.slices = categories
+    return CATEGORIES
       .map((cat, i) => {
         const pct = values[i] / total;
         const dash = pct * this.circumference;
         const slice: DonutSlice = {
-          label:     cat,
+          label:     LABELS[cat],
           value:     Math.round(values[i]),
-          color:     this.palette[cat],
+          color:     PALETTE[cat],
           offset:    this.circumference - offset * this.circumference,
           dashArray: `${dash} ${this.circumference - dash}`,
         };
@@ -60,7 +67,7 @@ export class ChartDonut implements OnChanges {
         return slice;
       })
       .filter(s => s.value > 0);
-  }
+  });
 
   onHover(s: DonutSlice | null) {
     this.hoveredSlice = s;

@@ -6,7 +6,7 @@
     <span class="col-yours">No seu perfil</span>
   </div>
   <div class="demand-row"
-    *ngFor="let r of rows"
+    *ngFor="let r of rows()"
     [class.in-profile]="r.inProfile"
     [class.not-in-profile]="!r.inProfile">
     <span class="col-lang">

@@ -6,6 +6,7 @@ import { ChartDonut }         from '../chart-donut/chart-donut';
 import { CareerPitch }        from '../career-pitch/career-pitch';
 import { LangDemand }         from '../lang-demand/lang-demand';
 import { CareerProjection }   from '../career-projection/career-projection';
+import { Profile, LanguageUsage } from '../../models/profile.models';
 
 @Component({
   selector: 'app-profile-dashboard',
@@ -15,23 +16,16 @@ import { CareerProjection }   from '../career-projection/career-projection';
   styleUrls: ['./profile-dashboard.scss']
 })
 export class ProfileDashboard {
-  @Input() profile: any;
+  @Input({ required: true }) profile!: Profile;
   @Output() onBack     = new EventEmitter<void>();
   @Output() onDownload = new EventEmitter<HTMLElement>();
 
   @ViewChild('dashboardElement') dashboardElement!: ElementRef;
 
-  getLangPercent(lang: any, langs: any[]): number {
+  getLangPercent(lang: LanguageUsage, langs: LanguageUsage[]): number {
     if (!langs?.length) return 0;
-    const max = Math.max(...langs.map((l: any) => l.repositories ?? 0));
+    const max = Math.max(...langs.map(l => l.repositories ?? 0));
     return max > 0 ? ((lang.repositories ?? 0) / max) * 100 : 0;
-  }
-
-  getRepoPercent(repo: any, repos: any[], prop: 'stars' | 'size' = 'stars'): number {
-    if (!repos?.length) return 0;
-    const max = Math.max(...repos.map((r: any) => r[prop] ?? 0));
-    const val = repo[prop] ?? 0;
-    return max > 0 ? Math.max((val / max) * 100, 5) : 5;
   }
 
   getLevel(score: number): number {

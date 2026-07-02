@@ -159,7 +159,7 @@
       </div>
 
       <!-- 2. Linguagens mais utilizadas (Horizontal Chart) -->
-      <div class="cw-card" *ngIf="profile.analysis.topLanguages?.length">
+      <div class="cw-card" *ngIf="profile.analysis.topLanguages.length">
         <div class="cw-header">
           <div class="header-left">
             <svg class="cw-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #a78bfa;"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg>
@@ -259,26 +259,6 @@
       </div>
 
     </div>
-
-    <!-- Restante do conteúdo (Badges e Card Generator) -->
-    <div class="bottom-grid" *ngIf="profile.analysis.badges?.length">
-
-      <!-- Distintivos / Badges -->
-      <div class="section-card badges-card full-col">
-        <h3 class="section-title">Distintivos de Conquista</h3>
-        <div class="badges-grid-compact">
-          <div class="badge-item-mini" *ngFor="let badge of profile.analysis.badges" [class.completed]="badge.completed">
-            <div class="badge-icon-mini" aria-hidden="true">
-              <svg *ngIf="!badge.icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
-              <span *ngIf="badge.icon">{{ badge.icon }}</span>
-            </div>
-            <div class="badge-label-mini">{{ badge.name }}</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <!-- /bottom-grid -->
 
     <!-- ═══ SEÇÃO DE GRÁFICOS AVANÇADOS ════════════════════════════════════ -->
     <div class="advanced-section">

@@ -16,7 +16,19 @@ public sealed class ScoreEngine : IScoreEngine
     {
         var profile = await _gitHubService.GetProfileAsync(username, cancellationToken);
         var languages = await _gitHubService.GetLanguageDistributionAsync(username, cancellationToken);
+        return Calculate(profile, languages);
+    }
 
+    public async Task<ProfileResponseDto> BuildProfileResponseAsync(string username, CancellationToken cancellationToken = default)
+    {
+        var profile = await _gitHubService.GetProfileAsync(username, cancellationToken);
+        var languages = await _gitHubService.GetLanguageDistributionAsync(username, cancellationToken);
+        var analysis = Calculate(profile, languages);
+        return MapToProfileResponse(profile, analysis);
+    }
+
+    private static ScoreResultDto Calculate(GitHubProfileDto profile, IReadOnlyList<LanguageUsageDto> languages)
+    {
         var years = Math.Max(0.5, (DateTime.UtcNow - profile.CreatedAt).TotalDays / 365.25);
         var commitsScore       = Normalize(profile.TotalCommits, 2000);
         var seniorityYearsScore = Normalize(years, 8);
@@ -76,11 +88,8 @@ public sealed class ScoreEngine : IScoreEngine
         };
     }
 
-    public async Task<ProfileResponseDto> BuildProfileResponseAsync(string username, CancellationToken cancellationToken = default)
+    private static ProfileResponseDto MapToProfileResponse(GitHubProfileDto profile, ScoreResultDto analysis)
     {
-        var profile = await _gitHubService.GetProfileAsync(username, cancellationToken);
-        var analysis = await CalculateAsync(username, cancellationToken);
-
         return new ProfileResponseDto
         {
             Username = profile.Username,

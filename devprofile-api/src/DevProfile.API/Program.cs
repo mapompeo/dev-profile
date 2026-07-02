@@ -39,7 +39,7 @@ builder.Services.AddHttpClient<IGitHubService, GitHubService>((provider, client)
         client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
     }
-});
+}).AddStandardResilienceHandler();
 
 builder.Services.AddScoped<IScoreEngine, ScoreEngine>();
 

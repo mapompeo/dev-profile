@@ -1,6 +1,8 @@
 /* DevProfile Global Styles — GitHub Brand Compliant */
 @use '@fontsource-variable/mona-sans' as *;
 @use 'app/styles/theme' as *;
+// Outfit + JetBrains Mono: used by the hero and card-generator "code accent" look
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 /* -------------------------------------------------------------------------
    Reset & Box Model

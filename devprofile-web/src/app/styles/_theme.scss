@@ -7,6 +7,9 @@
 // =============================================================================
 $font-brand: 'Mona Sans Variable', 'Mona Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
 $font-mono:  'SFMono-Regular', 'Fira Code', Consolas, 'Liberation Mono', Menlo, monospace;
+// Loaded via Google Fonts (see styles.scss) for the card/hero "code accent" look
+$font-mono-accent: 'JetBrains Mono', $font-mono;
+$font-display: 'Outfit', $font-brand;
 
 $fw-regular:   400;
 $fw-medium:    500;
@@ -26,6 +29,15 @@ $type-xs:       0.75rem;
 $lh-display: 1.12;
 $lh-tight:   1.2;
 $lh-normal:  1.6;
+
+// =============================================================================
+// RADIUS SCALE
+// =============================================================================
+$radius-sm:   8px;
+$radius-md:   16px;
+$radius-lg:   24px;
+$radius-xl:   32px;
+$radius-pill: 100px;
 
 // =============================================================================
 // COLOR — GitHub Brand Palette (all raw values)

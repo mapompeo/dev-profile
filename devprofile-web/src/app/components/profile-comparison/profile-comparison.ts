@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProfileComparisonResult } from '../../models/profile.models';
 
 @Component({
   selector: 'app-profile-comparison',
@@ -9,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./profile-comparison.scss']
 })
 export class ProfileComparison {
-  @Input() comparison: any;
+  @Input({ required: true }) comparison!: ProfileComparisonResult;
   @Output() onBack = new EventEmitter<void>();
   @Output() onDownload = new EventEmitter<HTMLElement>();
 

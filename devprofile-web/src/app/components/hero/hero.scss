@@ -1,9 +1,8 @@
 @use '../../styles/theme' as *;
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 /* ─── Premium Split Transformation (WYSISYG Home) ───────────────────── */
 .home-hero-split {
-  font-family: 'Outfit', sans-serif;
+  font-family: $font-display;
   color: #fff;
   flex: 1;
   justify-content: center;
@@ -231,7 +230,7 @@
       &::after { right: 0; }
 
       .vs-txt {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: $font-mono-accent;
         font-size: 0.65rem;
         font-weight: 900;
         color: #8957e5;

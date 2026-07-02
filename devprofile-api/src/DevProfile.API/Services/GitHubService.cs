@@ -79,6 +79,7 @@ public sealed class GitHubService : IGitHubService
         var languageTasks = nonForkRepos.Select(async repo =>
         {
             using var response = await _httpClient.GetAsync($"repos/{repo.Owner.Login}/{repo.Name}/languages", cancellationToken);
+            ThrowIfRateLimited(response);
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to fetch languages for repo {Owner}/{Repo}. Status: {StatusCode}",
@@ -148,10 +149,11 @@ public sealed class GitHubService : IGitHubService
             return cachedRepos;
         }
 
+        const int maxPages = 10; // caps at 1000 repos; protects against pathological accounts/bots
         var repos = new List<GitHubRepoResponse>();
         var page = 1;
 
-        while (true)
+        while (page <= maxPages)
         {
             using var response = await _httpClient.GetAsync($"users/{username}/repos?per_page=100&page={page}&sort=updated", cancellationToken);
             ThrowIfRateLimited(response);
@@ -176,7 +178,8 @@ public sealed class GitHubService : IGitHubService
 
     private async Task<int> EstimateTotalCommitsAsync(string username, IReadOnlyList<GitHubRepoResponse> repos, CancellationToken cancellationToken)
     {
-        var candidateRepos = repos.Where(r => !r.IsFork).Take(20).ToList();
+        var nonForkRepos = repos.Where(r => !r.IsFork).ToList();
+        var candidateRepos = nonForkRepos.Take(30).ToList();
         if (candidateRepos.Count == 0)
         {
             return 0;
@@ -189,6 +192,7 @@ public sealed class GitHubService : IGitHubService
                 $"repos/{repo.Owner.Login}/{repo.Name}/commits?author={username}&per_page=1",
                 cancellationToken);
 
+            ThrowIfRateLimited(response);
             if (!response.IsSuccessStatusCode)
                 return 0;
 
@@ -209,9 +213,11 @@ public sealed class GitHubService : IGitHubService
         var commitCounts = await Task.WhenAll(commitTasks);
         var totalCommits = commitCounts.Sum();
 
-        if (repos.Count > candidateRepos.Count && totalCommits > 0)
+        if (nonForkRepos.Count > candidateRepos.Count && totalCommits > 0)
         {
-            var scaleFactor = repos.Count / (double)candidateRepos.Count;
+            // Cap the extrapolation: sampled repos are the most recently updated ones and tend to be
+            // the most active, so scaling unbounded overestimates accounts with many small repos.
+            var scaleFactor = Math.Min(3.0, nonForkRepos.Count / (double)candidateRepos.Count);
             totalCommits = (int)Math.Round(totalCommits * scaleFactor);
         }
 
@@ -220,10 +226,13 @@ public sealed class GitHubService : IGitHubService
 
     private static void ThrowIfRateLimited(HttpResponseMessage response)
     {
+        // Primary rate limit: X-RateLimit-Remaining hits 0. Secondary/abuse rate limit: 403 with
+        // a Retry-After header instead. Both surface as 403 or 429 depending on the endpoint.
         var isRateLimit = response.StatusCode == HttpStatusCode.TooManyRequests ||
             (response.StatusCode == HttpStatusCode.Forbidden &&
-             response.Headers.TryGetValues("X-RateLimit-Remaining", out var remaining) &&
-             remaining.FirstOrDefault() == "0");
+             (response.Headers.RetryAfter is not null ||
+              (response.Headers.TryGetValues("X-RateLimit-Remaining", out var remaining) &&
+               remaining.FirstOrDefault() == "0")));
 
         if (isRateLimit)
         {

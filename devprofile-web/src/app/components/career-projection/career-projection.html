@@ -2,13 +2,13 @@
   <!-- Rhythm indicator -->
   <div class="rhythm-row">
     <span class="rhythm-label">Ritmo atual:</span>
-    <span class="rhythm-badge">{{ rhythm }}</span>
-    <span class="rhythm-suggestion">{{ suggestion }}</span>
+    <span class="rhythm-badge">{{ projection().rhythm }}</span>
+    <span class="rhythm-suggestion">{{ projection().suggestion }}</span>
   </div>
 
   <!-- Timeline -->
   <div class="timeline">
-    <div class="tl-item" *ngFor="let m of milestones; let last = last" [class.reached]="m.reached">
+    <div class="tl-item" *ngFor="let m of projection().milestones; let last = last" [class.reached]="m.reached">
       <!-- Node -->
       <div class="tl-node-col">
         <div class="tl-node">

@@ -223,7 +223,7 @@
         </div>
       </div>
 
-      <div class="cw-card" *ngIf="comparison.left.analysis.topLanguages?.length">
+      <div class="cw-card" *ngIf="comparison.left.analysis.topLanguages.length">
         <div class="cw-header">
           <div class="header-left">
             <label>Linguagens mais utilizadas</label>
@@ -235,7 +235,7 @@
             *ngFor="let lang of comparison.left.analysis.topLanguages.slice(0, 5)"
           >
             <span class="lang-name">{{ lang.name }}</span>
-            <span class="lang-count">{{ lang.repoCount }} repos</span>
+            <span class="lang-count">{{ lang.repositories }} repos</span>
           </div>
         </div>
       </div>
@@ -441,7 +441,7 @@
         </div>
       </div>
 
-      <div class="cw-card" *ngIf="comparison.right.analysis.topLanguages?.length">
+      <div class="cw-card" *ngIf="comparison.right.analysis.topLanguages.length">
         <div class="cw-header">
           <div class="header-left">
             <label>Linguagens mais utilizadas</label>
@@ -453,7 +453,7 @@
             *ngFor="let lang of comparison.right.analysis.topLanguages.slice(0, 5)"
           >
             <span class="lang-name">{{ lang.name }}</span>
-            <span class="lang-count">{{ lang.repoCount }} repos</span>
+            <span class="lang-count">{{ lang.repositories }} repos</span>
           </div>
         </div>
       </div>
