@@ -1,5 +1,6 @@
 import { Directive, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { ENTER_DURATION, easeOut, shouldAnimateEntrance } from '../utils/enter-animation';
+import { revealOnce } from '../utils/reveal-on-scroll';
 
 /**
  * Faz um número contar de zero até o valor quando ele chega na tela, do mesmo
@@ -23,6 +24,7 @@ export class CountUpDirective implements OnChanges, OnDestroy {
 
   private readonly host = inject(ElementRef<HTMLElement>);
   private frame = 0;
+  private stopWatching?: () => void;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['value']) {
@@ -32,10 +34,12 @@ export class CountUpDirective implements OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.stop();
+    this.stopWatching?.();
   }
 
   private run(): void {
     this.stop();
+    this.stopWatching?.();
 
     const target = Number(this.value) || 0;
     if (target <= 0 || !shouldAnimateEntrance()) {
@@ -43,6 +47,12 @@ export class CountUpDirective implements OnChanges, OnDestroy {
       return;
     }
 
+    // Zero na tela até a vez deste número chegar.
+    this.write(0);
+    this.stopWatching = revealOnce(this.host.nativeElement, () => this.animate(target));
+  }
+
+  private animate(target: number): void {
     let start: number | null = null;
     const step = (timestamp: number) => {
       if (start === null) start = timestamp;
@@ -55,7 +65,6 @@ export class CountUpDirective implements OnChanges, OnDestroy {
       }
     };
 
-    this.write(0);
     this.frame = requestAnimationFrame(step);
   }
 

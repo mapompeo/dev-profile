@@ -1,5 +1,6 @@
-import { AfterViewInit, Directive, ElementRef, Input, inject } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, inject } from '@angular/core';
 import { ENTER_DURATION, ENTER_EASING, shouldAnimateEntrance, staggerDelay } from '../utils/enter-animation';
+import { revealOnce } from '../utils/reveal-on-scroll';
 
 /**
  * Faz uma barra crescer da largura zero até a largura final quando entra na
@@ -13,11 +14,12 @@ import { ENTER_DURATION, ENTER_EASING, shouldAnimateEntrance, staggerDelay } fro
   selector: '[appGrowIn]',
   standalone: true
 })
-export class GrowInDirective implements AfterViewInit {
+export class GrowInDirective implements AfterViewInit, OnDestroy {
   /** Posição na lista, para escalonar a entrada de barras vizinhas. */
   @Input('appGrowIn') index = 0;
 
   private readonly host = inject(ElementRef<HTMLElement>);
+  private stopWatching?: () => void;
 
   ngAfterViewInit(): void {
     if (!shouldAnimateEntrance()) return;
@@ -29,9 +31,17 @@ export class GrowInDirective implements AfterViewInit {
     el.style.transition = 'none';
     el.style.width = '0%';
 
-    requestAnimationFrame(() => {
-      el.style.transition = `width ${ENTER_DURATION}ms ${ENTER_EASING} ${staggerDelay(this.index)}ms`;
-      el.style.width = finalWidth;
+    // A barra fica recolhida até entrar na tela; o escalonamento vale entre as
+    // barras vizinhas do mesmo bloco, que aparecem juntas.
+    this.stopWatching = revealOnce(el, () => {
+      requestAnimationFrame(() => {
+        el.style.transition = `width ${ENTER_DURATION}ms ${ENTER_EASING} ${staggerDelay(this.index)}ms`;
+        el.style.width = finalWidth;
+      });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.stopWatching?.();
   }
 }

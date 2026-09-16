@@ -13,6 +13,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { CountUpDirective } from '../../directives/count-up.directive';
 import { GrowInDirective } from '../../directives/grow-in.directive';
+import { RevealDirective } from '../../directives/reveal.directive';
 import { CardGenerator } from '../card-generator/card-generator';
 import { ChartRadar } from '../chart-radar/chart-radar';
 import { ChartDonut } from '../chart-donut/chart-donut';
@@ -30,7 +31,7 @@ const METER_CELLS = 25;
 @Component({
   selector: 'app-profile-dashboard',
   standalone: true,
-  imports: [CommonModule, CountUpDirective, GrowInDirective, CardGenerator, ChartRadar, ChartDonut, CareerPitch, LangDemand, CareerProjection],
+  imports: [CommonModule, CountUpDirective, GrowInDirective, RevealDirective, CardGenerator, ChartRadar, ChartDonut, CareerPitch, LangDemand, CareerProjection],
   templateUrl: './profile-dashboard.html',
   styleUrls: ['./profile-dashboard.scss']
 })

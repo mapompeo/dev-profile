@@ -245,6 +245,12 @@
   }
 }
 
+// Antes de o bloco entrar na tela o medidor fica todo apagado: é a partir daí
+// que as células acendem em sequência.
+.Score-meter:not(.is-revealed) .Score-cell {
+  background-color: var(--neutral-muted);
+}
+
 .Score-ruler {
   display: flex;
   font-size: $type-small;

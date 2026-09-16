@@ -1,5 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RevealDirective } from '../../directives/reveal.directive';
 import { CompetenceRadar } from '../../models/profile.models';
 
 interface RadarPoint { x: number; y: number; }
@@ -39,7 +40,7 @@ function toPolygon(pct: number): string {
 @Component({
   selector: 'app-chart-radar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RevealDirective],
   templateUrl: './chart-radar.html',
   styleUrls: ['./chart-radar.scss']
 })

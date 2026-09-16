@@ -56,6 +56,11 @@
 // transform em SVG não mexe no layout da página, então isto não custa reflow.
 .radar-shape {
   transform-origin: 200px 200px;
+  transform: scale(0.2);
+  opacity: 0;
+}
+
+.is-revealed .radar-shape {
   animation: radar-grow $dur-slow $ease-out both;
 }
 
@@ -73,6 +78,10 @@
 
 // Os pontos de cada eixo aparecem logo depois da forma, sem se mover.
 .radar-dot {
+  opacity: 0;
+}
+
+.is-revealed .radar-dot {
   animation: radar-dot-in $dur-normal $ease-out $dur-slow both;
 }
 

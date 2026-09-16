@@ -92,7 +92,7 @@
               <span class="Label Label--accent Score-level">{{ profile.analysis.seniorityLevel }}</span>
             </div>
 
-            <div class="Score-meter" role="img" [attr.aria-label]="'Score ' + profile.analysis.seniorityScore + ' de 100'">
+            <div class="Score-meter" appReveal role="img" [attr.aria-label]="'Score ' + profile.analysis.seniorityScore + ' de 100'">
               <i *ngFor="let cell of meterCells"
                  [class]="'Score-cell Score-cell--' + cellState(cell)"
                  [style.transition-delay]="cellDelay(cell)"></i>

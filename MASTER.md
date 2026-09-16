@@ -21,12 +21,12 @@ o azul de acento, e a única licença autoral é estrutural: o bloco de score.
 
 **Tese de interação.** Movimento curto e seco, de 80 a 400ms, no comportamento do
 próprio GitHub: hover muda só cor de fundo e de borda em 80ms lineares, sem escala,
-sem levitação e sem sombra que cresce; foco sempre com anel de 2px do acento; na
-rolagem não acontece nada, as animações são de dado novo, não de scroll: quando um
-perfil é analisado, o score conta de 0 e as barras crescem uma vez em 400ms com
-`cubic-bezier(.22,.61,.36,1)`, escalonadas de 40 em 40ms; nada de bounce, elástico,
-parallax, scroll hijack ou vidro, e tudo cai no estado final imediato sob
-`prefers-reduced-motion`.
+sem levitação e sem sombra que cresce; foco sempre com anel de 2px do acento; a
+animação é de entrada, uma vez por bloco, quando o bloco chega na tela: número conta
+de 0, barra cresce da largura zero e o polígono do radar cresce do centro, sempre em
+400ms com `cubic-bezier(.22,.61,.36,1)` e escalonamento de 40 em 40ms entre vizinhos;
+nada de bounce, elástico, parallax, scroll hijack ou vidro, e tudo cai no estado final
+imediato sob `prefers-reduced-motion`, em aba oculta e em tela de toque.
 
 Decisões de acompanhamento, já fechadas:
 
@@ -178,11 +178,24 @@ vem de borda e de superfície.
 | `$dur-normal` | 160ms | Estado, label, foco, expandir |
 | `$dur-slow` | 400ms | Score contando e barras crescendo, uma vez por análise |
 | `$ease-out` | `cubic-bezier(.22,.61,.36,1)` | Toda entrada |
-| `$stagger` | 40ms | Entre barras, teto de 240ms |
+| `$stagger` | 40ms | Entre barras vizinhas, teto de 240ms |
+
+**Quando dispara.** Cada bloco anima ao entrar na tela, uma vez só, via
+`IntersectionObserver` (`utils/reveal-on-scroll.ts`). Num painel longo, animar tudo
+no carregamento faz o usuário perder todo o movimento abaixo da dobra; rolar de volta
+não reanima nada, senão a página vira carrossel.
+
+**Quando não dispara.** Sob `prefers-reduced-motion`, com a aba em segundo plano
+(onde `requestAnimationFrame` não roda e o valor ficaria congelado no início) e em
+tela de toque, no caso do fundo animado. Em todos esses casos o valor final aparece
+direto. As regras ficam em `utils/enter-animation.ts`.
 
 Proibido: bounce, elástico, escala em hover, levitação, parallax, scroll hijack,
-revelação por scroll, animação de `width`/`height` de container, `will-change`
-permanente. Sob `prefers-reduced-motion: reduce`, tudo vai ao estado final em 0ms.
+animação de `width`/`height` de container, `will-change` permanente. Animar a largura
+de uma barra é permitido; animar o tamanho de um cartão não.
+
+O card exportado nunca anima: a captura para PNG pode acontecer no meio do caminho e
+gerar uma imagem errada.
 
 ---
 
