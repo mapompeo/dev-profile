@@ -89,8 +89,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1.4cqw;
-  padding: 3.4cqw;
+  gap: 0.9cqw;
+  padding: 2.8cqw;
   border: 1px solid;
   border-radius: 2cqw;
   font-family: $font-body;
@@ -122,8 +122,8 @@
 }
 
 .DevCard-avatar {
-  width: 11cqw;
-  height: 11cqw;
+  width: 10cqw;
+  height: 10cqw;
   border-radius: 50%;
   border: 1px solid;
   flex: none;
@@ -134,7 +134,7 @@
 
   h2 {
     font-family: $font-display;
-    font-size: 4.4cqw;
+    font-size: 4.1cqw;
     font-weight: $fw-bold;
     line-height: 1.15;
     letter-spacing: $ls-display;
@@ -148,14 +148,20 @@
 
 .DevCard-score {
   display: grid;
-  gap: 1.6cqw;
-  padding: 2.8cqw;
+  gap: 1cqw;
+  padding: 2.2cqw;
   border: 1px solid;
   border-radius: 1.6cqw;
 }
 
 .DevCard-score-label {
   font-size: 3cqw;
+}
+
+// A barra de linguagens vinha sem rótulo dentro do bloco de score, o que dava a
+// entender que as linguagens compunham a nota.
+.DevCard-langs-label {
+  margin-top: 0.8cqw;
 }
 
 .DevCard-score-line {
@@ -167,7 +173,7 @@
 
 .DevCard-score-value {
   font-family: $font-display;
-  font-size: 9cqw;
+  font-size: 8cqw;
   font-weight: $fw-extrabold;
   line-height: $lh-score;
   letter-spacing: $ls-score;
@@ -214,8 +220,8 @@
   display: inline-flex;
   align-items: center;
   gap: 1cqw;
-  padding: 0.4cqw 1.8cqw;
-  font-size: 2.6cqw;
+  padding: 0.3cqw 1.6cqw;
+  font-size: 2.5cqw;
   border: 1px solid;
   border-radius: 100px;
 }
@@ -233,7 +239,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 2cqw;
-  padding: 2.2cqw 2.8cqw;
+  padding: 1.8cqw 2.4cqw;
   border: 1px solid;
   border-radius: 1.6cqw;
 
@@ -243,7 +249,7 @@
 
   strong {
     font-family: $font-display;
-    font-size: 4.8cqw;
+    font-size: 4.4cqw;
     font-weight: $fw-bold;
     letter-spacing: $ls-display;
     font-variant-numeric: tabular-nums;
@@ -262,7 +268,7 @@
   gap: 0.6cqw;
   justify-items: center;
   text-align: center;
-  padding: 1.8cqw 0;
+  padding: 1.5cqw 0;
   border-right: 1px solid;
 
   &:last-child {
@@ -280,11 +286,17 @@
   }
 }
 
+.DevCard-site {
+  text-align: center;
+  font-size: 2.4cqw;
+  letter-spacing: 0.04em;
+}
+
 .DevCard-foot {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2cqw;
-  padding-top: 2cqw;
+  padding-top: 1.6cqw;
   border-top: 1px solid;
 
   div {

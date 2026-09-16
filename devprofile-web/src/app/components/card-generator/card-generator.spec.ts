@@ -35,14 +35,14 @@ describe('CardGenerator', () => {
     expect(c.theme.bg).toBe('#ffffff');
   });
 
-  it('o título do selo acompanha a faixa de score', () => {
-    const baixo = fakeProfile();
-    baixo.analysis = { ...baixo.analysis, seniorityScore: 20 };
-    expect(criar(baixo).badgeTitle).toBe('Desenvolvedor Altamente Ativo');
+  it('o selo mostra o mesmo nível do rodapé, sem escala paralela', () => {
+    // Havia duas escalas na mesma imagem: um perfil de score 61 saía com selo de
+    // "Líder Técnico" e rodapé dizendo "Pleno".
+    expect(criar().badgeTitle).toBe('Pleno');
 
-    const alto = fakeProfile();
-    alto.analysis = { ...alto.analysis, seniorityScore: 85 };
-    expect(criar(alto).badgeTitle).toBe('Arquiteto do GitHub');
+    const senior = fakeProfile();
+    senior.analysis = { ...senior.analysis, seniorityScore: 85, seniorityLevel: 'Senior' };
+    expect(criar(senior).badgeTitle).toBe('Senior');
   });
 
   it('o valor sai formatado como moeda brasileira', () => {

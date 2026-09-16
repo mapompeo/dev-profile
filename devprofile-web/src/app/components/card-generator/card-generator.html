@@ -113,6 +113,7 @@
           <span class="DevCard-score-value" [style.color]="theme.text">{{ profile.analysis.seniorityScore }}<small [style.color]="theme.subtext">/100</small></span>
           <span class="DevCard-score-level" [style.color]="theme.accent" [style.border-color]="theme.accent">{{ badgeTitle }}</span>
         </div>
+        <span class="DevCard-score-label DevCard-langs-label" [style.color]="theme.subtext">Linguagens</span>
         <div class="DevCard-meter" role="img" [attr.aria-label]="langBarLabel">
           <i *ngFor="let lang of topFiveLangs"
              [style.width.%]="lang.percentage"
@@ -167,6 +168,9 @@
           <b [style.color]="theme.text">{{ profile.analysis.experienceYears }}</b>
         </div>
       </footer>
+
+      <!-- Sem isto, quem vê a imagem em uma rede não tem como fazer a própria. -->
+      <p class="DevCard-site" [style.color]="theme.subtext">dev-profile-one.vercel.app</p>
     </div>
   </ng-template>
 

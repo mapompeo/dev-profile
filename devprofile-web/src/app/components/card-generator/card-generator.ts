@@ -97,12 +97,15 @@ export class CardGenerator implements AfterViewInit, OnDestroy {
     return this.themes.find(t => t.id === this.selectedTheme)!;
   }
 
+  /**
+   * O selo mostra o mesmo nível que o rodapé e o painel.
+   *
+   * Antes havia uma segunda escala só para ele ("Líder Técnico", "Arquiteto do
+   * GitHub"), com faixas próprias: um perfil de score 61 saía com o selo de
+   * Líder Técnico e o rodapé dizendo Pleno, na mesma imagem. Uma escala só.
+   */
   get badgeTitle(): string {
-    const score = this.profile.analysis.seniorityScore || 0;
-    if (score >= 80) return 'Arquiteto do GitHub';
-    if (score >= 60) return 'Líder Técnico';
-    if (score >= 35) return 'Engenheiro de Software';
-    return 'Desenvolvedor Altamente Ativo';
+    return this.profile.analysis.seniorityLevel;
   }
 
   get formattedWorth(): string {
