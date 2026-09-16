@@ -3,4 +3,7 @@
   <Folder Name="/devprofile-api/src/">
     <Project Path="devprofile-api/src/DevProfile.API/DevProfile.API.csproj" />
   </Folder>
+  <Folder Name="/devprofile-api/tests/">
+    <Project Path="devprofile-api/tests/DevProfile.API.Tests/DevProfile.API.Tests.csproj" />
+  </Folder>
 </Solution>

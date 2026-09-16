@@ -38,7 +38,7 @@ public sealed class GitHubService : IGitHubService
 
         var totalStars = repos.Sum(r => r.StargazersCount);
         var totalForks = repos.Sum(r => r.ForksCount);
-        var totalCommits = await EstimateTotalCommitsAsync(username, repos, cancellationToken);
+        var totalCommits = await GetTotalCommitsAsync(username, repos, cancellationToken);
 
         var profile = new GitHubProfileDto
         {
@@ -63,64 +63,18 @@ public sealed class GitHubService : IGitHubService
 
     public async Task<IReadOnlyList<LanguageUsageDto>> GetLanguageDistributionAsync(string username, CancellationToken cancellationToken = default)
     {
-        var cacheKey = $"github:v4:languages:{username.ToLowerInvariant()}";
+        var cacheKey = $"github:v5:languages:{username.ToLowerInvariant()}";
         if (_cache.TryGetValue(cacheKey, out IReadOnlyList<LanguageUsageDto>? cachedLanguages) && cachedLanguages is not null)
         {
             return cachedLanguages;
         }
 
+        // A listagem de repositórios já traz a linguagem predominante de cada um, e
+        // ela é o que a interface exibe ("por número de repositórios"). Antes havia
+        // uma chamada a /languages por repositório: dezenas de requisições por
+        // perfil, o que sozinho estourava o limite de 60/h de quem não usa token.
         var repos = await GetReposAsync(username, cancellationToken);
-        var languageBytes = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
-        var reposByLanguage = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-
-        var nonForkRepos = repos.Where(r => !r.IsFork).ToList();
-
-        // Fetch all repository languages in parallel instead of sequentially
-        var languageTasks = nonForkRepos.Select(async repo =>
-        {
-            using var response = await _httpClient.GetAsync($"repos/{repo.Owner.Login}/{repo.Name}/languages", cancellationToken);
-            ThrowIfRateLimited(response);
-            if (!response.IsSuccessStatusCode)
-            {
-                _logger.LogWarning("Failed to fetch languages for repo {Owner}/{Repo}. Status: {StatusCode}",
-                    repo.Owner.Login,
-                    repo.Name,
-                    response.StatusCode);
-                return new Dictionary<string, long>();
-            }
-
-            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            return await JsonSerializer.DeserializeAsync<Dictionary<string, long>>(stream, JsonOptions, cancellationToken)
-                   ?? new Dictionary<string, long>();
-        });
-
-        var allMaps = await Task.WhenAll(languageTasks);
-
-        foreach (var map in allMaps)
-        {
-            foreach (var entry in map)
-            {
-                var language = entry.Key;
-                var bytes = entry.Value;
-
-                if (!languageBytes.TryAdd(language, bytes))
-                    languageBytes[language] += bytes;
-
-                if (!reposByLanguage.TryAdd(language, 1))
-                    reposByLanguage[language] += 1;
-            }
-        }
-
-        var totalBytes = Math.Max(1L, languageBytes.Values.Sum());
-        var result = languageBytes
-            .OrderByDescending(x => reposByLanguage.GetValueOrDefault(x.Key))
-            .Select(x => new LanguageUsageDto
-            {
-                Name = x.Key,
-                Percentage = Math.Round((x.Value / (double)totalBytes) * 100, 2),
-                Repositories = reposByLanguage.GetValueOrDefault(x.Key)
-            })
-            .ToList();
+        var result = LanguageAggregator.Aggregate(repos);
 
         _cache.Set(cacheKey, result, TimeSpan.FromMinutes(30));
         return result;
@@ -176,16 +130,68 @@ public sealed class GitHubService : IGitHubService
         return repos;
     }
 
+    /// <summary>
+    /// Total de commits do autor. A busca devolve o número real em uma requisição;
+    /// se ela falhar (a Search API tem limite próprio, bem mais apertado), cai para
+    /// uma amostragem curta em vez de devolver zero.
+    /// </summary>
+    private async Task<int> GetTotalCommitsAsync(string username, IReadOnlyList<GitHubRepoResponse> repos, CancellationToken cancellationToken)
+    {
+        var searched = await TrySearchCommitCountAsync(username, cancellationToken);
+        if (searched is not null)
+        {
+            return searched.Value;
+        }
+
+        return await EstimateTotalCommitsAsync(username, repos, cancellationToken);
+    }
+
+    private async Task<int?> TrySearchCommitCountAsync(string username, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // "user:" restringe aos repositórios do próprio perfil, que é o que o app
+            // mede. Sem isso a busca conta todo commit do autor espalhado pelo GitHub,
+            // inclusive em forks de terceiros: gaearon aparece com 1.121.664 commits no
+            // escopo aberto e 1.959 no escopo certo.
+            var query = Uri.EscapeDataString($"author:{username} user:{username}");
+            using var response = await _httpClient.GetAsync(
+                $"search/commits?q={query}&per_page=1",
+                cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Inclui o 403 de limite da busca: não derruba a análise inteira,
+                // porque o plano B ainda consegue um número aproximado.
+                _logger.LogInformation(
+                    "Commit search unavailable for {Username} (status {StatusCode}); falling back to sampling.",
+                    username,
+                    response.StatusCode);
+                return null;
+            }
+
+            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            var payload = await JsonSerializer.DeserializeAsync<GitHubSearchCountResponse>(stream, JsonOptions, cancellationToken);
+            return payload?.TotalCount;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException)
+        {
+            _logger.LogInformation(ex, "Commit search failed for {Username}; falling back to sampling.", username);
+            return null;
+        }
+    }
+
     private async Task<int> EstimateTotalCommitsAsync(string username, IReadOnlyList<GitHubRepoResponse> repos, CancellationToken cancellationToken)
     {
         var nonForkRepos = repos.Where(r => !r.IsFork).ToList();
-        var candidateRepos = nonForkRepos.Take(30).ToList();
+        // Amostra curta de propósito: este caminho só roda quando a busca falhou, e
+        // gastar trinta requisições aqui recriaria o problema que acabamos de tirar.
+        var candidateRepos = nonForkRepos.Take(5).ToList();
         if (candidateRepos.Count == 0)
         {
             return 0;
         }
 
-        // Fetch all commit counts in parallel instead of sequentially
         var commitTasks = candidateRepos.Select(async repo =>
         {
             using var response = await _httpClient.GetAsync(

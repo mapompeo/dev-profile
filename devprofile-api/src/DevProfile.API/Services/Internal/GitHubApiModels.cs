@@ -61,3 +61,9 @@ internal sealed class GitHubRepoOwnerResponse
     [JsonPropertyName("login")]
     public string Login { get; init; } = string.Empty;
 }
+
+internal sealed class GitHubSearchCountResponse
+{
+    [JsonPropertyName("total_count")]
+    public int TotalCount { get; init; }
+}

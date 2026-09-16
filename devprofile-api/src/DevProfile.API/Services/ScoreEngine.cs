@@ -32,7 +32,11 @@ public sealed class ScoreEngine : IScoreEngine
         var years = Math.Max(0.5, (DateTime.UtcNow - profile.CreatedAt).TotalDays / 365.25);
         var commitsScore       = Normalize(profile.TotalCommits, 2000);
         var seniorityYearsScore = Normalize(years, 8);
-        var languageDiversityScore = Normalize(languages.Count, 12);
+        // O teto é 6 porque a contagem mede linguagens predominantes, uma por
+        // repositório. O valor anterior (12) foi calibrado quando a distribuição
+        // vinha de bytes por repositório, onde um único projeto web já rendia
+        // quatro linguagens e inflava a diversidade de qualquer perfil.
+        var languageDiversityScore = Normalize(languages.Count, MaxLanguagesForFullDiversity);
         var communityImpactScore = Normalize(profile.TotalStars + profile.TotalForks, 500);
         var consistencyScore   = CalculateConsistencyScore(profile.TotalCommits, years);
 
@@ -111,6 +115,9 @@ public sealed class ScoreEngine : IScoreEngine
             Analysis = analysis
         };
     }
+
+    /// <summary>Número de linguagens distintas que satura o sinal de diversidade.</summary>
+    internal const int MaxLanguagesForFullDiversity = 6;
 
     private static double Normalize(double value, double maxValue)
     {

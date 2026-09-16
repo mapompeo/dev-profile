@@ -16,6 +16,16 @@ public sealed class ProfileController : ControllerBase
         _scoreEngine = scoreEngine;
     }
 
+    /// <summary>
+    /// Sonda do Render (healthCheckPath no render.yaml). Precisa existir e ser
+    /// literal: sem ela a sonda cai na rota curinga {username} e cada verificação
+    /// vira uma busca pelo usuário "health" na API do GitHub, queimando o limite
+    /// de requisições do serviço em produção sem ninguém usar o app.
+    /// </summary>
+    [HttpGet("health")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Health() => Ok(new { status = "ok" });
+
     [HttpGet("{username}")]
     [ProducesResponseType(typeof(ProfileResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

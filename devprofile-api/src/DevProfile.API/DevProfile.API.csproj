@@ -10,7 +10,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.4" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.7.0" />
+    <PackageReference Include="Microsoft.OpenApi" Version="2.12.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- O projeto de testes precisa enxergar os modelos e o agregador internos. -->
+    <InternalsVisibleTo Include="DevProfile.API.Tests" />
   </ItemGroup>
 
 </Project>
