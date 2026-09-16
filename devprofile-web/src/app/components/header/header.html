@@ -13,10 +13,18 @@
     </button>
 
     <nav class="AppHeader-nav" aria-label="Links do projeto">
-      <button type="button" class="AppHeader-link" (click)="openMethod()">
-        Como são calculados os valores?
+      <button
+          type="button"
+          class="AppHeader-link"
+          (click)="openMethod()"
+          aria-label="Como são calculados os valores">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 0 1 9 6.25c0 .177-.04.264-.077.318a.956.956 0 0 1-.277.245c-.076.051-.158.104-.25.163l-.045.029c-.137.086-.293.187-.435.3A2.4 2.4 0 0 0 7.24 8.2a.75.75 0 0 0 1.417.494.9.9 0 0 1 .223-.335c.096-.076.2-.143.36-.245l.038-.025c.084-.053.19-.12.293-.19.276-.187.618-.463.847-.83.234-.375.332-.802.332-1.069 0-.56-.23-1.115-.71-1.475A2.777 2.777 0 0 0 8 4c-.615 0-1.154.156-1.593.452a2.435 2.435 0 0 0-.75.833.75.75 0 0 0 1.263.8ZM9 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>
+        <span class="AppHeader-link-text">Como são calculados os valores?</span>
       </button>
-      <a href="https://github.com/mapompeo/dev-profile" target="_blank" rel="noopener noreferrer">Sobre</a>
+      <a href="https://github.com/mapompeo/dev-profile" target="_blank" rel="noopener noreferrer" aria-label="Sobre o projeto">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Zm7.251 10.324.004-5.073-.002-2.253A2.25 2.25 0 0 0 5.003 2.5H1.5v9h3.757a3.75 3.75 0 0 1 1.994.574ZM8.755 4.75l-.004 7.322a3.752 3.752 0 0 1 1.992-.572H14.5v-9h-3.495a2.25 2.25 0 0 0-2.25 2.25Z"></path></svg>
+        <span class="AppHeader-link-text">Sobre</span>
+      </a>
     </nav>
 
     <div class="AppHeader-theme">
@@ -26,10 +34,10 @@
           class="input AppHeader-select"
           [value]="theme.theme()"
           (change)="onThemeChange($event)">
-        <option value="system">Tema do sistema</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark default</option>
-        <option value="dimmed">Dark dimmed</option>
+        <option value="system">Tema: sistema</option>
+        <option value="light">Tema: light</option>
+        <option value="dark">Tema: dark</option>
+        <option value="dimmed">Tema: dimmed</option>
       </select>
     </div>
 

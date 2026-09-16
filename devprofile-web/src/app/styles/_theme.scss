@@ -71,6 +71,23 @@ $ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
 $stagger: 40ms;
 
 // =============================================================================
+// UTILITÁRIOS
+// =============================================================================
+/// Esconde visualmente sem tirar da leitura de tela. Usado para rótulos que
+/// dão lugar a ícones em telas estreitas: o nome acessível continua lá.
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// =============================================================================
 // TEMAS — os três oficiais do Primer
 // =============================================================================
 @mixin theme-light {

@@ -27,10 +27,11 @@
   }
 }
 
-// Em tela de toque a grade fica parada, então baixa ainda mais para não pesar
-// na leitura em pouco espaço.
+// Em tela de toque a chuva também cai, com células maiores e menos quadros por
+// segundo (ver o componente). A presença fica um pouco menor que no desktop
+// porque a tela é pequena e o texto divide o mesmo espaço.
 @media (pointer: coarse) {
   .Rain {
-    opacity: 0.16;
+    opacity: 0.26;
   }
 }

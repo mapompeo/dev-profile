@@ -60,6 +60,7 @@
   a {
     display: inline-flex;
     align-items: center;
+    gap: $space-2 - 2px;
     font-size: $type-body;
     color: var(--fg-muted);
 
@@ -73,12 +74,20 @@
       min-height: 44px;
     }
   }
+
+  .icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
 }
 
 // Botão que abre a metodologia: parece link, comporta-se como botão.
 .AppHeader-link {
   display: inline-flex;
   align-items: center;
+  gap: $space-2 - 2px;
   font-size: $type-body;
   color: var(--fg-muted);
   background: none;
@@ -218,17 +227,42 @@
   }
 }
 
+// Em tela estreita o cabeçalho cabe em uma linha só: os rótulos longos dão
+// lugar aos ícones, que continuam com nome acessível pelo aria-label. Antes, a
+// pergunta sozinha ocupava 173px e empurrava o seletor de tema para uma segunda
+// linha, deixando a barra com 92px de altura (121px em 320px de largura).
 @media (max-width: $bp-md) {
   .AppHeader-inner {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: $space-2;
+    padding: $space-2 $space-3;
   }
 
   .AppHeader-nav {
-    gap: $space-3;
+    gap: $space-1;
   }
 
-  .AppHeader-link {
-    font-size: $type-small;
+  .AppHeader-link-text {
+    @include sr-only;
+  }
+
+  // Sem texto ao lado, o ícone vira o alvo inteiro e precisa de área de toque.
+  .AppHeader-link,
+  .AppHeader-nav a {
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .AppHeader-select {
+    max-width: 124px;
+  }
+}
+
+// Só nas telas mais estreitas o nome da marca sai: o octocat já identifica o
+// app, e em 390px ainda sobra espaço para o nome.
+@media (max-width: 360px) {
+  .AppHeader-brand {
+    @include sr-only;
   }
 }

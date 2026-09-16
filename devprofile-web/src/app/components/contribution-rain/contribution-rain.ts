@@ -39,6 +39,7 @@ export class ContributionRain implements AfterViewInit, OnChanges, OnDestroy {
   private ctx: CanvasRenderingContext2D | null = null;
   private columns: Column[] = [];
   private frame = 0;
+  private lastFrame = 0;
   private colors: string[] = [];
   private resizeObserver?: ResizeObserver;
   private readonly onVisibility = () => this.syncLoop();
@@ -66,15 +67,33 @@ export class ContributionRain implements AfterViewInit, OnChanges, OnDestroy {
     document.removeEventListener('visibilitychange', this.onVisibility);
   }
 
-  /** Só anima onde faz sentido: com dados, com movimento permitido e com mouse. */
+  /** Só anima com dados na mão e com movimento permitido. */
   private get shouldAnimate(): boolean {
     if (!this.days.length) return false;
     if (typeof matchMedia !== 'function') return false;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-    // Em telas de toque o custo de uma animação contínua sai da bateria de quem
-    // está olhando, então lá a grade fica parada.
-    if (matchMedia('(pointer: coarse)').matches) return false;
     return true;
+  }
+
+  /**
+   * Celular também anima, mas mais barato: células maiores (menos colunas para
+   * desenhar) e metade dos quadros por segundo. O movimento continua contínuo
+   * aos olhos e o custo por segundo cai pela metade.
+   */
+  private get isCompact(): boolean {
+    return typeof matchMedia === 'function' && matchMedia('(max-width: 768px)').matches;
+  }
+
+  private get cell(): number {
+    return this.isCompact ? 16 : CELL;
+  }
+
+  private get step(): number {
+    return this.cell + (this.isCompact ? 6 : GAP);
+  }
+
+  private get frameInterval(): number {
+    return this.isCompact ? 1000 / 30 : 0;
   }
 
   private layout(): void {
@@ -108,8 +127,8 @@ export class ContributionRain implements AfterViewInit, OnChanges, OnDestroy {
       return;
     }
 
-    const count = Math.ceil(width / STEP) + 1;
-    const perColumn = Math.ceil(height / STEP) + 6;
+    const count = Math.ceil(width / this.step) + 1;
+    const perColumn = Math.ceil(height / this.step) + 6;
     this.columns = [];
 
     for (let i = 0; i < count; i++) {
@@ -122,8 +141,8 @@ export class ContributionRain implements AfterViewInit, OnChanges, OnDestroy {
       }
 
       this.columns.push({
-        x: i * STEP,
-        y: -((i * 37) % (perColumn * STEP)),
+        x: i * this.step,
+        y: -((i * 37) % (perColumn * this.step)),
         speed: 8 + ((i * 13) % 14),
         levels: slice
       });
@@ -144,30 +163,43 @@ export class ContributionRain implements AfterViewInit, OnChanges, OnDestroy {
         const level = column.levels[j];
         if (level <= 0) continue;
 
-        const y = column.y + j * STEP;
-        if (y < -STEP || y > height) continue;
+        const y = column.y + j * this.step;
+        if (y < -this.step || y > height) continue;
 
         // A cabeça da coluna é mais viva que a cauda: dá a leitura de queda sem
         // precisar de rastro desenhado.
         const fade = 1 - Math.min(1, j / column.levels.length);
         ctx.globalAlpha = 0.25 + fade * 0.75;
         ctx.fillStyle = this.colors[level - 1] ?? this.colors[0];
-        ctx.fillRect(column.x, y, CELL, CELL);
+        ctx.fillRect(column.x, y, this.cell, this.cell);
       }
     }
 
     ctx.globalAlpha = 1;
   }
 
-  private tick = (): void => {
+  private tick = (timestamp: number): void => {
     const canvas = this.canvasRef?.nativeElement;
     if (!canvas) return;
 
+    // Pula quadros quando o alvo é menor que o do monitor, e avança a queda pelo
+    // tempo decorrido: a velocidade fica igual em 30 ou em 60 quadros.
+    //
+    // O primeiro quadro entra direto. Sem isso, ele cairia no teste de intervalo
+    // com a referência ainda zerada, o laço giraria e nada seria desenhado.
+    const elapsed = this.lastFrame ? timestamp - this.lastFrame : this.frameInterval;
+    if (this.lastFrame && elapsed < this.frameInterval) {
+      this.frame = requestAnimationFrame(this.tick);
+      return;
+    }
+    this.lastFrame = timestamp;
+
     const height = canvas.height / Math.min(2, window.devicePixelRatio || 1);
+    const seconds = Math.min(elapsed, 100) / 1000;
     for (const column of this.columns) {
-      column.y += column.speed / 60;
+      column.y += column.speed * seconds;
       if (column.y > height) {
-        column.y = -column.levels.length * STEP;
+        column.y = -column.levels.length * this.step;
       }
     }
 
