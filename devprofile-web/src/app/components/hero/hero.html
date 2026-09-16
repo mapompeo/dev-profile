@@ -1,232 +1,158 @@
-<section class="home-hero-split">
+<section class="Landing">
 
-  <div class="hero-split-host">
-    <!-- LEFT: Text & Input -->
-    <div class="hero-left">
-      <div class="hero-badge-pill" [class.vs-mode]="mode === 'vs'">
-        <svg class="pill-ico" viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-        </svg>
-        <span *ngIf="mode === 'single'">Mapeie sua senioridade técnica!</span>
-        <span *ngIf="mode === 'vs'">Compare quem domina o código!</span>
-      </div>
+  <div class="Landing-head">
+    <h1 *ngIf="mode === 'single'">Descubra o valor técnico das suas contribuições no GitHub</h1>
+    <h1 *ngIf="mode === 'vs'">Compare duas trajetórias técnicas, lado a lado</h1>
+    <p *ngIf="mode === 'single'">
+      A análise lê seus repositórios públicos e devolve um score de senioridade, o radar de
+      competências, a composição de linguagens e o ritmo de commits.
+    </p>
+    <p *ngIf="mode === 'vs'">
+      Dois perfis, os mesmos cinco sinais, a mesma escala. O veredito sai dos números, não da
+      impressão.
+    </p>
+  </div>
 
-      <h1 class="hero-main-title">
+  <div class="Landing-grid">
+
+    <div class="Box Landing-search">
+      <nav class="UnderlineNav Landing-tabs" role="tablist" aria-label="Modo de análise">
+        <button
+            type="button"
+            class="UnderlineNav-item"
+            role="tab"
+            [attr.aria-selected]="mode === 'single'"
+            (click)="setMode('single')">
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.68 11.74a6 6 0 1 1 1.06-1.06l3.04 3.03-1.06 1.07-3.04-3.04ZM11.5 7a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"></path></svg>
+          Meu perfil
+        </button>
+        <button
+            type="button"
+            class="UnderlineNav-item"
+            role="tab"
+            [attr.aria-selected]="mode === 'vs'"
+            (click)="setMode('vs')">
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.25a2.25 2.25 0 1 1 3 2.12v5.26a2.25 2.25 0 1 1-1.5 0V5.37A2.25 2.25 0 0 1 5 3.25Zm6.25-1.5a.75.75 0 0 1 .75.75v5.13a2.25 2.25 0 1 1-1.5 0V2.5a.75.75 0 0 1 .75-.75Z"></path></svg>
+          Modo VS
+        </button>
+      </nav>
+
+      <form class="Box-row Landing-form" (ngSubmit)="submit()">
+
         <ng-container *ngIf="mode === 'single'">
-          <span class="title-line">Descubra o</span>
-          <span class="title-line"><span class="text-glow">Valor Técnico</span></span>
-          <span class="title-line">das suas contribuições</span>
-          <span class="title-line">no <span class="text-accent">GitHub!</span></span>
+          <label class="Landing-label" for="username">Usuário do GitHub</label>
+          <input
+              id="username"
+              class="input"
+              type="text"
+              name="username"
+              placeholder="github-user"
+              autocomplete="off"
+              required
+              [(ngModel)]="username"
+              [disabled]="loading"
+              (ngModelChange)="clearError()" />
         </ng-container>
+
         <ng-container *ngIf="mode === 'vs'">
-          <span class="title-line">Desafie a senioridade:</span>
-          <span class="title-line"><span class="text-glow">Quem domina</span></span>
-          <span class="title-line">o ecossistema de</span>
-          <span class="title-line"><span class="text-accent">Código?</span></span>
-        </ng-container>
-      </h1>
-
-      <!-- Integrated Input Area (WYSISYG Style) -->
-      <div class="hero-input-area" [class.is-vs]="mode === 'vs'">
-
-        <!-- ── Premium Sliding Toggle ── -->
-        <div class="glass-toggle-host" role="tablist">
-          <div class="toggle-indicator" [class.pos-right]="mode === 'vs'"></div>
-          <button class="toggle-btn" [class.active]="mode === 'single'" (click)="setMode('single')" role="tab"
-            [attr.aria-selected]="mode === 'single'">
-            Meu Perfil
-          </button>
-          <button class="toggle-btn" [class.active]="mode === 'vs'" (click)="setMode('vs')" role="tab"
-            [attr.aria-selected]="mode === 'vs'">
-            Modo VS
-          </button>
-        </div>
-
-        <form (ngSubmit)="submit()" class="integrated-form">
-          <!-- Single Mode: Unified Pill -->
-          <ng-container *ngIf="mode === 'single'">
-            <div class="input-wrapper-pill single-main">
-              <input type="text" [(ngModel)]="username" name="username" placeholder="github-user"
-                aria-label="Usuário do GitHub"
-                autocomplete="off" required [disabled]="loading" (ngModelChange)="clearError()" />
-              <button type="submit" [disabled]="!username || loading" class="btn-action-main" [class.is-loading]="loading">
-                <svg *ngIf="!loading" class="btn-ico" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M13 2v8h8L11 22v-8H3L13 2z" />
-                </svg>
-                <svg *ngIf="loading" class="btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-                <span>{{ loading ? currentLoadingMessage : 'Saber agora' }}</span>
-              </button>
+          <div class="Landing-pair">
+            <div>
+              <label class="Landing-label" for="leftUser">Primeiro perfil</label>
+              <input
+                  id="leftUser"
+                  class="input"
+                  type="text"
+                  name="leftUser"
+                  placeholder="github-user-1"
+                  autocomplete="off"
+                  required
+                  [(ngModel)]="leftUser"
+                  [disabled]="loading"
+                  (ngModelChange)="clearError()" />
             </div>
-          </ng-container>
-
-          <!-- VS Mode: Unified Pill -->
-          <ng-container *ngIf="mode === 'vs'">
-            <div class="input-wrapper-pill vs-main">
-              <div class="contender-input-pair">
-                <input type="text" [(ngModel)]="leftUser" name="leftUser" placeholder="github-user-1" autocomplete="off"
-                  aria-label="Primeiro usuário do GitHub"
-                  required [disabled]="loading" (ngModelChange)="clearError()" />
-                <div class="vs-divider">
-                  <span class="vs-txt">VS</span>
-                </div>
-                <input type="text" [(ngModel)]="rightUser" name="rightUser" placeholder="github-user-2"
-                  aria-label="Segundo usuário do GitHub"
-                  autocomplete="off" required [disabled]="loading" (ngModelChange)="clearError()" />
-              </div>
-              <button type="submit" [disabled]="!leftUser || !rightUser || loading" class="btn-action-main" [class.is-loading]="loading">
-                <svg *ngIf="!loading" class="btn-ico" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M13 2v8h8L11 22v-8H3L13 2z" />
-                </svg>
-                <svg *ngIf="loading" class="btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-                <span>{{ loading ? currentLoadingMessage : 'Desafiar' }}</span>
-              </button>
+            <span class="Landing-vs" aria-hidden="true">vs</span>
+            <div>
+              <label class="Landing-label" for="rightUser">Segundo perfil</label>
+              <input
+                  id="rightUser"
+                  class="input"
+                  type="text"
+                  name="rightUser"
+                  placeholder="github-user-2"
+                  autocomplete="off"
+                  required
+                  [(ngModel)]="rightUser"
+                  [disabled]="loading"
+                  (ngModelChange)="clearError()" />
             </div>
-          </ng-container>
-        </form>
-
-        <!-- Seamless Local Error Component -->
-        <div class="hero-error-banner" *ngIf="error">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <span>{{ error }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT: Language Fusion Animation -->
-    <div class="hero-right">
-      <div class="lang-scene">
-
-        <!-- ── Phase 1: Language icons converging ── -->
-        <div class="l-orb lo-1">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#3178c6"/><text x="20" y="27" font-size="13" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">TS</text></svg>
-        </div>
-        <div class="l-orb lo-2">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="0" fill="#f7df1e"/><text x="21" y="28" font-size="14" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">JS</text></svg>
-        </div>
-        <div class="l-orb lo-3">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#3572A5"/><text x="20" y="27" font-size="14" font-weight="900" fill="#ffd43b" text-anchor="middle" font-family="monospace">Py</text></svg>
-        </div>
-        <div class="l-orb lo-4">
-          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#20232a"/><ellipse cx="20" cy="20" rx="18" ry="6.5" fill="none" stroke="#61dafb" stroke-width="2.2"/><ellipse cx="20" cy="20" rx="18" ry="6.5" fill="none" stroke="#61dafb" stroke-width="2.2" transform="rotate(60 20 20)"/><ellipse cx="20" cy="20" rx="18" ry="6.5" fill="none" stroke="#61dafb" stroke-width="2.2" transform="rotate(120 20 20)"/><circle cx="20" cy="20" r="2.8" fill="#61dafb"/></svg>
-        </div>
-        <div class="l-orb lo-5">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#264de4"/><text x="20" y="28" font-size="11" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">CSS</text></svg>
-        </div>
-        <div class="l-orb lo-6">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#e34c26"/><text x="20" y="27" font-size="10" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">HTML</text></svg>
-        </div>
-        <div class="l-orb lo-7">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#00ADD8"/><text x="20" y="28" font-size="13" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">Go</text></svg>
-        </div>
-        <div class="l-orb lo-8">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#7F52FF"/><text x="20" y="27" font-size="11" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">Kt</text></svg>
-        </div>
-        <div class="l-orb lo-9">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#2496ED"/><text x="20" y="27" font-size="10" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">🐳</text></svg>
-        </div>
-        <div class="l-orb lo-10">
-          <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="7" fill="#ce4a08"/><text x="20" y="28" font-size="13" font-weight="900" fill="white" text-anchor="middle" font-family="monospace">Rs</text></svg>
-        </div>
-
-        <!-- ── Phase 2: Fusion explosion ── -->
-        <div class="fusion-burst fb-1"></div>
-        <div class="fusion-burst fb-2"></div>
-        <div class="fusion-core"></div>
-
-        <!-- ── Phase 3-4: GitHub emerge & float ── -->
-        <div class="gh-stage">
-          <!-- background glow -->
-          <div class="gh-glow"></div>
-          <!-- orbital rings (only visible during float) -->
-          <div class="gh-ring gh-ring--1"></div>
-          <div class="gh-ring gh-ring--2"></div>
-          <!-- sparkle particles -->
-          <div class="gh-spark gsp-1"></div>
-          <div class="gh-spark gsp-2"></div>
-          <div class="gh-spark gsp-3"></div>
-          <div class="gh-spark gsp-4"></div>
-          <!-- the logo floats inside the stage -->
-          <div class="gh-floater">
-            <svg class="gh-logo-svg" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
           </div>
-        </div>
+        </ng-container>
 
-      </div><!-- /lang-scene -->
-      <div class="glow-orb-primary"></div>
+        <button
+            type="submit"
+            class="btn btn--primary btn--block"
+            [disabled]="loading || (mode === 'single' ? !username : !leftUser || !rightUser)">
+          <svg class="icon" *ngIf="!loading" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.68 11.74a6 6 0 1 1 1.06-1.06l3.04 3.03-1.06 1.07-3.04-3.04ZM11.5 7a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"></path></svg>
+          <span>{{ loading ? currentLoadingMessage : (mode === 'single' ? 'Analisar perfil' : 'Comparar perfis') }}</span>
+        </button>
+
+        <p class="Landing-hint" aria-live="polite" *ngIf="loading">
+          A API pública do GitHub limita 60 consultas por hora sem autenticação.
+        </p>
+      </form>
+
+      <div class="Box-row flash flash--danger Landing-error" *ngIf="error" role="alert">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM7.25 4.75a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0Zm.75 7.25a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+        <span>{{ error }}</span>
+      </div>
+    </div>
+
+    <div class="Box Landing-samples">
+      <div class="Box-header">
+        Sem um usuário em mente?
+        <span class="right">clique para analisar</span>
+      </div>
+      <button
+          type="button"
+          class="Box-row Landing-sample"
+          *ngFor="let sample of samples"
+          [disabled]="loading"
+          (click)="useSample(sample.user)">
+        <span class="Landing-sample-user">{{ sample.user }}</span>
+        <span class="Landing-sample-note">{{ sample.note }}</span>
+      </button>
     </div>
 
   </div>
 
-  <!-- HOW IT WORKS: 3 Clean Cards -->
-  <div class="how-it-works">
-    <header class="section-head">
-      <h2>Como funciona?</h2>
-    </header>
+  <section class="Landing-how" aria-labelledby="how-title">
+    <h2 id="how-title">Como funciona</h2>
 
-    <div class="how-grid">
-      <div class="how-card">
-        <div class="card-ico-box">
-          <!-- Single: Bolt | VS: Crossed Swords -->
-          <svg *ngIf="mode === 'single'" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M13 2v8h8L11 22v-8H3L13 2z" />
-          </svg>
-          <svg *ngIf="mode === 'vs'" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 3L4 11h5v8h6v-8h5L12 3z M12 5.8L17.2 11H15v8h-6v-8H6.8L12 5.8z" />
-          </svg>
+    <div class="Landing-how-grid">
+      <div class="Box">
+        <div class="Box-row">
+          <svg class="icon Landing-how-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>
+          <h3>Lê o histórico público</h3>
+          <p>Repositórios, commits, estrelas, forks e idade da conta, direto da API do GitHub.</p>
         </div>
-        <h3 *ngIf="mode === 'single'">Mapeie seu Código</h3>
-        <h3 *ngIf="mode === 'vs'">Arena de Duelos</h3>
-
-        <p *ngIf="mode === 'single'">Analise anos de commits e tecnologias em segundos com nossa inteligência
-          processual.</p>
-        <p *ngIf="mode === 'vs'">Compare sua trajetória técnica com outros devs e descubra quem possui maior impacto
-          real.</p>
       </div>
 
-      <div class="how-card">
-        <div class="card-ico-box">
-          <!-- Single: Info | VS: Metrics -->
-          <svg *ngIf="mode === 'single'" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-          </svg>
-          <svg *ngIf="mode === 'vs'" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zM16.2 11H19v8h-2.8v-8z" />
-          </svg>
+      <div class="Box">
+        <div class="Box-row">
+          <svg class="icon Landing-how-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.75 1.5a.25.25 0 0 0-.25.25v11.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25ZM4 11.25V7.5h1.5v3.75Zm3.25 0V4.5h1.5v6.75Zm3.25 0V9h1.5v2.25Z"></path></svg>
+          <h3>Pondera cinco sinais</h3>
+          <p>Commits, tempo de conta, diversidade de linguagens, comunidade e consistência viram um score de 0 a 100.</p>
         </div>
-        <h3 *ngIf="mode === 'single'">Engenharia de Valor</h3>
-        <h3 *ngIf="mode === 'vs'">Métricas Lado a Lado</h3>
-
-        <p *ngIf="mode === 'single'">Calculamos seu impacto no ecossistema através de métricas avançadas de senioridade
-          técnica.</p>
-        <p *ngIf="mode === 'vs'">Analisamos senioridade e contribuições simultaneamente para definir a autoridade
-          técnica.</p>
       </div>
 
-      <div class="how-card">
-        <div class="card-ico-box">
-          <!-- Single: Share | VS: Trophy -->
-          <svg *ngIf="mode === 'single'" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
-          </svg>
-          <svg *ngIf="mode === 'vs'" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.95V19H7v2h10v-2h-4v-3.11c1.63-.32 2.98-1.45 3.61-2.95C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 10V7h2v3H5zm14 0h-2V7h2v3z" />
-          </svg>
+      <div class="Box">
+        <div class="Box-row">
+          <svg class="icon Landing-how-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
+          <h3>Gera um card para compartilhar</h3>
+          <p>A análise vira uma imagem em alta resolução, pronta para LinkedIn e para o seu portfólio.</p>
         </div>
-        <h3 *ngIf="mode === 'single'">Destaque sua Carreira</h3>
-        <h3 *ngIf="mode === 'vs'">Prove sua Senioridade</h3>
-
-        <p *ngIf="mode === 'single'">Cards em alta resolução otimizados para atrair tech leads no LinkedIn e Twitter.
-        </p>
-        <p *ngIf="mode === 'vs'">Cards comparativos exclusivos para compartilhar duelos técnicos no LinkedIn e Twitter.
-        </p>
       </div>
     </div>
-  </div>
+  </section>
 
 </section>

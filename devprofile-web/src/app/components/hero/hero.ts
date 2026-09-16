@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -11,6 +11,11 @@ export enum LoadingStatus {
   ERROR = 'error'
 }
 
+interface Sample {
+  user: string;
+  note: string;
+}
+
 @Component({
   selector: 'app-hero',
   standalone: true,
@@ -18,31 +23,33 @@ export enum LoadingStatus {
   templateUrl: './hero.html',
   styleUrls: ['./hero.scss']
 })
-export class Hero implements OnChanges {
+export class Hero implements OnChanges, OnDestroy {
   @Input() error: string | null = null;
-  @Input() loading: boolean = false;
+  @Input() loading = false;
   @Input() status: LoadingStatus = LoadingStatus.IDLE;
-  
+
   @Output() onSearch = new EventEmitter<string>();
-  @Output() onCompare = new EventEmitter<{left: string, right: string}>();
+  @Output() onCompare = new EventEmitter<{ left: string; right: string }>();
   @Output() onErrorClear = new EventEmitter<void>();
 
-  username: string = '';
-  leftUser: string = '';
-  rightUser: string = '';
+  username = '';
+  leftUser = '';
+  rightUser = '';
   mode: 'single' | 'vs' = 'single';
-  isAnimating: boolean = false;
 
-  // Propriedades para o efeito de inclinação e paralaxe (Tilt)
-  tiltX: number = 0;
-  tiltY: number = 0;
-  translateX: number = 0;
-  translateY: number = 0;
+  /** Perfis de exemplo: ocupam o lugar da antiga cena decorativa com algo acionável. */
+  readonly samples: Sample[] = [
+    { user: 'torvalds', note: 'criador do Linux e do Git' },
+    { user: 'gaearon', note: 'React, anos de open source' },
+    { user: 'mapompeo', note: 'o perfil que originou o projeto' }
+  ];
 
-  // Polling / Loading Mechanism
-  currentLoadingMessage: string = 'Analisando perfil...';
+  currentLoadingMessage = 'Analisando perfil...';
   private messageIndex = 0;
-  private intervalId: any;
+  private intervalId: ReturnType<typeof setInterval> | undefined;
+
+  // Sem zone.js, o texto trocado dentro do setInterval nao chega na tela sozinho.
+  private readonly cdr = inject(ChangeDetectorRef);
 
   private messages = [
     'Analisando perfil...',
@@ -67,7 +74,7 @@ export class Hero implements OnChanges {
     'Métricas avançadas...'
   ];
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['loading']) {
       if (this.loading) {
         this.startLoadingTimer();
@@ -77,20 +84,61 @@ export class Hero implements OnChanges {
     }
   }
 
-  private startLoadingTimer() {
+  ngOnDestroy(): void {
+    this.stopLoadingTimer();
+  }
+
+  clearError(): void {
+    if (this.error) {
+      this.onErrorClear.emit();
+    }
+  }
+
+  setMode(newMode: 'single' | 'vs'): void {
+    this.mode = newMode;
+    this.clearError();
+  }
+
+  useSample(user: string): void {
+    if (this.loading) return;
+    if (this.mode === 'single') {
+      this.username = user;
+      this.onSearch.emit(user);
+      return;
+    }
+    if (!this.leftUser) {
+      this.leftUser = user;
+    } else {
+      this.rightUser = user;
+    }
+  }
+
+  submit(): void {
+    if (this.mode === 'single' && this.username) {
+      this.onSearch.emit(this.username);
+    } else if (this.mode === 'vs' && this.leftUser && this.rightUser) {
+      this.onCompare.emit({ left: this.leftUser, right: this.rightUser });
+    }
+  }
+
+  private startLoadingTimer(): void {
     this.stopLoadingTimer();
     this.messageIndex = 0;
     this.updateMessage();
     this.intervalId = setInterval(() => {
       this.updateMessage();
-    }, 2500); // Rapid dynamic updates for actionable UI
+      this.cdr.markForCheck();
+    }, 2500);
   }
 
-  private stopLoadingTimer() {
-    if (this.intervalId) clearInterval(this.intervalId);
+  private stopLoadingTimer(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = undefined;
+    }
   }
 
-  private updateMessage() {
+  private updateMessage(): void {
     if (this.status === LoadingStatus.WAKING_UP) {
       this.messageIndex = (this.messageIndex + 1) % this.wakingUpMessages.length;
       this.currentLoadingMessage = this.wakingUpMessages[this.messageIndex];
@@ -100,52 +148,6 @@ export class Hero implements OnChanges {
     } else {
       this.messageIndex = (this.messageIndex + 1) % this.messages.length;
       this.currentLoadingMessage = this.messages[this.messageIndex];
-    }
-  }
-
-  clearError() {
-    if (this.error) {
-      this.onErrorClear.emit();
-    }
-  }
-
-  setMode(newMode: 'single' | 'vs') {
-    if (this.mode === newMode || this.isAnimating) return;
-    this.mode = newMode; // Instant state change
-    this.isAnimating = true;
-    setTimeout(() => {
-      this.isAnimating = false;
-    }, 400); // Animation duration
-  }
-
-  @HostListener('window:mousemove', ['$event'])
-  handleMouseMove(event: MouseEvent) {
-    // Calcula a posição do mouse relativa ao centro da tela (-0.5 a 0.5)
-    const x = (event.clientX / window.innerWidth) - 0.5;
-    const y = (event.clientY / window.innerHeight) - 0.5;
-
-    // Rotação (Tilt) - Máximo 30 graus
-    this.tiltX = y * -30; 
-    this.tiltY = x * 30;
-
-    // Deslocamento (Paralaxe) - Máximo 40px
-    this.translateX = x * 40;
-    this.translateY = y * 40;
-  }
-
-  @HostListener('window:mouseleave')
-  resetMouse() {
-    this.tiltX = 0;
-    this.tiltY = 0;
-    this.translateX = 0;
-    this.translateY = 0;
-  }
-
-  submit() {
-    if (this.mode === 'single' && this.username) {
-      this.onSearch.emit(this.username);
-    } else if (this.mode === 'vs' && this.leftUser && this.rightUser) {
-      this.onCompare.emit({ left: this.leftUser, right: this.rightUser });
     }
   }
 }

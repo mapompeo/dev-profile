@@ -1,119 +1,104 @@
 @use '../../styles/theme' as *;
 
 .proj-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  display: grid;
+  gap: $space-4;
 }
 
 .rhythm-row {
   display: flex;
   align-items: center;
+  gap: $space-2;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: rgba(124, 58, 237, 0.06);
-  border-radius: 8px;
-  border: 1px solid rgba(124, 58, 237, 0.15);
+  font-size: $type-body;
+  color: var(--fg-muted);
 }
 
 .rhythm-label {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.5);
-  font-weight: 600;
+  font-weight: $fw-semibold;
+  color: var(--fg-default);
 }
 
 .rhythm-badge {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #a78bfa;
-  padding: 0.1rem 0.55rem;
-  background: rgba(124, 58, 237, 0.15);
-  border-radius: $radius-pill;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 $space-2 + 2px;
+  font-size: $type-small;
+  line-height: 22px;
+  color: var(--accent-fg);
+  background-color: var(--accent-subtle);
+  border: $border-w solid var(--accent-fg);
+  border-radius: $radius-full;
 }
 
 .rhythm-suggestion {
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.45);
-  font-style: italic;
+  flex: 1 1 100%;
 }
 
-/* Timeline */
+// Linha do tempo no padrão do histórico de commits: nó, filete e conteúdo.
 .timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  display: grid;
 }
 
 .tl-item {
-  display: flex;
-  gap: 1rem;
-  padding: 0.25rem 0;
-
-  &.reached .tl-node {
-    background: #7c3aed;
-    border-color: #a78bfa;
-    color: #fff;
-  }
-  &.reached .tl-title { color: #f1f0ff; }
-  &.reached .tl-line  { background: rgba(124,58,237,0.5); }
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: $space-3;
 }
 
 .tl-node-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  flex-shrink: 0;
+  display: grid;
+  grid-template-rows: 16px 1fr;
+  justify-items: center;
 }
 
 .tl-node {
-  width: 24px;
-  height: 24px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.04);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #a78bfa;
-  flex-shrink: 0;
+  background-color: var(--canvas-default);
+  border: 2px solid var(--border-default);
+  color: var(--fg-on-emphasis);
+}
+
+.tl-item.reached .tl-node {
+  background-color: var(--success-emphasis);
+  border-color: var(--success-emphasis);
 }
 
 .tl-line {
-  flex: 1;
   width: 2px;
-  min-height: 24px;
-  background: rgba(255,255,255,0.08);
-  margin: 4px 0;
+  min-height: $space-5;
+  background-color: var(--border-default);
+}
+
+.tl-item.reached .tl-line {
+  background-color: var(--success-emphasis);
 }
 
 .tl-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding-bottom: 1.25rem;
+  display: grid;
+  gap: 2px;
+  padding-bottom: $space-4;
 }
 
 .tl-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.6);
+  font-size: $type-body;
+  font-weight: $fw-semibold;
 }
 
 .tl-desc {
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.35);
+  font-size: $type-body;
+  color: var(--fg-muted);
 }
 
 .tl-time {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #fbbf24;
-  font-family: 'Mona Sans', monospace;
-  margin-top: 0.15rem;
+  font-size: $type-small;
+  color: var(--fg-subtle);
 
-  &.tl-time--done {
-    color: #34d399;
+  &--done {
+    color: var(--success-fg);
   }
 }

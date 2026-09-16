@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Profile } from '../../models/profile.models';
 
@@ -12,7 +12,8 @@ import { Profile } from '../../models/profile.models';
 export class CareerPitch {
   profile = input<Profile | null>(null);
 
-  copied = false;
+  // Signal em vez de propriedade: o app roda sem zone.js.
+  readonly copied = signal(false);
 
   readonly pitch = computed(() => {
     const p = this.profile();
@@ -36,10 +37,10 @@ export class CareerPitch {
       `Score de senioridade: ${p.analysis.seniorityScore}/100.`;
   });
 
-  copy() {
+  copy(): void {
     navigator.clipboard.writeText(this.pitch()).then(() => {
-      this.copied = true;
-      setTimeout(() => this.copied = false, 2000);
+      this.copied.set(true);
+      setTimeout(() => this.copied.set(false), 2000);
     });
   }
 }

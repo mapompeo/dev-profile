@@ -1,822 +1,263 @@
 @use '../../styles/theme' as *;
 
-/* Layout shared width — matches landing page but slightly larger for dashboard */
-$page-width: 1040px;
+.Dashboard {
+  width: 100%;
+  max-width: $content-max;
+  margin: 0 auto;
+  padding: $space-5 $space-4 $space-7;
+  display: grid;
+  gap: $space-4;
+}
 
-@mixin glass-card {
-  background: rgba($color-surface, 0.7); // Use surface base
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px; // Slightly sharper for modern look
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s, border-color 0.2s;
+.Dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+// Layout de perfil do GitHub: coluna fixa de identidade e o resto fluido.
+.Dashboard-body {
+  display: grid;
+  grid-template-columns: 296px minmax(0, 1fr);
+  gap: $space-5;
+  align-items: start;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.Dashboard-side {
+  display: grid;
+  gap: $space-4;
+  align-content: start;
+}
+
+.Dashboard-avatar {
+  width: 260px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: $border-w solid var(--border-default);
+  background-color: var(--canvas-subtle);
+
+  @media (max-width: $bp-md) {
+    width: 160px;
+  }
+}
+
+.Dashboard-identity {
+  display: grid;
+  gap: $space-1;
+
+  h2 {
+    font-size: $type-section;
+    font-weight: $fw-semibold;
+  }
+}
+
+.Dashboard-handle {
+  font-size: $type-lead;
+  font-weight: $fw-regular;
+  color: var(--fg-muted);
+  line-height: $lh-tight;
 
   &:hover {
-    border-color: rgba($color-accent-light, 0.2);
+    color: var(--accent-fg);
+    text-decoration: none;
   }
 }
 
-/* ─── Page wrapper ───────────────────────────────────────────────────────── */
-.dashboard-page {
-  min-height: 100vh;
-  // A subtle radial gradient for depth
-  background: radial-gradient(circle at top center, rgba($gh-purple-5, 0.1), transparent 70%),
-              $color-bg;
-  padding-bottom: 4rem;
+.Dashboard-bio {
+  margin-top: $space-2;
+  color: var(--fg-default);
 }
 
-/* ─── Top bar ────────────────────────────────────────────────────────────── */
-.dashboard-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  border-bottom: 1px solid $color-border;
-  background: rgba($color-bg, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 0.75rem 1rem;
-}
-
-.topbar-inner {
-  max-width: $page-width;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.calc-info {
-  font-size: 0.75rem;
-  color: $color-text-faint;
-  cursor: pointer;
-  
-  &:hover { 
-    color: $color-text-primary;
-    text-decoration: underline; 
-  }
-}
-
-.btn-back {
-  background: none;
-  border: none;
-  color: $color-text-faint;
-  font-family: $font-brand;
-  font-size: $type-small;
-  font-weight: $fw-medium;
-  cursor: pointer;
-  transition: color 0.2s;
-  padding: 0;
-
-  &:hover { color: $color-text-primary; }
-  &:focus-visible { outline: 2px solid $color-accent-light; outline-offset: 2px; border-radius: 2px; }
-}
-
-.btn-export {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba($color-accent, 0.1);
-  border: 1px solid rgba($color-accent, 0.3);
-  color: $color-accent-light;
-  font-family: $font-brand;
-  font-size: $type-xs;
-  font-weight: $fw-semibold;
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover { background: rgba($color-accent, 0.18); }
-  &:focus-visible { outline: 2px solid $color-accent-light; outline-offset: 2px; border-radius: 6px; }
-}
-
-/* ─── Main content column ────────────────────────────────────────────────── */
-.dashboard-content {
-  max-width: $page-width;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem; // Consistent gap between all blocks
-}
-
-/* ─── User Hero ──────────────────────────────────────────────────────────── */
-.user-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem; // Reduced gap
-  padding: 2rem 0 1.5rem; // Reduced padding
-  text-align: center;
-  
-  // ─── Black-hole orbital wrapper ─────────────────────────────────────────
-  .avatar-orbit-wrap {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-
-    img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid rgba($color-accent, 0.5);
-      object-fit: cover;
-      box-shadow:
-        0 0 0 6px rgba($color-accent, 0.08),
-        0 0 40px rgba($color-accent, 0.25);
-      position: relative;
-      z-index: 2;
-    }
-  }
-
-  // Shared ring base
-  .orbit-ring {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
-  // Ring 1 — main equatorial ring, fast purple/blue glow
-  .orbit-ring--1 {
-    width: 155px;
-    height: 155px;
-    border: 2px solid transparent;
-    background:
-      conic-gradient(
-        from 0deg,
-        transparent 0%,
-        rgba(139, 92, 246, 0.9) 35%,
-        rgba(59, 130, 246, 0.6) 55%,
-        transparent 70%
-      ) border-box;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    transform: rotateX(70deg) rotateZ(0deg);
-    animation: orbit-spin-1 3.5s linear infinite;
-    filter: blur(0.5px) drop-shadow(0 0 6px rgba(139, 92, 246, 0.8));
-  }
-
-  // Ring 2 — tilted orbit, slower, warm orange/pink
-  .orbit-ring--2 {
-    width: 150px;
-    height: 150px;
-    border: 1.5px solid transparent;
-    background:
-      conic-gradient(
-        from 120deg,
-        transparent 0%,
-        rgba(236, 72, 153, 0.7) 30%,
-        rgba(251, 146, 60, 0.5) 50%,
-        transparent 65%
-      ) border-box;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    transform: rotateX(65deg) rotateZ(60deg);
-    animation: orbit-spin-2 5.5s linear infinite;
-    filter: blur(0.5px) drop-shadow(0 0 5px rgba(236, 72, 153, 0.6));
-  }
-
-  // Ring 3 — thin outer halo, very slow, ice blue
-  .orbit-ring--3 {
-    width: 158px;
-    height: 158px;
-    border: 1px solid transparent;
-    background:
-      conic-gradient(
-        from 240deg,
-        transparent 0%,
-        rgba(96, 165, 250, 0.5) 25%,
-        rgba(167, 139, 250, 0.4) 45%,
-        transparent 60%
-      ) border-box;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    transform: rotateX(75deg) rotateZ(-40deg);
-    animation: orbit-spin-3 8s linear infinite reverse;
-    filter: blur(0.3px) drop-shadow(0 0 4px rgba(96, 165, 250, 0.5));
-  }
-
-  @keyframes orbit-spin-1 {
-    to { transform: rotateX(70deg) rotateZ(360deg); }
-  }
-  @keyframes orbit-spin-2 {
-    to { transform: rotateX(65deg) rotateZ(calc(60deg + 360deg)); }
-  }
-  @keyframes orbit-spin-3 {
-    to { transform: rotateX(75deg) rotateZ(calc(-40deg - 360deg)); }
-  }
-
-
-  .user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.15rem;
-    
-    h2 {
-      font-size: 2.25rem;
-      font-weight: 800;
-      color: #fff;
-      margin: 0;
-      letter-spacing: -0.04em;
-    }
-
-    .username-link {
-      font-size: 1.1rem;
-      color: $color-accent-light;
-      font-family: $font-mono;
-      text-decoration: none;
-      margin-bottom: 0.25rem; // Reduced
-      transition: color 0.2s;
-      
-      &:hover { color: #fff; text-decoration: underline; }
-    }
-
-    .user-meta-lines {
-      display: flex;
-      flex-direction: row; 
-      flex-wrap: wrap;
-      gap: 0.5rem 1rem;
-      align-items: center;
-      justify-content: center;
-      color: $color-text-muted;
-      font-size: $type-small;
-      max-width: 480px;
-      
-      .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        white-space: nowrap;
-        
-        svg { width: 13px; height: 13px; opacity: 0.6; }
-
-        &:not(:last-child)::after {
-          content: "|";
-          margin-left: 1rem;
-          opacity: 0.2;
-          font-weight: 200;
-        }
-      }
-
-      // Clickable variant
-      a.meta-link {
-        text-decoration: none;
-        color: inherit;
-        transition: color 0.2s, opacity 0.2s;
-        border-radius: 4px;
-        cursor: pointer;
-
-        &:hover {
-          color: $color-accent-light;
-          svg { opacity: 1; }
-        }
-
-        &:focus-visible {
-          outline: 2px solid $color-accent-light;
-          outline-offset: 3px;
-        }
-      }
-    }
-  }
-
-  /* Hero Stats (H/F/R) */
-  .hero-stats-row {
-    display: flex;
-    gap: 3rem;
-    margin-top: 0.75rem; // Even more compact
-    padding: 0.6rem 2.25rem; // More compact
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 100px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-
-    .hero-stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      
-      .stat-v { font-size: 1.25rem; font-weight: 800; color: #fff; }
-      .stat-l { font-size: 0.65rem; color: $color-text-faint; text-transform: uppercase; letter-spacing: 1px; }
-    }
-  }
-}
-
-/* ─── Stats Grid ─────────────────────────────────────────────────────────── */
-.stats-grid {
+.Dashboard-meta {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: $space-2;
 }
 
-.stat-card {
-  @include glass-card;
-  padding: 1.5rem;
+.Dashboard-meta-row {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  
-  .stat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    .sc-lbl {
-      font-size: $type-body;
-      font-weight: $fw-bold;
-      color: $color-text-primary;
-    }
-    
-    .sc-icon {
-      font-size: 1.25rem;
-      color: $color-accent-light;
-      opacity: 0.7;
-    }
-  }
-
-  .sc-val {
-    font-size: 3.5rem; // Slightly smaller to be more balanced
-    font-weight: 800;
-    color: #fff; // High contrast
-    line-height: 1;
-    font-family: $font-brand;
-    letter-spacing: -0.04em;
-    text-shadow: 0 0 12px rgba($color-accent-light, 0.15);
-  }
-}
-
-/* ─── Section Card Default ───────────────────────────────────────────────── */
-.section-card {
-  @include glass-card;
-  padding: 1.5rem;
-}
-
-.section-title {
+  align-items: center;
+  gap: $space-2 - 2px;
   font-size: $type-body;
-  font-weight: $fw-bold;
-  color: $color-text-primary;
-  margin: 0 0 1.25rem;
-  font-feature-settings: "liga" 0;
-}
+  color: var(--fg-muted);
 
-/* ─── Giant Card (Analysis) ──────────────────────────────────────────────── */
-.giant-card {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-  
-  .giant-card-header {
+  dt {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding-bottom: 1rem;
-    
-    .section-title { margin: 0; font-size: 1.25rem; }
-    .icon-brackets { font-family: $font-mono; color: $color-text-faint; font-size: 1.25rem; }
   }
-}
 
-/* ─── Analysis Grid ──────────────────────────────────────────────────────── */
-.analysis-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
+  dd {
+    margin: 0;
+  }
 
-.analysis-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-
-  label {
-    font-size: $type-small;
-    color: $color-text-primary;
+  b {
+    color: var(--fg-default);
     font-weight: $fw-semibold;
   }
 
-  strong.accent {
-    font-size: 1.75rem;
-    font-weight: $fw-bold;
-    color: $color-accent-light;
+  .icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    color: var(--fg-muted);
+  }
+}
+
+.Dashboard-dot {
+  color: var(--fg-subtle);
+}
+
+.Dashboard-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2 - 2px;
+}
+
+.Dashboard-main {
+  display: grid;
+  gap: $space-4;
+  align-content: start;
+  min-width: 0;
+}
+
+.Dashboard-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-4;
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.Dashboard-analysis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $space-4;
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  dt {
+    font-size: $type-small;
+    color: var(--fg-muted);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    font-size: $type-lead;
+    font-weight: $fw-semibold;
+    letter-spacing: $ls-display;
   }
 
   small {
-    font-size: $type-xs;
-    color: $color-text-faint;
-    line-height: 1.4;
+    font-size: $type-small;
+    color: var(--fg-muted);
   }
 }
 
-/* Top Linguagens from Analysis is removed entirely mapped to cw-grid */
-
-/* ─── Bottom Grid ────────────────────────────────────────────────────────── */
-.bottom-grid {
+.Dashboard-figure {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
+  gap: $space-1;
 
-.full-col {
-  grid-column: 1 / -1;
-}
-
-/* ─── Bottom Layout Cards (Like CommitWorth) ─────────────────────────────── */
-.cw-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.cw-card {
-  @include glass-card;
-  padding: 1.25rem; // More compact
-  display: flex;
-  flex-direction: column;
-  gap: 1rem; // Unified gap
-  min-height: 200px;
-
-  .cw-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 24px;
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-
-      label {
-        font-size: $type-body;
-        font-weight: $fw-bold;
-        color: $color-text-primary;
-        margin: 0;
-      }
-      
-      .cw-icon {
-        color: inherit;
-        width: 18px;
-        height: 18px;
-        opacity: 0.9;
-      }
-    }
-
-    .tooltip-wrapper {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-
-      &::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        bottom: calc(100% + 10px);
-        right: 0;
-        background: rgba(20, 20, 25, 0.95);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #eee;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        font-weight: 400;
-        width: 220px;
-        text-align: left;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 100;
-        line-height: 1.5;
-        transform: translateY(10px);
-      }
-
-      &:hover::after {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .info-icon {
-        color: $color-text-faint;
-        width: 14px;
-        height: 14px;
-        opacity: 0.4;
-        cursor: help;
-        transition: all 0.2s;
-        
-        &:hover { 
-          opacity: 1; 
-          color: $color-accent-light;
-        }
-      }
-    }
-  }
-
-  .cw-card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; // Center content vertically
-    
-    &.visual-content {
-      align-items: center;
-      padding: 0.5rem 0;
-    }
-  }
-
-  .cw-value {
+  b {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    font-size: 3.25rem; // Unified size
-    font-family: $font-brand;
-    font-weight: 800;
-    color: #fff;
-    line-height: 1;
-    letter-spacing: -1px;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-
-    // Green value for money
-    &.money {
-      color: #38ef7d;
-      text-shadow: 0 0 20px rgba(56, 239, 125, 0.2);
-    }
+    gap: $space-2;
+    font-size: $type-section;
+    font-weight: $fw-semibold;
+    letter-spacing: $ls-display;
   }
 
-  .cw-level-badge {
-    font-size: 0.85rem;
-    padding: 0.25rem 0.65rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 100px;
-    color: #fff;
-    font-family: $font-mono;
-    font-weight: 600;
-    text-shadow: none;
-    letter-spacing: 0;
-    transform: translateY(-2px); // Align better with large text
+  span {
+    font-size: $type-small;
+    color: var(--fg-muted);
   }
 }
 
-/* ─── Horizontal Bar Chart (Linguagens) ──────────────────────────────────── */
-.h-chart {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
+.Dashboard-lang-legend {
+  margin-top: $space-3;
 }
 
-.h-bar-row {
+// -----------------------------------------------------------------------------
+// A ASSINATURA: bloco de score. Único lugar do sistema com escala própria.
+// -----------------------------------------------------------------------------
+.Score {
   display: grid;
-  grid-template-columns: 60px 1fr;
-  gap: 1rem;
-  align-items: center;
-
-  .h-label {
-    font-size: $type-xs;
-    color: $color-text-faint;
-    text-align: right;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .h-track {
-    width: 100%;
-    height: 32px;
-    background: transparent;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-
-    .h-fill {
-      height: 100%;
-      background: #7c3aed; /* purple from reference */
-      border-radius: 6px;
-      transition: width 0.8s ease;
-      min-width: 4px;
-    }
-  }
+  gap: $space-4;
 }
 
-  .h-chart-axis {
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 1rem;
-    margin-top: 0.25rem;
-
-    .axis-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      color: $color-text-faint;
-    }
-  }
-
-/* ─── Vertical Bar Chart (Repos) ─────────────────────────────────────────── */
-.v-chart {
+.Score-top {
   display: flex;
   align-items: flex-end;
-  justify-content: space-around;
-  height: 150px;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  padding-bottom: 0.5rem;
-}
-
-.v-col {
-  flex: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.5rem;
-
-    .v-fill {
-      width: 100%;
-      max-width: 50px;
-      border-radius: 4px;
-      transition: height 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      
-      &.yellow { 
-        background: linear-gradient(to top, #ca8a04, #facc15); 
-        box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
-      }
-      &.blue { 
-        background: linear-gradient(to top, #1e40af, #60a5fa); 
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-      }
-    }
-
-  .v-label {
-    font-size: 0.65rem;
-    color: $color-text-faint;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-}
-
-/* ─── Repo Chips ─────────────────────────────────────────────────────────── */
-.repo-list {
-  display: flex;
+  gap: $space-4;
   flex-wrap: wrap;
-  gap: 0.6rem;
 }
 
-.repo-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.85rem;
-  background: rgba($color-accent, 0.06);
-  border: 1px solid rgba($color-accent, 0.15);
-  border-radius: 8px;
+.Score-value {
+  font-family: $font-display;
+  font-size: $type-score;
+  font-weight: $fw-extrabold;
+  line-height: $lh-score;
+  letter-spacing: $ls-score;
+
+  small {
+    margin-left: $space-1;
+    font-size: $type-lead;
+    font-weight: $fw-medium;
+    letter-spacing: 0;
+    color: var(--fg-muted);
+  }
+}
+
+.Score-level {
+  margin-bottom: $space-1;
+}
+
+.Score-meter {
+  display: flex;
+  gap: 3px;
+}
+
+.Score-cell {
+  flex: 1 1 0;
+  height: 26px;
+  border-radius: $radius-sm;
+  background-color: var(--neutral-muted);
+  transition: background-color $dur-normal $ease-out;
+
+  &--on {
+    background-color: var(--accent-fg);
+  }
+
+  &--tip {
+    background-color: var(--accent-fg);
+    opacity: 0.45;
+  }
+}
+
+.Score-ruler {
+  display: flex;
   font-size: $type-small;
-  font-family: $font-mono;
-  color: $color-text-muted;
+  color: var(--fg-subtle);
 
-  &.structured { border-color: rgba(#3094FF, 0.2); background: rgba(#3094FF, 0.05); }
+  span {
+    flex: 1 1 0;
+    padding: $space-1 0 0 $space-2 - 2px;
+    border-left: $border-w solid var(--border-muted);
 
-  .repo-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: $color-accent-light;
-    flex-shrink: 0;
+    &:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
   }
 
-  .repo-stars {
-    color: $color-text-faint;
-    margin-left: 0.25rem;
-  }
-}
-
-/* ─── Badges Grid ────────────────────────────────────────────────────────── */
-.badges-grid-compact {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-}
-
-.badge-item-mini {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid $color-border;
-  border-radius: 10px;
-  opacity: 0.5;
-  transition: opacity 0.2s, border-color 0.2s;
-
-  &.completed {
-    opacity: 1;
-    border-color: rgba($color-accent-light, 0.3);
-    background: rgba($color-accent, 0.05);
-  }
-
-  .badge-icon-mini { font-size: 1.25rem; }
-
-  .badge-label-mini {
-    font-size: $type-xs;
+  b {
+    color: var(--fg-muted);
     font-weight: $fw-semibold;
-    color: $color-text-primary;
   }
-}
-
-/* ─── Advanced Section (New Charts) ───────────────────────────────────────── */
-.advanced-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* ─── Responsive ─────────────────────────────────────────────────────────── */
-
-/* Tablet */
-@media (max-width: 860px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .analysis-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .bottom-grid { grid-template-columns: 1fr; }
-  .cw-grid { grid-template-columns: 1fr 1fr; }
-  .user-hero { justify-content: center; text-align: center; flex-direction: column; }
-  .user-hero .user-info { text-align: center; align-items: center; }
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-  .dashboard-content { padding: 0.75rem; gap: 1rem; }
-
-  /* User hero */
-  .user-hero {
-    padding: 1.5rem 0 1rem;
-    img { width: 90px; height: 90px; }
-    .user-info h2 { font-size: 1.6rem; }
-    .user-info .username-link { font-size: 0.9rem; }
-    .user-meta-lines {
-      flex-direction: column;
-      gap: 0.4rem;
-      white-space: normal;
-      .meta-item:not(:last-child)::after { display: none; }
-    }
-    .hero-stats-row {
-      gap: 1.5rem;
-      padding: 0.5rem 1.5rem;
-    }
-  }
-
-  /* Grids to single column */
-  .stats-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-  .analysis-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-  .bottom-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-  .cw-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-
-  /* Cards */
-  .stat-card { padding: 1rem; }
-  .stat-card .sc-val { font-size: 2.5rem; }
-  .cw-card { padding: 1rem; min-height: unset; }
-  .cw-card .cw-value { font-size: 2.2rem; }
-  .giant-card { padding: 1rem; }
-
-  /* Badges */
-  .badges-grid-compact { grid-template-columns: 1fr; }
-
-  /* Advanced section */
-  .advanced-section { gap: 0.75rem; }
 }

@@ -1,81 +1,107 @@
 @use '../../styles/theme' as *;
 
-/* Shared layout-width — matches hero content width */
-$content-width: 1200px;
-
-/* Header: full-width bar with inner container */
-.header-bar {
+// Header global, no padrão do GitHub: barra de superfície própria, borda de 1px
+// embaixo e nada de sombra.
+.AppHeader {
   position: relative;
   z-index: 10;
-  width: 100%;
-  height: 68px;
-  border-bottom: 1px solid $color-border;
-  display: flex;
-  align-items: center;
+  background-color: var(--header-bg);
+  border-bottom: $border-w solid var(--border-default);
 }
 
-.header-inner {
+.AppHeader-inner {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
   width: 100%;
-  max-width: $content-width;
+  max-width: $content-max;
   margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: $space-3 $space-4;
 }
 
-/* Logo */
-.logo {
-  display: flex;
+.AppHeader-logo {
+  display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  font-size: 0.9rem;
-  font-weight: $fw-semibold;
+  gap: $space-2;
+  padding: $space-1;
+  color: var(--fg-default);
+  background: none;
+  border: 0;
+  border-radius: $radius-md;
   cursor: pointer;
-  color: $color-text-primary;
-  transition: opacity 0.2s;
+  transition: color $dur-fast linear;
 
-  svg { fill: $color-text-primary; flex-shrink: 0; }
+  .icon {
+    flex: none;
+    fill: currentColor;
+  }
 
-  &:hover { opacity: 0.7; }
+  &:hover {
+    color: var(--accent-fg);
+  }
 
   &:focus-visible {
-    outline: 2px solid $color-accent-light;
-    outline-offset: 4px;
-    border-radius: 4px;
+    outline: 2px solid var(--accent-fg);
+    outline-offset: 2px;
   }
 }
 
-/* Nav links */
-.nav-links {
+.AppHeader-brand {
+  font-size: $type-body;
+  font-weight: $fw-semibold;
+}
+
+.AppHeader-nav {
   display: flex;
-  gap: 1.75rem;
   align-items: center;
+  gap: $space-4;
+  margin-left: auto;
 
-  a, .info-link {
-    color: $color-text-faint;
-    text-decoration: none;
-    font-size: $type-xs;
-    font-weight: $fw-medium;
-    transition: color 0.2s;
-    background: none;
-    border: none;
-    font-family: $font-brand;
-    cursor: pointer;
-    padding: 0;
+  a {
+    font-size: $type-body;
+    color: var(--fg-muted);
 
-    &:hover { color: $color-text-primary; }
-
-    &:focus-visible {
-      outline: 2px solid $color-accent-light;
-      outline-offset: 2px;
-      border-radius: 2px;
+    &:hover {
+      color: var(--fg-default);
+      text-decoration: none;
     }
   }
 }
 
-@media (max-width: 640px) {
-  .header-bar { height: auto; padding: 0.9rem 0; }
-  .header-inner { padding: 0 1rem; }
-  .nav-links { gap: 1rem; }
+.AppHeader-note {
+  margin-left: auto;
+  font-size: $type-small;
+  color: var(--fg-muted);
+}
+
+.AppHeader-theme {
+  flex: none;
+}
+
+.AppHeader-select {
+  width: auto;
+  height: $control-h-sm;
+  padding: 0 $space-2;
+  font-size: $type-small;
+  background-color: var(--btn-bg);
+  cursor: pointer;
+
+  @media (pointer: coarse) {
+    height: 44px;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .AppHeader-inner {
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  .AppHeader-nav {
+    gap: $space-3;
+  }
+
+  .AppHeader-note {
+    display: none;
+  }
 }

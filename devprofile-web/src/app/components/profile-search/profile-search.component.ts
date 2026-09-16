@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -39,6 +39,10 @@ export class ProfileSearchComponent implements OnInit {
   loadingStatus: LoadingStatus = LoadingStatus.IDLE;
 
   private wakingUpTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // O app roda sem zone.js: mudanca de propriedade simples fora de um evento do
+  // template nao agenda deteccao. Toda resposta assincrona precisa marcar a view.
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private profileService: ProfileService,
@@ -134,6 +138,7 @@ export class ProfileSearchComponent implements OnInit {
         this.loading = false;
         this.clearWakingUpTimer();
         this.setProfileTitle(data);
+        this.cdr.markForCheck();
         // Navigate to shareable URL only after success
         if (pushUrl) this.router.navigate(['/dashboard', user], { replaceUrl: true });
       },
@@ -141,6 +146,7 @@ export class ProfileSearchComponent implements OnInit {
         this.error = err.error?.message || 'Erro ao buscar perfil. Verifique se o usuário existe.';
         this.loading = false;
         this.clearWakingUpTimer();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -158,6 +164,7 @@ export class ProfileSearchComponent implements OnInit {
         this.comparison = data;
         this.loading = false;
         this.clearWakingUpTimer();
+        this.cdr.markForCheck();
         // Navigate to shareable URL only after success
         if (pushUrl) this.router.navigate(['/dashboard/compare', user1, user2], { replaceUrl: true });
       },
@@ -165,6 +172,7 @@ export class ProfileSearchComponent implements OnInit {
         this.error = err.error?.message || 'Erro ao buscar dados. Verifique os usuários.';
         this.loading = false;
         this.clearWakingUpTimer();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -174,6 +182,7 @@ export class ProfileSearchComponent implements OnInit {
     this.wakingUpTimer = setTimeout(() => {
       if (this.loading) {
         this.loadingStatus = LoadingStatus.WAKING_UP;
+        this.cdr.markForCheck();
       }
     }, 3000); // If no response in 3s, show waking up
   }

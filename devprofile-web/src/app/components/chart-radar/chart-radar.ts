@@ -16,7 +16,7 @@ const AXES: { key: keyof CompetenceRadar; label: string }[] = [
 
 const CX = 200;
 const CY = 200;
-const RADIUS = 160;
+const RADIUS = 128; // deixa margem para rotulo e valor dentro do viewBox de 400
 const LEVELS = [20, 40, 60, 80, 100];
 
 function angleOf(i: number): number {
@@ -72,7 +72,7 @@ export class ChartRadar {
     return AXES.map((a, i) => {
       const angle = angleOf(i);
       const outer = { x: CX + RADIUS * Math.cos(angle), y: CY + RADIUS * Math.sin(angle) };
-      const lPad = 34; // label offset further out
+      const lPad = 30; // afastamento do rotulo em relacao a ponta do eixo
       return {
         x2: outer.x,
         y2: outer.y,

@@ -1,13 +1,39 @@
-/* DevProfile Global Styles — GitHub Brand Compliant */
+// =============================================================================
+// DevProfile — base global e componentes do design system
+// Regras e tokens: MASTER.md na raiz do repositório.
+// =============================================================================
 @use '@fontsource-variable/mona-sans' as *;
 @use 'app/styles/theme' as *;
-// Outfit + JetBrains Mono: used by the hero and card-generator "code accent" look
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
-/* -------------------------------------------------------------------------
-   Reset & Box Model
-   Accessibility: no reliance on color alone; semantic HTML assumed
-   ------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------
+// Temas: light é o padrão declarado, o SO decide quando não há escolha explícita,
+// e data-theme no <html> vence sempre.
+// -----------------------------------------------------------------------------
+:root {
+  @include theme-light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']):not([data-theme='dimmed']) {
+    @include theme-dark;
+  }
+}
+
+:root[data-theme='light'] {
+  @include theme-light;
+}
+
+:root[data-theme='dark'] {
+  @include theme-dark;
+}
+
+:root[data-theme='dimmed'] {
+  @include theme-dimmed;
+}
+
+// -----------------------------------------------------------------------------
+// Reset
+// -----------------------------------------------------------------------------
 *,
 *::before,
 *::after {
@@ -16,86 +42,117 @@
   padding: 0;
 }
 
-/* -------------------------------------------------------------------------
-   Base — GitHub Brand Typography
-   • No manual letter-spacing (Mona Sans has optical size axis)
-   • No ligatures on headlines (set per element below)
-   • font-optical-sizing: auto lets browser pick opsz axis automatically
-   ------------------------------------------------------------------------- */
-html, body {
+html,
+body {
   height: 100%;
 }
 
 html {
-  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
   font-optical-sizing: auto;
 }
 
 body {
-  background-color: $color-bg;
-  font-family: $font-brand;
-  font-weight: $fw-regular;
+  background-color: var(--canvas-default);
+  color: var(--fg-default);
+  font-family: $font-body;
   font-size: $type-body;
+  font-weight: $fw-regular;
   line-height: $lh-normal;
-  color: $color-text-primary;  /* #F2F5F3 on #101411 ≈ 14.5:1 ✅ WCAG AAA */
-  overflow-x: hidden;
 }
 
-/* -------------------------------------------------------------------------
-   Headings — GitHub Brand Type Scale
-   • No ligatures (Brand Toolkit: "Don't use ligatures in headlines")
-   • No letter-spacing override (Mona Sans opsz handles spacing)
-   ------------------------------------------------------------------------- */
-h1, h2, h3, h4, h5, h6 {
-  font-family: $font-brand;
-  font-feature-settings: "liga" 0, "calt" 0; /* Disable ligatures */
+// -----------------------------------------------------------------------------
+// Tipografia: Mona Sans só no display, pilha de sistema no corpo
+// -----------------------------------------------------------------------------
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-display;
   line-height: $lh-tight;
-  color: $color-text-primary;
+  letter-spacing: $ls-display;
+  color: var(--fg-default);
 }
 
-h1 { font-size: $type-display; font-weight: $fw-extrabold; }
-h2 { font-size: $type-headline; font-weight: $fw-bold; }
-h3 { font-size: $type-h3;       font-weight: $fw-bold; }
-h4 { font-size: $type-body-lg;  font-weight: $fw-semibold; }
-
-/* Body text */
-p, li, span, label, small {
-  font-family: $font-brand;
-  line-height: $lh-normal;
+h1 {
+  font-size: $type-display;
+  font-weight: $fw-bold;
 }
 
-/* Monospace */
-code, pre, kbd {
+h2 {
+  font-size: $type-section;
+  font-weight: $fw-semibold;
+}
+
+h3 {
+  font-size: $type-lead;
+  font-weight: $fw-semibold;
+}
+
+h4,
+h5,
+h6 {
+  font-size: $type-body;
+  font-weight: $fw-semibold;
+  font-family: $font-body;
+  letter-spacing: 0;
+}
+
+code,
+pre,
+kbd,
+samp {
   font-family: $font-mono;
-  font-size: 0.9em;
+  font-size: $type-mono;
 }
 
-/* Links — always distinguishable beyond color (underline on focus/hover) */
+kbd {
+  border: $border-w solid var(--border-default);
+  border-radius: $radius-sm;
+  padding: 0 $space-1;
+  color: var(--fg-subtle);
+}
+
 a {
-  color: $color-accent-light;
+  color: var(--accent-fg);
   text-decoration: none;
 
-  &:hover  { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
+
   &:focus-visible {
-    outline: 2px solid $color-accent;
+    outline: 2px solid var(--accent-fg);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: $radius-sm;
   }
 }
 
-/* Focus visible — all interactive elements (Accessibility) */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid $color-accent;
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-fg);
   outline-offset: 2px;
 }
 
-/* Skip to main content (screen readers) */
+// Toda métrica é tabular: número não pode dançar entre um valor e outro.
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -106,4 +163,418 @@ textarea:focus-visible {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: $content-max;
+  margin: 0 auto;
+  padding: 0 $space-4;
+}
+
+// -----------------------------------------------------------------------------
+// Botão — 32px, raio 6px, hover só de cor. Cinco estados.
+// -----------------------------------------------------------------------------
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  height: $control-h;
+  padding: 0 $space-3;
+  font-family: inherit;
+  font-size: $type-body;
+  font-weight: $fw-medium;
+  line-height: 1;
+  color: var(--fg-default);
+  background-color: var(--btn-bg);
+  border: $border-w solid var(--btn-border);
+  border-radius: $radius-md;
+  box-shadow: var(--shadow-resting);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color $dur-fast linear, border-color $dur-fast linear;
+
+  &:hover:not(:disabled) {
+    background-color: var(--btn-hover-bg);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--btn-hover-bg);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-fg);
+    outline-offset: -2px;
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  // Alvo de toque de 44px onde não existe mouse.
+  @media (pointer: coarse) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  &--primary {
+    color: var(--fg-on-emphasis);
+    background-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-border);
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+      background-color: var(--btn-primary-hover);
+    }
+  }
+
+  &--danger {
+    color: var(--danger-fg);
+
+    &:hover:not(:disabled) {
+      color: var(--fg-on-emphasis);
+      background-color: var(--danger-fg);
+      border-color: var(--danger-fg);
+    }
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &--sm {
+    height: $control-h-sm;
+    padding: 0 $space-2;
+    font-size: $type-small;
+  }
+
+  .icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Box — o card do Primer
+// -----------------------------------------------------------------------------
+.Box {
+  background-color: var(--canvas-default);
+  border: $border-w solid var(--border-default);
+  border-radius: $radius-md;
+  overflow: hidden;
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    padding: $space-3 $space-4;
+    font-size: $type-body;
+    font-weight: $fw-semibold;
+    background-color: var(--canvas-subtle);
+    border-bottom: $border-w solid var(--border-default);
+
+    .muted {
+      font-weight: $fw-regular;
+      color: var(--fg-muted);
+    }
+
+    .right {
+      margin-left: auto;
+      font-size: $type-small;
+      font-weight: $fw-regular;
+      color: var(--fg-muted);
+    }
+
+    // Em tela estreita o cabecalho fica com o titulo e mais nada: o complemento
+    // e o contador viram ruido antes de virar informacao.
+    @media (max-width: $bp-sm) {
+      .muted,
+      .right {
+        display: none;
+      }
+    }
+  }
+
+  &-row {
+    padding: $space-4;
+    border-bottom: $border-w solid var(--border-muted);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Label, Counter, estado
+// -----------------------------------------------------------------------------
+.Label {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  padding: 0 $space-2 + 2px;
+  font-size: $type-small;
+  line-height: 22px;
+  color: var(--fg-muted);
+  background-color: transparent;
+  border: $border-w solid var(--border-default);
+  border-radius: $radius-full;
+  white-space: nowrap;
+
+  &--accent {
+    color: var(--accent-fg);
+    background-color: var(--accent-subtle);
+    border-color: var(--accent-fg);
+  }
+
+  &--success {
+    color: var(--success-fg);
+    border-color: var(--success-fg);
+  }
+
+  &--attention {
+    color: var(--attention-fg);
+    border-color: var(--attention-fg);
+  }
+
+  &--danger {
+    color: var(--danger-fg);
+    border-color: var(--danger-fg);
+  }
+}
+
+.Counter {
+  display: inline-block;
+  padding: 0 $space-2 - 2px;
+  font-size: $type-small;
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+  color: var(--fg-muted);
+  background-color: var(--neutral-muted);
+  border-radius: $radius-full;
+}
+
+// -----------------------------------------------------------------------------
+// UnderlineNav — a barra da aba ativa é o laranja do GitHub
+// -----------------------------------------------------------------------------
+.UnderlineNav {
+  display: flex;
+  gap: $space-1;
+  overflow-x: auto;
+  border-bottom: $border-w solid var(--border-default);
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: $space-2 - 1px;
+    padding: $space-3 - 2px $space-3 - 2px $space-3;
+    font-size: $type-body;
+    color: var(--fg-default);
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color $dur-normal $ease-out;
+
+    &:hover {
+      border-bottom-color: var(--border-default);
+    }
+
+    &[aria-current='page'],
+    &[aria-selected='true'] {
+      font-weight: $fw-semibold;
+      border-bottom-color: var(--nav-active);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-fg);
+      outline-offset: -2px;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Flash — aviso
+// -----------------------------------------------------------------------------
+.flash {
+  display: flex;
+  align-items: center;
+  gap: $space-3 - 2px;
+  padding: $space-3 $space-4;
+  font-size: $type-body;
+  color: var(--fg-default);
+  background-color: var(--accent-subtle);
+  border: $border-w solid var(--accent-fg);
+  border-radius: $radius-md;
+
+  .icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    color: var(--accent-fg);
+  }
+
+  &--warn {
+    background-color: var(--attention-subtle);
+    border-color: var(--attention-fg);
+
+    .icon {
+      color: var(--attention-fg);
+    }
+  }
+
+  &--danger {
+    background-color: var(--danger-subtle);
+    border-color: var(--danger-fg);
+
+    .icon {
+      color: var(--danger-fg);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Input
+// -----------------------------------------------------------------------------
+.input {
+  width: 100%;
+  height: $control-h;
+  padding: 0 $space-3;
+  font-size: $type-body;
+  color: var(--fg-default);
+  background-color: var(--canvas-default);
+  border: $border-w solid var(--border-default);
+  border-radius: $radius-md;
+  transition: border-color $dur-fast linear;
+
+  &::placeholder {
+    color: var(--fg-subtle);
+  }
+
+  &:focus {
+    outline: 2px solid var(--accent-fg);
+    outline-offset: -1px;
+    border-color: var(--accent-fg);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--danger-fg);
+  }
+
+  @media (pointer: coarse) {
+    height: 44px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Peças de métrica reaproveitadas em várias telas
+// -----------------------------------------------------------------------------
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat {
+    display: grid;
+    gap: 2px;
+    padding: $space-3 + 2px $space-4;
+    border-right: $border-w solid var(--border-muted);
+
+    &:last-child {
+      border-right: 0;
+    }
+
+    @media (max-width: $bp-sm) {
+      &:nth-child(2n) {
+        border-right: 0;
+      }
+
+      &:nth-child(-n + 2) {
+        border-bottom: $border-w solid var(--border-muted);
+      }
+    }
+
+    b {
+      font-size: $type-lead;
+      font-weight: $fw-semibold;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: $ls-display;
+    }
+
+    span {
+      font-size: $type-small;
+      color: var(--fg-muted);
+    }
+  }
+}
+
+// Barra de composição: a barra de linguagens do repositório
+.lang-bar {
+  display: flex;
+  height: 8px;
+  overflow: hidden;
+  background-color: var(--neutral-muted);
+  border-radius: $radius-md;
+
+  i {
+    display: block;
+    height: 100%;
+  }
+}
+
+.lang-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3 - 2px $space-5 - 6px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2 - 2px;
+    font-size: $type-small;
+    color: var(--fg-muted);
+  }
+
+  b {
+    font-weight: $fw-semibold;
+    color: var(--fg-default);
+  }
+}
+
+.swatch-dot {
+  flex: none;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+// -----------------------------------------------------------------------------
+// Movimento: uma única animação de entrada, e o desligamento dela
+// -----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -1,10 +1,10 @@
-import { Component, Input, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Profile, LanguageUsage } from '../../models/profile.models';
 import { captureElementAsPngDataUrl, downloadDataUrl } from '../../utils/image-export';
 
 export type CardFormat = 'story' | 'post';
-export type CardTheme = 'dark' | 'light';
+export type CardTheme = 'dark' | 'light' | 'dimmed';
 
 interface FormatConfig {
   id: CardFormat;
@@ -40,23 +40,34 @@ export class CardGenerator {
 
   @ViewChild('scalerContain') scalerContain?: ElementRef<HTMLElement>;
 
+  // App zoneless: estado alterado depois de um await precisa marcar a view.
+  private readonly cdr = inject(ChangeDetectorRef);
+
   /* ── Ultra-Dense Formats (Strict 1080px base) ───────────────────────── */
   readonly formats: FormatConfig[] = [
     { id: 'post',    label: 'Post',    icon: 'instagram', platform: 'Feed (1:1)',  aspect: '1/1',    width: 1080, height: 1080 },
     { id: 'story',   label: 'Story',   icon: 'instagram', platform: 'Story (9:16)',  aspect: '9/16',   width: 1080, height: 1920 },
   ];
 
-  /* ── Modern Tech Themes ─────────────────────────────────────────────── */
+  /* -- Os mesmos tres temas do Primer usados no app -------------------- */
+  // Unico lugar do projeto com hex fora de _theme.scss, e por um motivo: o card
+  // e exportado como imagem e pode ter tema diferente do app, entao nao pode
+  // depender das custom properties da pagina. Valores identicos aos do MASTER.md.
   readonly themes: ThemeConfig[] = [
     {
-      id: 'dark', label: 'Modo Escuro',
-      bg: '#0a0a0f', surface: '#16161e', accent: '#8957e5', accentLight: '#d2a8ff',
-      text: '#e6edf3', subtext: '#7d8590', border: 'rgba(255,255,255,0.08)'
+      id: 'dark', label: 'Dark default',
+      bg: '#0d1117', surface: '#151b23', accent: '#4493f8', accentLight: '#79c0ff',
+      text: '#f0f6fc', subtext: '#9198a1', border: '#3d444d'
     },
     {
-      id: 'light', label: 'Modo Claro',
-      bg: '#ffffff', surface: '#f6f8fa', accent: '#0969da', accentLight: '#54aeff',
-      text: '#1f2328', subtext: '#656d76', border: 'rgba(31,35,40,0.08)'
+      id: 'light', label: 'Light',
+      bg: '#ffffff', surface: '#f6f8fa', accent: '#0969da', accentLight: '#218bff',
+      text: '#1f2328', subtext: '#59636e', border: '#d1d9e0'
+    },
+    {
+      id: 'dimmed', label: 'Dark dimmed',
+      bg: '#22272e', surface: '#2d333b', accent: '#539bf5', accentLight: '#6cb6ff',
+      text: '#adbac7', subtext: '#768390', border: '#444c56'
     }
   ];
 
@@ -89,6 +100,12 @@ export class CardGenerator {
 
   get topFiveLangs(): LanguageUsage[] {
     return (this.profile.analysis.topLanguagesAll || []).slice(0, 5);
+  }
+
+  /** Mesmo criterio da barra do painel: o que sobra das cinco vira um segmento neutro. */
+  get otherLangsPercent(): number {
+    const sum = this.topFiveLangs.reduce((total, lang) => total + (lang.percentage ?? 0), 0);
+    return Math.max(0, Math.round((100 - sum) * 100) / 100);
   }
 
   get radarCompetencies(): { label: string; value: number }[] {
@@ -135,6 +152,7 @@ export class CardGenerator {
       console.error('Falha ao gerar captura de alta fidelidade:', err);
     } finally {
       this.isExporting = false;
+      this.cdr.markForCheck();
     }
   }
 

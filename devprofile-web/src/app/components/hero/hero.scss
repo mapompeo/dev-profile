@@ -1,682 +1,183 @@
 @use '../../styles/theme' as *;
 
-/* ─── Premium Split Transformation (WYSISYG Home) ───────────────────── */
-.home-hero-split {
-  font-family: $font-display;
-  color: #fff;
-  flex: 1;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 3rem 0; /* Horizontal padding moved to inner host for grid alignment */
-  @media (max-width: 1024px) { padding: 1rem 0; }
-  overflow-x: hidden;
-  position: relative;
-  background: transparent; /* Deep space base - inherit from app */
-}
-
-
-
-/* ─── Main Content Split ───────────────────────────────────────────── */
-.hero-split-host {
-  display: flex;
-  max-width: 1200px;
+// Landing no ritmo de uma página de produto do GitHub: título em Mona Sans, o
+// resto na densidade normal do Primer. Sem cena decorativa, sem glow, sem tilt.
+.Landing {
   width: 100%;
-  padding: 0 2rem;
+  max-width: $content-max;
   margin: 0 auto;
-  align-items: center;
-  gap: 4.5rem;
-  z-index: 10;
-  margin-bottom: 2.5rem;
+  padding: $space-7 $space-4 $space-6;
+  display: grid;
+  gap: $space-6;
+}
 
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-    gap: 2.5rem;
+.Landing-head {
+  display: grid;
+  gap: $space-3;
+
+  h1 {
+    font-size: $type-display;
+    font-weight: $fw-bold;
+    text-wrap: balance;
+    max-width: 20ch; // em ch da propria fonte display, nao da do corpo
+  }
+
+  p {
+    color: var(--fg-muted);
+    max-width: 68ch;
   }
 }
 
-/* --- Left Column: Text & Input --- */
-.hero-left {
-  flex: 1.6; /* Aumentado de 1.25 para dar mais espaço ao texto */
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+.Landing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: $space-4;
+  align-items: start;
 
-  @media (max-width: 1024px) { align-items: center; flex: 1; }
-}
-
-.hero-badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem; /* Espaçamento entre ícone e texto */
-  padding: 0 0.8rem;
-  background: rgba($color-accent, 0.08);
-  border: 1px solid rgba($color-accent, 0.2);
-  border-radius: 100px;
-  color: $color-accent-light;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  width: fit-content;
-  height: 28px; /* Altura fixa mantida */
-  box-sizing: border-box;
-
-  .pill-ico { width: 13px; height: 13px; }
-  &.vs-mode { border-color: rgba(255, 136, 0, 0.3); color: #ff8800; background: rgba(255, 136, 0, 0.05); .pill-ico { color: #ff8800; } }
-}
-
-.hero-main-title {
-  font-size: 2.6rem;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin: 0;
-  color: #fff;
-  min-height: auto; /* Garante 3 linhas */
-
-  .title-line {
-    display: block;
-    height: 1.2em; /* Altura fixa por linha */
-    @media (max-width: 768px) { height: auto; display: block; }
-    line-height: normal; /* Evita herança estranha */
-  }
-
-  .text-glow { color: #fff; text-shadow: 0 0 20px rgba(255,255,255, 0.3); }
-  
-  .text-accent { 
-    font-weight: 800;
-    background: linear-gradient(
-      90deg, 
-      #8957e5 0%, 
-      #c4b5fd 25%, 
-      #fff 50%, 
-      #c4b5fd 75%, 
-      #8957e5 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text; /* Correção lint */
-    -webkit-text-fill-color: transparent;
-    animation: shine 3s linear infinite;
-    display: inline-block;
-  }
-
-  @media (max-width: 768px) { font-size: clamp(1.4rem, 6.5vw, 1.9rem); min-height: auto; line-height: 1.3; }
-}
-
-@keyframes shine {
-  to {
-    background-position: 200% center;
+  @media (max-width: $bp-lg) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-/* --- Premium Interaction Area --- */
-.hero-input-area {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  margin-top: 0.5rem;
-  width: 100%;
-  @media (max-width: 1024px) { align-items: center; }
+.Landing-tabs {
+  padding: 0 $space-3;
+  background-color: var(--canvas-subtle);
 }
 
-/* --- ── Sliding Toggle Switch ── --- */
-.glass-toggle-host {
-  position: relative;
-  display: inline-flex;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 100px; /* Restaurado */
-  padding: 0.25rem;
-  width: 280px;
-  display: flex;
-  justify-content: center;
-  z-index: 5;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-
-  .toggle-btn {
-    position: relative;
-    z-index: 2;
-    flex: 1; /* Faz os dois botões terem o mesmo tamanho */
-    background: transparent;
-    border: none;
-    padding: 0.6rem 0;
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.4);
-    cursor: pointer;
-    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-align: center;
-
-    &.active { color: #000; }
-  }
-
-  .toggle-indicator {
-    position: absolute;
-    top: 0.3rem; left: 0.3rem;
-    bottom: 0.3rem;
-    width: calc(50% - 0.3rem);
-    background: #fff;
-    border-radius: 100px;
-    z-index: 1;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(255,255,255,0.2);
-
-    &.pos-right { transform: translateX(100%); }
-  }
+.Landing-form {
+  display: grid;
+  gap: $space-3;
 }
 
-/* --- ── Battle Arena (VS Mode) ── --- */
-.input-wrapper-pill.vs-main {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 100px;
-  padding: 0.4rem;
-  box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-  transition: all 0.4s;
-  width: 100%;
-  max-width: 540px;
-  box-sizing: border-box;
-  overflow: hidden;
-
-  @media (max-width: 768px) { width: 366px; max-width: 366px; }
-
-  .contender-input-pair {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    padding: 0 0.3rem;
-    min-width: 0;
-
-    input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 0.7rem 0.3rem;
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #000;
-      outline: none;
-      min-width: 0;
-      &::placeholder { color: rgba(0,0,0,0.4); }
-
-      &:first-child { text-align: right; }
-      &:last-child { text-align: left; }
-    }
-
-    .vs-divider {
-      display: flex;
-      align-items: center;
-      padding: 0 0.6rem;
-      position: relative;
-
-      &::before, &::after {
-        content: '';
-        position: absolute;
-        width: 1px;
-        height: 14px;
-        background: rgba(0,0,0,0.08);
-      }
-      &::before { left: 0; }
-      &::after { right: 0; }
-
-      .vs-txt {
-        font-family: $font-mono-accent;
-        font-size: 0.65rem;
-        font-weight: 900;
-        color: #8957e5;
-        opacity: 0.8;
-      }
-    }
-
-    @media (max-width: 768px) {
-      flex-direction: column;
-      padding: 0;
-      input { text-align: center !important; padding: 0.4rem; }
-      .vs-divider { 
-        padding: 0.4rem 0; 
-        &::before, &::after { width: 14px; height: 1px; }
-        &::before { top: 0; left: 50%; transform: translateX(-50%); }
-        &::after { bottom: 0; left: 50%; transform: translateX(-50%); }
-      }
-    }
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    border-radius: 24px;
-    padding: 1rem;
-    .btn-action-main { width: 100%; margin-top: 0.5rem; justify-content: center; }
-  }
-}
-
-/* --- ── Primary Action Logic ── --- */
-.integrated-form {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 720px;
+.Landing-label {
   display: block;
-  @media (max-width: 768px) { width: 366px; max-width: 366px; margin: 0 auto; }
+  margin-bottom: $space-2 - 2px;
+  font-size: $type-small;
+  font-weight: $fw-semibold;
+  color: var(--fg-default);
+}
 
-  .input-wrapper-pill.single-main {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background: #fff;
-    border-radius: 100px;
-    padding: 0.4rem;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-    transition: all 0.4s;
-    width: 100%;
-    max-width: 540px;
-    box-sizing: border-box;
+.Landing-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: $space-3;
+  align-items: end;
 
-    @media (max-width: 768px) { width: 366px; max-width: 366px; }
-
-    input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 0.7rem 1.4rem;
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #000;
-      outline: none;
-      &::placeholder { color: rgba(0,0,0,0.4); }
-    }
-
-    @media (max-width: 768px) {
-      flex-direction: column;
-      border-radius: 24px;
-      padding: 1rem;
-      input { text-align: center; padding: 0.4rem; }
-      .btn-action-main { width: 100%; margin-top: 0.5rem; justify-content: center; }
-    }
-  }
-
-  .btn-action-main {
-    background: #8957e5;
-    color: #fff;
-    border: none;
-    border-radius: 100px;
-    padding: 0.7rem 1.6rem;
-    font-size: 0.85rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 0.7rem;
-    transition: all 0.3s;
-    box-shadow: 0 6px 20px rgba(137, 87, 229, 0.3);
-
-
-    &:hover:not(:disabled) { background: #7a48d4; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(137, 87, 229, 0.4); }
-    &:disabled { opacity: 0.4; cursor: not-allowed; }
-    @media (max-width: 600px) {
-      width: 100%;
-      justify-content: center;
-    }
-    .btn-ico { width: 15px; }
+  @media (max-width: $bp-sm) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-/* --- Seamless Built-in Error Feedback --- */
-.hero-error-banner {
-  display: flex;
+.Landing-vs {
+  height: $control-h;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  padding: 0.8rem 1.4rem;
-  margin-top: 1rem;
-  background: rgba($color-danger, 0.1);
-  border: 1px solid rgba($color-danger, 0.15);
-  border-radius: 100px;
-  color: $color-danger;
-  font-size: 0.85rem;
-  font-weight: 700;
-  animation: slide-up 0.3s ease-out;
-  box-shadow: 0 10px 30px rgba($color-danger, 0.1);
-  
-  svg { width: 18px; stroke: $color-danger; }
+  font-size: $type-small;
+  font-weight: $fw-semibold;
+  color: var(--fg-subtle);
+  text-transform: uppercase;
 }
 
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.Landing-hint {
+  margin: 0;
+  font-size: $type-small;
+  color: var(--fg-muted);
 }
 
-/* --- Inline Loading Mechanisms --- */
-.btn-spinner {
-  width: 18px;
-  height: 18px;
-  animation: spin 1s linear infinite;
+.Landing-error {
+  border-radius: 0;
+  border-width: 0;
+  border-top: $border-w solid var(--danger-fg);
 }
 
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-.btn-action-main.is-loading {
-  cursor: wait !important;
-  opacity: 0.85;
-}
-
-/* ─── Right Column: Language Fusion Scene ──────────────────────── */
-.hero-right {
-  flex: 0.5;
-  @media (max-width: 1024px) { display: none !important; }
+// Lista de perfis de exemplo: cada linha é um Box-row clicável inteiro.
+.Landing-sample {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  align-items: baseline;
+  gap: $space-2;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: $border-w solid var(--border-muted);
+  padding: $space-3 $space-4;
+  cursor: pointer;
+  transition: background-color $dur-fast linear;
 
-  .glow-orb-primary {
-    position: absolute;
-    width: 150%; height: 150%;
-    background: radial-gradient(circle, rgba($color-accent, 0.20) 0%, transparent 65%);
-    filter: blur(80px);
-    opacity: 0.4;
-    animation: orb-float 8s infinite alternate ease-in-out;
-    pointer-events: none;
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--canvas-subtle);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-fg);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (pointer: coarse) {
+    min-height: 44px;
   }
 }
 
-@keyframes orb-float {
-  from { transform: scale(1) translate(0, 0); }
-  to   { transform: scale(1.1) translate(12px, -12px); }
+.Landing-sample-user {
+  font-size: $type-body;
+  font-weight: $fw-semibold;
+  color: var(--accent-fg);
 }
 
-/* ─── Master Timeline ─────────────────────────────────────────── */
-// Total loop:  14s
-// Phase 1  0.0s –  4.0s  → icons appear + converge  (29%)
-// Phase 2  4.0s –  5.5s  → explosion                (39%)
-// Phase 3  5.5s – 12.0s  → GH float                 (86%)
-// Phase 4 12.0s – 14.0s  → fade out                 (100%)
-
-$cycle: 14s;
-
-/* ─── Scene Container ─────────────────────────────────────────── */
-.lang-scene {
-  position: relative;
-  width: 380px;
-  height: 380px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.Landing-sample-note {
+  font-size: $type-small;
+  color: var(--fg-muted);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   PHASE 1 — Language Orbs  (appear staggered → converge to center)
-   ═══════════════════════════════════════════════════════════════ */
-.l-orb {
-  position: absolute;
-  width: 42px; height: 42px;
-  border-radius: 10px;
-  pointer-events: none;
-  animation: lang-converge $cycle ease-in-out infinite;
-  filter: drop-shadow(0 0 6px var(--glow));
+.Landing-how {
+  display: grid;
+  gap: $space-4;
 
-  svg { width: 100%; height: 100%; border-radius: 10px; }
-}
-
-// Each orb gets: start angle, radius, glow color, stagger delay
-.lo-1  { --a: 0deg;   --r: 170px; --glow: #3178c6; animation-delay: 0.0s;  }
-.lo-2  { --a: 36deg;  --r: 165px; --glow: #f7df1e; animation-delay: 0.18s; }
-.lo-3  { --a: 72deg;  --r: 175px; --glow: #3572A5; animation-delay: 0.36s; }
-.lo-4  { --a: 108deg; --r: 160px; --glow: #61dafb; animation-delay: 0.54s; }
-.lo-5  { --a: 144deg; --r: 170px; --glow: #264de4; animation-delay: 0.72s; }
-.lo-6  { --a: 180deg; --r: 168px; --glow: #e34c26; animation-delay: 0.10s; }
-.lo-7  { --a: 216deg; --r: 172px; --glow: #00ADD8; animation-delay: 0.45s; }
-.lo-8  { --a: 252deg; --r: 163px; --glow: #7F52FF; animation-delay: 0.63s; }
-.lo-9  { --a: 288deg; --r: 175px; --glow: #2496ED; animation-delay: 0.30s; }
-.lo-10 { --a: 324deg; --r: 167px; --glow: #ce4a08; animation-delay: 0.80s; }
-
-@keyframes lang-converge {
-  // hidden
-  0%   { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(0); opacity: 0; }
-  // pop in at outer radius
-  8%   { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(1); opacity: 1; }
-  // hold
-  14%  { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(1); opacity: 1; }
-  // converge to center (29% = 4s)
-  28%  { transform: rotate(calc(var(--a) + 80deg)) translateX(0px) rotate(calc(-1 * (var(--a) + 80deg))) scale(0.55); opacity: 0.85; }
-  // vanish at center
-  30%  { transform: rotate(calc(var(--a) + 90deg)) translateX(0px) rotate(calc(-1 * (var(--a) + 90deg))) scale(0); opacity: 0; }
-  // stay hidden
-  100% { transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))) scale(0); opacity: 0; }
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
-   PHASE 2 — Fusion Explosion
-   ═══════════════════════════════════════════════════════════════ */
-.fusion-burst {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.fb-1 {
-  width: 10px; height: 10px;
-  box-shadow: 0 0 60px 30px rgba(139,92,246,0.7);
-  animation: burst-ring-1 $cycle ease-out infinite;
-}
-
-.fb-2 {
-  width: 10px; height: 10px;
-  box-shadow: 0 0 50px 25px rgba(96,165,250,0.5);
-  animation: burst-ring-2 $cycle ease-out infinite;
-}
-
-.fusion-core {
-  position: absolute;
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: white;
-  animation: core-flash $cycle ease-out infinite;
-}
-
-@keyframes burst-ring-1 {
-  0%, 28%  { transform: scale(0); opacity: 0; }
-  29%      { transform: scale(0); opacity: 0; }
-  33%      { transform: scale(8); opacity: 0.9; }
-  40%      { transform: scale(14); opacity: 0; }
-  100%     { opacity: 0; }
-}
-
-@keyframes burst-ring-2 {
-  0%, 29%  { transform: scale(0); opacity: 0; }
-  31%      { transform: scale(0); opacity: 0; }
-  36%      { transform: scale(10); opacity: 0.7; }
-  44%      { transform: scale(16); opacity: 0; }
-  100%     { opacity: 0; }
-}
-
-@keyframes core-flash {
-  0%, 28%  { transform: scale(0); opacity: 0; }
-  29%      { transform: scale(0); opacity: 0; }
-  31%      { transform: scale(1); opacity: 1; background: #fff; box-shadow: 0 0 40px 20px rgba(255,255,255,0.9), 0 0 80px 40px rgba(139,92,246,0.6); }
-  35%      { transform: scale(3); opacity: 0.8; background: #e9d5ff; }
-  40%      { transform: scale(1); opacity: 0; }
-  100%     { opacity: 0; }
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
-   PHASE 3 — GitHub Logo Emerge, Float & Orbital Rings
-   ═══════════════════════════════════════════════════════════════ */
-.gh-stage {
-  position: absolute;
-  width: 260px; height: 260px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  animation: gh-stage-vis $cycle linear infinite;
-}
-
-@keyframes gh-stage-vis {
-  0%, 36%  { opacity: 0; }
-  40%      { opacity: 1; }
-  86%      { opacity: 1; }
-  93%      { opacity: 0; }
-  100%     { opacity: 0; }
-}
-
-/* ── Glow backdrop ── */
-.gh-glow {
-  position: absolute;
-  width: 250px; height: 250px;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    rgba(139,92,246,0.2) 0%,
-    rgba(88,28,235,0.08) 40%,
-    transparent 70%);
-  animation: gh-glow-pulse 3s ease-in-out infinite alternate;
-}
-
-@keyframes gh-glow-pulse {
-  from { transform: scale(0.9); opacity: 0.6; }
-  to   { transform: scale(1.1); opacity: 1; }
-}
-
-/* ── Orbital rings ── */
-.gh-ring {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.gh-ring--1 {
-  width: 220px; height: 220px;
-  box-shadow:
-    0 0 0 1.5px rgba(139,92,246,0.45),
-    0 0 12px 2px rgba(139,92,246,0.25);
-  animation: gh-r1 5s linear infinite;
-}
-@keyframes gh-r1 {
-  from { transform: rotateX(70deg) rotateZ(0deg); }
-  to   { transform: rotateX(70deg) rotateZ(360deg); }
-}
-
-.gh-ring--2 {
-  width: 190px; height: 190px;
-  box-shadow:
-    0 0 0 1px rgba(96,165,250,0.35),
-    0 0 10px 2px rgba(96,165,250,0.15);
-  animation: gh-r2 7.5s linear infinite reverse;
-}
-@keyframes gh-r2 {
-  from { transform: rotateX(60deg) rotateZ(40deg); }
-  to   { transform: rotateX(60deg) rotateZ(400deg); }
-}
-
-/* ── Sparkle particles ── */
-.gh-spark {
-  position: absolute;
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: #c4b5fd;
-  pointer-events: none;
-}
-
-.gsp-1 { --sx:  80px; --sy: -60px; animation: sparkle 2.0s 0.0s ease-in-out infinite; }
-.gsp-2 { --sx: -90px; --sy:  40px; animation: sparkle 2.5s 0.7s ease-in-out infinite; }
-.gsp-3 { --sx:  30px; --sy:  95px; animation: sparkle 1.8s 1.2s ease-in-out infinite; }
-.gsp-4 { --sx: -70px; --sy: -80px; animation: sparkle 2.2s 0.3s ease-in-out infinite; }
-
-@keyframes sparkle {
-  0%, 100% { opacity: 0; transform: translate(var(--sx, 0), var(--sy, 0)) scale(0); }
-  50%      { opacity: 1; transform: translate(var(--sx, 0), var(--sy, 0)) scale(1.5); box-shadow: 0 0 8px 2px rgba(196,181,253,0.8); }
-}
-
-/* ── GitHub Floater (the logo itself) ── */
-.gh-floater {
-  position: relative;
-  z-index: 5;
-  width: 110px; height: 110px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #1a0533 0%, #0a0014 50%, #000 100%);
-  box-shadow:
-    0 0 0 3px rgba(139,92,246,0.5),
-    0 0 30px rgba(139,92,246,0.6),
-    0 0 60px rgba(139,92,246,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: gh-emerge $cycle cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-
-  .gh-logo-svg {
-    width: 54px; height: 54px;
-    color: #d8b4fe;
-    filter: drop-shadow(0 0 8px rgba(167,139,250,0.9))
-            drop-shadow(0 0 20px rgba(139,92,246,0.5));
+  h2 {
+    font-size: $type-section;
+    font-weight: $fw-semibold;
   }
 }
 
-@keyframes gh-emerge {
-  // hidden
-  0%, 35%  { transform: scale(0); opacity: 0; }
-  // elastic pop
-  38%      { transform: scale(1.25); opacity: 1; }
-  40%      { transform: scale(0.9); }
-  42%      { transform: scale(1.05); }
-  44%      { transform: scale(1); }
-  // idle float: gentle bob
-  50%      { transform: translateY(-6px); }
-  56%      { transform: translateY(4px); }
-  62%      { transform: translateY(-5px); }
-  68%      { transform: translateY(3px); }
-  74%      { transform: translateY(-4px); }
-  80%      { transform: translateY(5px); }
-  84%      { transform: translateY(-2px) scale(1); opacity: 1; }
-  // fade out
-  92%      { transform: scale(0.8); opacity: 0; }
-  100%     { transform: scale(0); opacity: 0; }
-}
+.Landing-how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $space-4;
 
-/* --- Section: HOW IT WORKS --- */
-.how-it-works {
-  max-width: 1200px; width: 100%; padding: 0 2rem 2rem; z-index: 5;
-  margin: 0 auto;
-}
-
-.section-head { 
-  margin-bottom: 1.5rem; 
-  h2 { font-size: 2rem; font-weight: 800; opacity: 0.8; letter-spacing: -0.02em; } 
-  @media (max-width: 1024px) { text-align: center; }
-}
-
-.how-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
-  @media (max-width: 768px) { grid-template-columns: 1fr; }
-}
-
-.how-card {
-  padding: 2rem;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 36px;
-  transition: all 0.3s;
-  display: flex; flex-direction: column; gap: 1.4rem;
-  /* Retirada a min-height fixa para permitir que o grid ajuste a altura dinamicamente ao conteúdo */
-
-  .card-ico-box {
-    width: 52px; height: 52px; background: rgba($color-accent, 0.1); color: $color-accent-light; border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    svg { width: 26px; }
+  @media (max-width: $bp-md) {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  h3 { font-size: 1.4rem; font-weight: 700; margin: 0; }
-  p { font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.4); margin: 0; }
+  .Box-row {
+    display: grid;
+    gap: $space-2;
+    height: 100%;
+  }
 
-  &:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); transform: translateY(-10px); }
+  h3 {
+    font-family: $font-body;
+    font-size: $type-body;
+    font-weight: $fw-semibold;
+    letter-spacing: 0;
+  }
+
+  p {
+    color: var(--fg-muted);
+  }
 }
 
-.home-minimal-foot { padding: 4rem 0; font-size: 0.85rem; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.12em; }
+.Landing-how-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  color: var(--fg-muted);
+}

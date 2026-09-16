@@ -12,13 +12,14 @@ interface DonutSlice {
 
 const CATEGORIES: (keyof StackBreakdown)[] = ['frontend', 'backend', 'devOps', 'mobile', 'data', 'scripts'];
 
+// Escala categorica do design system (MASTER.md): sem cor inventada.
 const PALETTE: Record<keyof StackBreakdown, string> = {
-  frontend: '#a78bfa',
-  backend:  '#60a5fa',
-  devOps:   '#34d399',
-  mobile:   '#fb923c',
-  data:     '#f472b6',
-  scripts:  '#94a3b8',
+  frontend: 'var(--chart-1)',
+  backend: 'var(--chart-2)',
+  devOps: 'var(--chart-3)',
+  mobile: 'var(--chart-4)',
+  data: 'var(--chart-5)',
+  scripts: 'var(--chart-6)'
 };
 
 const LABELS: Record<keyof StackBreakdown, string> = {
@@ -67,6 +68,12 @@ export class ChartDonut {
         return slice;
       })
       .filter(s => s.value > 0);
+  });
+
+  /** Descricao textual do grafico, exigida pelo checklist de acessibilidade. */
+  readonly chartLabel = computed(() => {
+    const parts = this.slices().map(s => `${s.label} ${s.value}%`);
+    return parts.length ? 'Identidade tecnica: ' + parts.join(', ') : 'Sem dados de stack';
   });
 
   onHover(s: DonutSlice | null) {

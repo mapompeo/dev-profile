@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Theme, ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -11,4 +12,10 @@ import { CommonModule } from '@angular/common';
 export class Header {
   @Input() isMainView = false;
   @Output() onHome = new EventEmitter<void>();
+
+  readonly theme = inject(ThemeService);
+
+  onThemeChange(event: Event): void {
+    this.theme.set((event.target as HTMLSelectElement).value as Theme);
+  }
 }

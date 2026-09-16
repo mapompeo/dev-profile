@@ -66,8 +66,10 @@ export class LangDemand {
     }));
   });
 
-  demandColor(demand: string) {
-    return demand === 'Alta'  ? '#34d399' :
-           demand === 'Média' ? '#fbbf24' : '#f87171';
+  /** Demanda usa as cores semanticas do tema, nunca um hex proprio. */
+  demandColor(demand: string): string {
+    if (demand === 'Alta') return 'var(--success-fg)';
+    if (demand === 'Media' || demand === 'Média') return 'var(--attention-fg)';
+    return 'var(--fg-muted)';
   }
 }

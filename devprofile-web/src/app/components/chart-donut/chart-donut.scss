@@ -1,73 +1,76 @@
+@use '../../styles/theme' as *;
+
 .donut-wrap {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+  gap: $space-4;
   align-items: center;
-  gap: 1.25rem;
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
-.donut-chart {
-  width: 180px;
-  height: 180px;
-  flex-shrink: 0;
+.donut-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.donut-chart svg { overflow: visible; }
+.donut-track {
+  stroke: var(--neutral-muted);
+}
 
 .donut-slice {
   cursor: pointer;
-  transition: stroke-width 0.2s, opacity 0.2s;
-  &:hover { stroke-width: 38; }
+  transition: opacity $dur-fast linear;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .donut-center-title {
-  font-size: 13px;
-  font-weight: 700;
-  fill: #f1f0ff;
-  font-family: 'Mona Sans', system-ui, sans-serif;
+  fill: var(--fg-default);
+  font-family: $font-body;
+  font-size: 15px;
+  font-weight: $fw-semibold;
 }
 
 .donut-center-sub {
-  font-size: 10px;
-  fill: rgba(255,255,255,0.45);
-  font-family: 'Mona Sans', system-ui, sans-serif;
+  fill: var(--fg-muted);
+  font-family: $font-body;
+  font-size: 12px;
 }
 
 .donut-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
+  display: grid;
+  gap: $space-2;
+  list-style: none;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  transition: background 0.15s;
+  gap: $space-2;
+  font-size: $type-body;
+  color: var(--fg-muted);
+  padding: 2px $space-2;
+  margin-left: -$space-2;
+  border-radius: $radius-md;
+  transition: background-color $dur-fast linear;
 
-  &.active,
-  &:hover { background: rgba(255,255,255,0.06); }
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  flex-shrink: 0;
+  &.is-active {
+    background-color: var(--canvas-subtle);
+    color: var(--fg-default);
+  }
 }
 
 .legend-label {
-  flex: 1;
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.7);
+  color: var(--fg-default);
 }
 
 .legend-val {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.5);
-  font-family: 'Mona Sans', monospace;
+  margin-left: auto;
+  color: var(--fg-muted);
 }

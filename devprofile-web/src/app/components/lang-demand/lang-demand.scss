@@ -1,133 +1,119 @@
 @use '../../styles/theme' as *;
 
+// Tabela densa, no ritmo da lista de arquivos de um repositório.
 .demand-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  display: grid;
 }
 
 .demand-row {
   display: grid;
-  grid-template-columns: 1fr 80px 80px 120px;
+  grid-template-columns: minmax(0, 1.2fr) 80px 90px minmax(0, 1.4fr);
+  gap: $space-3;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.25rem;
-  border-radius: 6px;
-  transition: background 0.15s;
+  padding: $space-2 0;
+  border-bottom: $border-w solid var(--border-muted);
+  font-size: $type-body;
 
-  &:hover:not(.header-row) { background: rgba(255,255,255,0.04); }
-
-  &.header-row {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.3);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    padding-bottom: 0.6rem;
-    margin-bottom: 0.2rem;
+  &:last-child {
+    border-bottom: 0;
   }
 
-  &.not-in-profile { opacity: 0.55; }
+  @media (max-width: $bp-sm) {
+    grid-template-columns: minmax(0, 1fr) 70px;
+    row-gap: $space-1;
+
+    .col-growth,
+    .col-yours {
+      grid-column: span 1;
+    }
+  }
+}
+
+.header-row {
+  font-size: $type-small;
+  font-weight: $fw-semibold;
+  color: var(--fg-muted);
+  border-bottom-color: var(--border-default);
+}
+
+.demand-row.not-in-profile {
+  color: var(--fg-muted);
 }
 
 .col-lang {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.85);
-  font-weight: 500;
+  gap: $space-2;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+// Marcador: linguagem que está no perfil ganha o ponto do acento, quem não está
+// fica com o contorno. Cor não é o único sinal: a coluna "no seu perfil" repete.
 .lang-marker {
-  width: 6px;
-  height: 6px;
+  flex: none;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.3);
-  flex-shrink: 0;
+  border: $border-w solid var(--fg-subtle);
 
   &.mine {
-    background: #a78bfa;
-    border-color: #a78bfa;
+    background-color: var(--accent-fg);
+    border-color: var(--accent-fg);
   }
 }
 
 .demand-badge {
   display: inline-block;
-  padding: 0.15rem 0.55rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  border: 1px solid currentColor;
-  border-radius: $radius-pill;
-  white-space: nowrap;
+  padding: 0 $space-2;
+  font-size: $type-small;
+  line-height: 20px;
+  border: $border-w solid currentColor;
+  border-radius: $radius-full;
 }
 
 .col-growth {
-  font-size: 0.75rem;
-  font-weight: 700;
-  font-family: 'Mona Sans', monospace;
+  font-variant-numeric: tabular-nums;
 
-  &.positive { color: #34d399; }
-  &.negative { color: #f87171; }
+  &.positive {
+    color: var(--success-fg);
+  }
+
+  &.negative {
+    color: var(--danger-fg);
+  }
 }
 
 .col-yours {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: $space-2;
 }
 
 .pct-bar-wrap {
-  flex: 1;
-  height: 4px;
-  background: rgba(255,255,255,0.07);
-  border-radius: $radius-pill;
+  flex: 1 1 auto;
+  height: 8px;
+  background-color: var(--neutral-muted);
+  border-radius: $radius-md;
   overflow: hidden;
 }
 
 .pct-bar {
   display: block;
   height: 100%;
-  background: #7c3aed;
-  border-radius: $radius-pill;
-  max-width: 100%;
+  background-color: var(--accent-fg);
+  border-radius: $radius-md;
 }
 
 .pct-val {
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.5);
-  font-family: 'Mona Sans', monospace;
-  white-space: nowrap;
+  flex: none;
+  font-size: $type-small;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
 }
 
 .not-in {
-  color: rgba(255,255,255,0.25);
-  font-size: 0.8rem;
-}
-
-/* ─── Responsive ─────────────────────────────────────────────────────────── */
-@media (max-width: 600px) {
-  .demand-row {
-    /* 2-col layout: language name + demand badge. Growth and bar hidden. */
-    grid-template-columns: 1fr auto;
-    gap: 0.4rem;
-  }
-
-  /* Hide growth column and the "no seu perfil" bar column on mobile */
-  .col-growth,
-  .col-yours,
-  .demand-row.header-row .col-growth,
-  .demand-row.header-row .col-yours {
-    display: none;
-  }
-
-  .col-lang {
-    font-size: 0.75rem;
-  }
-
-  .demand-badge {
-    font-size: 0.62rem;
-    padding: 0.12rem 0.45rem;
-  }
+  color: var(--fg-subtle);
 }

@@ -1,13 +1,8 @@
 <div class="donut-wrap">
   <div class="donut-chart">
-    <svg viewBox="0 0 200 200" aria-label="Rosca de Identidade Tech">
-      <!-- Background ring -->
-      <circle cx="100" cy="100" [attr.r]="r"
-        fill="none"
-        stroke="rgba(255,255,255,0.05)"
-        [attr.stroke-width]="36" />
+    <svg viewBox="0 0 200 200" role="img" [attr.aria-label]="chartLabel()">
+      <circle cx="100" cy="100" [attr.r]="r" fill="none" class="donut-track" [attr.stroke-width]="36" />
 
-      <!-- Slices -->
       <circle *ngFor="let s of slices()"
         cx="100" cy="100"
         [attr.r]="r"
@@ -22,26 +17,24 @@
         (mouseleave)="onHover(null)"
         transform="rotate(-90 100 100)" />
 
-      <!-- Center text -->
       <text x="100" y="96" text-anchor="middle" class="donut-center-title">
         {{ hoveredSlice ? hoveredSlice.label : centerLabel() }}
       </text>
-      <text x="100" y="114" text-anchor="middle" class="donut-center-sub">
-        {{ hoveredSlice ? (hoveredSlice.value + '%') : 'Stack' }}
+      <text x="100" y="116" text-anchor="middle" class="donut-center-sub">
+        {{ hoveredSlice ? (hoveredSlice.value + '%') : 'stack principal' }}
       </text>
     </svg>
   </div>
 
-  <!-- Legend -->
-  <div class="donut-legend">
-    <div class="legend-item"
+  <ul class="donut-legend">
+    <li class="legend-item"
       *ngFor="let s of slices()"
       (mouseenter)="onHover(s)"
       (mouseleave)="onHover(null)"
-      [class.active]="hoveredSlice === s">
-      <span class="legend-dot" [style.background]="s.color"></span>
+      [class.is-active]="hoveredSlice === s">
+      <span class="swatch-dot" [style.background]="s.color"></span>
       <span class="legend-label">{{ s.label }}</span>
-      <span class="legend-val">{{ s.value }}%</span>
-    </div>
-  </div>
+      <span class="legend-val num">{{ s.value }}%</span>
+    </li>
+  </ul>
 </div>

@@ -1,72 +1,21 @@
 @use '../../styles/theme' as *;
 
 .app-container {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   min-height: 100vh;
-  position: relative;
-  background-color: $color-bg;
-  overflow-x: hidden;
-  overflow-y: auto;
-  cursor: default;
+  background-color: var(--canvas-default);
 }
 
-
-/* All content sits above the canvas */
-app-header,
-.hero-landing,
-app-loading-overlay,
-app-profile-dashboard,
-app-profile-comparison,
-.limits-floating-box {
-  position: relative;
-  z-index: 1;
-}
-
-/* Header sits on top */
 app-header {
+  position: sticky;
+  top: 0;
   z-index: 10;
 }
 
-/* Lock landing to viewport — no scroll on large screens */
+// A landing não trava mais na altura da janela: o conteúdo manda, e a página
+// rola normalmente como qualquer página do GitHub.
 .hero-landing {
-  height: calc(100vh - 68px); /* Exactly the remaining screen height */
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Vertically center the app-hero component */
-  overflow: hidden; /* Guarantee no scrollbars here */
-
-  @media (max-width: 1024px) {
-    height: auto;
-    min-height: calc(100vh - 68px);
-    overflow: visible; /* Restores the scrollbar for mobile/tablet where the stacking exceeds the screen */
-    padding-top: 2rem;
-  }
-}
-
-/* Floating limits box */
-.limits-floating-box {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: $color-surface;
-  border: 1px solid $color-border-strong;
-  padding: 1rem 1.1rem;
-  border-radius: 10px;
-  color: $color-text-muted;
-  font-size: 0.8rem;
-  font-family: $font-mono;
-  line-height: 1.6;
-  z-index: 50;
-
-  .limit-row {
-    position: relative;
-    padding-right: 1.2rem;
-
-    .cross {
-      position: absolute;
-      right: 0;
-      color: $color-danger;
-      font-weight: bold;
-    }
-  }
+  flex: 1;
 }

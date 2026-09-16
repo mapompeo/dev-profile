@@ -1,462 +1,67 @@
-<div class="comparison-container dashboard-exportable" #dashboardElement>
-  <div class="summary-banner">
-    <div class="trophy-badge" *ngIf="comparison.winnerByScore !== 'Tie'">
-      👑 Vencedor: {{ comparison.winnerByScore }}
-    </div>
-    <div class="trophy-badge tie" *ngIf="comparison.winnerByScore === 'Tie'">⚖️ Empate</div>
-    <p>{{ comparison.summary }}</p>
-    <div class="score-diff-badge">Diferença de {{ comparison.scoreDifference }} pontos</div>
+<div class="Versus">
+
+  <div class="Versus-actions">
+    <button type="button" class="btn" (click)="onBack.emit()">
+      <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 0 1-1.06 0L2.47 8.28a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 1 1 1.06 1.06L4.81 7h7.44a.75.75 0 0 1 0 1.5H4.81l2.97 2.97a.75.75 0 0 1 0 1.06Z"></path></svg>
+      Comparar outros perfis
+    </button>
+    <button type="button" class="btn" (click)="onDownload.emit(dashboardElement)">
+      <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 14a.75.75 0 0 1 0-1.5h10.5a.75.75 0 0 1 0 1.5Zm4.5-12a.75.75 0 0 1 1.5 0v6.44l2.22-2.22a.75.75 0 1 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 0 1 1.06-1.06L7.25 8.44Z"></path></svg>
+      Baixar como imagem
+    </button>
   </div>
 
-  <div class="vs-grid">
-    <div
-      class="dashboard-content compare-card"
-      [class.winner]="comparison.winnerByScore === comparison.left.username"
-    >
-      <div class="user-hero">
-        <div class="avatar-orbit-wrap">
-          <div class="orbit-ring orbit-ring--1"></div>
-          <div class="orbit-ring orbit-ring--2"></div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect width="16" height="16" x="4" y="4" rx="2" />
-            <path d="M9 22V12h6v10" />
-            <path d="M8 4v4" />
-            <path d="M16 4v4" />
-          </svg>
-          <div class="orbit-ring orbit-ring--3"></div>
-          <img
-            [src]="comparison.left.avatarUrl"
-            [alt]="'Avatar de ' + (comparison.left.name || comparison.left.username)"
-            crossorigin="anonymous"
-          />
-        </div>
+  <div class="Versus-body" #dashboardElement>
 
-        <div class="user-info">
-          <h2>{{ comparison.left.name || comparison.left.username }}</h2>
-          <a
-            [href]="'https://github.com/' + comparison.left.username"
-            target="_blank"
-            class="username-link"
-          >
-            {{ '@' + comparison.left.username }}
-          </a>
-
-          <div class="user-meta-lines">
-            <a
-              class="meta-item meta-link"
-              *ngIf="comparison.left.company"
-              [href]="
-                'https://www.google.com/search?q=' + encodeURIComponent(comparison.left.company)
-              "
-              target="_blank"
-              rel="noopener noreferrer"
-              [title]="'Pesquisar ' + comparison.left.company + ' no Google'"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect width="16" height="16" x="4" y="4" rx="2" />
-                <path d="M9 22V12h6v10" />
-                <path d="M8 4v4" />
-                <path d="M16 4v4" />
-              </svg>
-              {{ comparison.left.company }}
-            </a>
-            <a
-              class="meta-item meta-link"
-              *ngIf="comparison.left.location"
-              [href]="
-                'https://www.google.com/maps/search/?api=1&query=' +
-                encodeURIComponent(comparison.left.location)
-              "
-              target="_blank"
-              rel="noopener noreferrer"
-              [title]="'Ver ' + comparison.left.location + ' no Google Maps'"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              {{ comparison.left.location }}
-            </a>
-            <a
-              class="meta-item meta-link"
-              *ngIf="comparison.left.createdAt"
-              [href]="getCalendarUrl(comparison.left.createdAt)"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Ver data no Google Calendar"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-              Ingressou em {{ comparison.left.createdAt | date: 'longDate' : '' : 'pt-BR' }}
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-stats-row">
-        <div class="hero-stat-item">
-          <span class="stat-v">{{ comparison.left.stats.totalRepositories }}</span>
-          <span class="stat-l">Repositórios</span>
-        </div>
-        <div class="hero-stat-item">
-          <span class="stat-v">{{ comparison.left.stats.followers }}</span>
-          <span class="stat-l">Seguidores</span>
-        </div>
-        <div class="hero-stat-item">
-          <span class="stat-v">{{ comparison.left.stats.following }}</span>
-          <span class="stat-l">Seguindo</span>
-        </div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="sc-lbl">Total de estrelas</span>
-            <span class="sc-icon">★</span>
-          </div>
-          <span class="sc-val">{{ comparison.left.stats.totalStars }}</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="sc-lbl">Total de Repositórios</span>
-            <span class="sc-icon">⌘</span>
-          </div>
-          <span class="sc-val">{{ comparison.left.stats.totalRepositories }}</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="sc-lbl">Total de Commits</span>
-            <span class="sc-icon">⎇</span>
-          </div>
-          <span class="sc-val">{{ comparison.left.stats.totalCommits }}</span>
-        </div>
-      </div>
-
-      <div class="section-card giant-card">
-        <div class="giant-card-header">
-          <h3 class="section-title">Análise de Stack & Senioridade</h3>
-          <span class="icon-brackets">&lt;&gt;</span>
-        </div>
-
-        <div class="analysis-grid">
-          <div class="analysis-item">
-            <label>&lt;/&gt; Stack Principal</label>
-            <strong class="accent">{{ comparison.left.analysis.mainStack }}</strong>
-            <small
-              >{{ (comparison.left.analysis.stackConfidence * 100).toFixed(0) }}% dos seus
-              repositórios</small
-            >
-          </div>
-          <div class="analysis-item">
-            <label>Senioridade</label>
-            <strong class="accent">{{ comparison.left.analysis.seniorityLevel }}</strong>
-            <small>Score: {{ comparison.left.analysis.seniorityScore }}/100</small>
-          </div>
-          <div class="analysis-item">
-            <label>Experiência</label>
-            <strong class="accent">{{ comparison.left.analysis.experienceYears }}</strong>
-            <small>{{ comparison.left.analysis.languagesCount }} linguagens dominadas</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="cw-card">
-        <div class="cw-header">
-          <div class="header-left">
-            <label>Valor agregado</label>
-          </div>
-        </div>
-        <div class="cw-card-content">
-          <div class="cw-value money">
-            R$
-            {{
-              comparison.left.analysis.aggregatedValue || comparison.left.analysis.valueScore || 0
-                | number: '1.2-2' : 'pt-BR'
-            }}
-          </div>
-        </div>
-      </div>
-
-      <div class="cw-card" *ngIf="comparison.left.analysis.topLanguages.length">
-        <div class="cw-header">
-          <div class="header-left">
-            <label>Linguagens mais utilizadas</label>
-          </div>
-        </div>
-        <div class="cw-card-content languages-content">
-          <div
-            class="lang-chip"
-            *ngFor="let lang of comparison.left.analysis.topLanguages.slice(0, 5)"
-          >
-            <span class="lang-name">{{ lang.name }}</span>
-            <span class="lang-count">{{ lang.repositories }} repos</span>
-          </div>
-        </div>
-      </div>
+    <div class="flash Versus-verdict" role="status">
+      <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
+      <span>
+        <b>{{ comparison.winnerByScore }}</b> lidera por
+        <b class="num">{{ comparison.scoreDifference }}</b> pontos de score.
+        {{ comparison.summary }}
+      </span>
     </div>
 
-    <div class="vs-separator">VS</div>
-
-    <div
-      class="dashboard-content compare-card"
-      [class.winner]="comparison.winnerByScore === comparison.right.username"
-    >
-      <div class="user-hero">
-        <div class="avatar-orbit-wrap">
-          <div class="orbit-ring orbit-ring--1"></div>
-          <div class="orbit-ring orbit-ring--2"></div>
-          <div class="orbit-ring orbit-ring--3"></div>
-          <img
-            [src]="comparison.right.avatarUrl"
-            [alt]="'Avatar de ' + (comparison.right.name || comparison.right.username)"
-            crossorigin="anonymous"
-          />
-        </div>
-
-        <div class="user-info">
-          <h2>{{ comparison.right.name || comparison.right.username }}</h2>
-          <a
-            [href]="'https://github.com/' + comparison.right.username"
-            target="_blank"
-            class="username-link"
-          >
-            {{ '@' + comparison.right.username }}
-          </a>
-
-          <div class="user-meta-lines">
-            <a
-              class="meta-item meta-link"
-              *ngIf="comparison.right.company"
-              [href]="
-                'https://www.google.com/search?q=' + encodeURIComponent(comparison.right.company)
-              "
-              target="_blank"
-              rel="noopener noreferrer"
-              [title]="'Pesquisar ' + comparison.right.company + ' no Google'"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect width="16" height="16" x="4" y="4" rx="2" />
-                <path d="M9 22V12h6v10" />
-                <path d="M8 4v4" />
-                <path d="M16 4v4" />
-              </svg>
-              {{ comparison.right.company }}
-            </a>
-            <a
-              class="meta-item meta-link"
-              *ngIf="comparison.right.location"
-              [href]="
-                'https://www.google.com/maps/search/?api=1&query=' +
-                encodeURIComponent(comparison.right.location)
-              "
-              target="_blank"
-              rel="noopener noreferrer"
-              [title]="'Ver ' + comparison.right.location + ' no Google Maps'"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              {{ comparison.right.location }}
-            </a>
-            <a
-              class="meta-item meta-link"
-              *ngIf="comparison.right.createdAt"
-              [href]="getCalendarUrl(comparison.right.createdAt)"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Ver data no Google Calendar"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-              Ingressou em {{ comparison.right.createdAt | date: 'longDate' : '' : 'pt-BR' }}
-            </a>
+    <div class="Versus-heads">
+      <section class="Box Versus-head" *ngFor="let side of [comparison.left, comparison.right]">
+        <div class="Box-row Versus-head-row">
+          <img class="Versus-avatar" [src]="side.avatarUrl" [alt]="'Avatar de ' + (side.name || side.username)" crossorigin="anonymous" />
+          <div class="Versus-head-id">
+            <h2>{{ side.name || side.username }}</h2>
+            <a [href]="'https://github.com/' + side.username" target="_blank" rel="noopener noreferrer">{{ side.username }}</a>
+            <p class="Versus-head-langs">{{ topLanguages(side) }}</p>
           </div>
+          <span class="Label Label--accent Versus-head-score num">{{ side.analysis.seniorityScore }}/100</span>
         </div>
-      </div>
-
-      <div class="hero-stats-row">
-        <div class="hero-stat-item">
-          <span class="stat-v">{{ comparison.right.stats.totalRepositories }}</span>
-          <span class="stat-l">Repositórios</span>
-        </div>
-        <div class="hero-stat-item">
-          <span class="stat-v">{{ comparison.right.stats.followers }}</span>
-          <span class="stat-l">Seguidores</span>
-        </div>
-        <div class="hero-stat-item">
-          <span class="stat-v">{{ comparison.right.stats.following }}</span>
-          <span class="stat-l">Seguindo</span>
-        </div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="sc-lbl">Total de estrelas</span>
-            <span class="sc-icon">★</span>
-          </div>
-          <span class="sc-val">{{ comparison.right.stats.totalStars }}</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="sc-lbl">Total de Repositórios</span>
-            <span class="sc-icon">⌘</span>
-          </div>
-          <span class="sc-val">{{ comparison.right.stats.totalRepositories }}</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="sc-lbl">Total de Commits</span>
-            <span class="sc-icon">⎇</span>
-          </div>
-          <span class="sc-val">{{ comparison.right.stats.totalCommits }}</span>
-        </div>
-      </div>
-
-      <div class="section-card giant-card">
-        <div class="giant-card-header">
-          <h3 class="section-title">Análise de Stack & Senioridade</h3>
-          <span class="icon-brackets">&lt;&gt;</span>
-        </div>
-
-        <div class="analysis-grid">
-          <div class="analysis-item">
-            <label>&lt;/&gt; Stack Principal</label>
-            <strong class="accent">{{ comparison.right.analysis.mainStack }}</strong>
-            <small
-              >{{ (comparison.right.analysis.stackConfidence * 100).toFixed(0) }}% dos seus
-              repositórios</small
-            >
-          </div>
-          <div class="analysis-item">
-            <label>Senioridade</label>
-            <strong class="accent">{{ comparison.right.analysis.seniorityLevel }}</strong>
-            <small>Score: {{ comparison.right.analysis.seniorityScore }}/100</small>
-          </div>
-          <div class="analysis-item">
-            <label>Experiência</label>
-            <strong class="accent">{{ comparison.right.analysis.experienceYears }}</strong>
-            <small>{{ comparison.right.analysis.languagesCount }} linguagens dominadas</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="cw-card">
-        <div class="cw-header">
-          <div class="header-left">
-            <label>Valor agregado</label>
-          </div>
-        </div>
-        <div class="cw-card-content">
-          <div class="cw-value money">
-            R$
-            {{
-              comparison.right.analysis.aggregatedValue || comparison.right.analysis.valueScore || 0
-                | number: '1.2-2' : 'pt-BR'
-            }}
-          </div>
-        </div>
-      </div>
-
-      <div class="cw-card" *ngIf="comparison.right.analysis.topLanguages.length">
-        <div class="cw-header">
-          <div class="header-left">
-            <label>Linguagens mais utilizadas</label>
-          </div>
-        </div>
-        <div class="cw-card-content languages-content">
-          <div
-            class="lang-chip"
-            *ngFor="let lang of comparison.right.analysis.topLanguages.slice(0, 5)"
-          >
-            <span class="lang-name">{{ lang.name }}</span>
-            <span class="lang-count">{{ lang.repositories }} repos</span>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
+
+    <section class="Box">
+      <div class="Box-header">
+        Comparação sinal a sinal
+        <span class="right">{{ comparison.left.username }} · {{ comparison.right.username }}</span>
+      </div>
+
+      <div class="Box-row Versus-row Versus-row--head" aria-hidden="true">
+        <span>{{ comparison.left.username }}</span>
+        <span class="Versus-row-label">sinal</span>
+        <span>{{ comparison.right.username }}</span>
+      </div>
+
+      <div class="Box-row Versus-row"
+           *ngFor="let row of rows"
+           [class.is-left]="row.leader === 'left'"
+           [class.is-right]="row.leader === 'right'">
+        <span class="Versus-value num">{{ row.left }}</span>
+        <span class="Versus-row-label">{{ row.label }}</span>
+        <span class="Versus-value num">{{ row.right }}</span>
+
+        <div class="Versus-bar" *ngIf="isNumericRow(row)" aria-hidden="true">
+          <i class="Versus-bar-left" [style.width.%]="share(row, 'left')"></i>
+          <i class="Versus-bar-right" [style.width.%]="share(row, 'right')"></i>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>

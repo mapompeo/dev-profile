@@ -3,57 +3,51 @@
 .radar-wrap {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 0.5rem;
 }
 
 .radar-svg {
   width: 100%;
-  max-width: 450px;
+  max-width: 340px;
   height: auto;
-  overflow: visible;
+  display: block;
 }
 
 .radar-grid-ring {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: var(--border-muted);
   stroke-width: 1;
 }
 
 .radar-axis-line {
-  stroke: rgba(255, 255, 255, 0.15);
+  stroke: var(--border-muted);
   stroke-width: 1;
 }
 
 .radar-data-area {
-  fill: rgba(124, 58, 237, 0.35);
+  fill: var(--accent-subtle);
 }
 
 .radar-data-stroke {
   fill: none;
-  stroke: #a78bfa;
-  stroke-width: 3;
+  stroke: var(--accent-fg);
+  stroke-width: 2;
   stroke-linejoin: round;
 }
 
 .radar-dot {
-  fill: #c4b5fd;
-  stroke: #0c0c10;
-  stroke-width: 2;
+  fill: var(--accent-fg);
 }
 
 .radar-label {
+  fill: var(--fg-muted);
+  font-family: $font-body;
   font-size: 13px;
-  fill: #fff;
-  font-family: 'Mona Sans', system-ui, sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .radar-value {
-  font-size: 14px;
-  fill: #A78BFA;
-  font-family: 'Mona Sans', system-ui, sans-serif;
-  font-weight: 800;
+  fill: var(--fg-default);
+  font-family: $font-body;
+  font-size: 13px;
+  font-weight: $fw-semibold;
+  font-variant-numeric: tabular-nums;
 }
