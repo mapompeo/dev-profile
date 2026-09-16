@@ -12,8 +12,10 @@
       class="radar-axis-line" />
 
     <!-- Data area -->
-    <polygon [attr.points]="dataPolygon()" class="radar-data-area" />
-    <polygon [attr.points]="dataPolygon()" class="radar-data-stroke" />
+    <g class="radar-shape">
+      <polygon [attr.points]="dataPolygon()" class="radar-data-area" />
+      <polygon [attr.points]="dataPolygon()" class="radar-data-stroke" />
+    </g>
 
     <!-- Data dots -->
     <circle *ngFor="let ax of axisLines()"

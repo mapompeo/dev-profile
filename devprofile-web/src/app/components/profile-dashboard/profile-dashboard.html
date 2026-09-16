@@ -93,7 +93,9 @@
             </div>
 
             <div class="Score-meter" role="img" [attr.aria-label]="'Score ' + profile.analysis.seniorityScore + ' de 100'">
-              <i *ngFor="let cell of meterCells" [class]="'Score-cell Score-cell--' + cellState(cell)"></i>
+              <i *ngFor="let cell of meterCells"
+                 [class]="'Score-cell Score-cell--' + cellState(cell)"
+                 [style.transition-delay]="cellDelay(cell)"></i>
             </div>
 
             <div class="Score-ruler" aria-hidden="true">
@@ -105,10 +107,10 @@
         </div>
 
         <div class="stat-grid">
-          <div class="stat"><b class="num">{{ profile.stats.totalCommits | number:'':'pt-BR' }}</b><span>commits</span></div>
-          <div class="stat"><b class="num">{{ profile.stats.totalRepositories | number:'':'pt-BR' }}</b><span>repositórios</span></div>
-          <div class="stat"><b class="num">{{ profile.stats.totalStars | number:'':'pt-BR' }}</b><span>estrelas</span></div>
-          <div class="stat"><b class="num">{{ (profile.stats.totalForks || 0) | number:'':'pt-BR' }}</b><span>forks</span></div>
+          <div class="stat"><b class="num" [appCountUp]="profile.stats.totalCommits"></b><span>commits</span></div>
+          <div class="stat"><b class="num" [appCountUp]="profile.stats.totalRepositories"></b><span>repositórios</span></div>
+          <div class="stat"><b class="num" [appCountUp]="profile.stats.totalStars"></b><span>estrelas</span></div>
+          <div class="stat"><b class="num" [appCountUp]="profile.stats.totalForks || 0"></b><span>forks</span></div>
         </div>
       </section>
 
@@ -138,7 +140,11 @@
         <section class="Box">
           <div class="Box-header">Valor agregado</div>
           <div class="Box-row Dashboard-figure">
-            <b class="num">{{ profile.analysis.aggregatedValue ? ('R$ ' + (profile.analysis.aggregatedValue | number:'1.2-2':'pt-BR')) : 'N/A' }}</b>
+            <b class="num" *ngIf="profile.analysis.aggregatedValue; else semValor"
+               [appCountUp]="profile.analysis.aggregatedValue"
+               countUpPrefix="R$ "
+               [countUpDecimals]="2"></b>
+            <ng-template #semValor><b class="num">N/A</b></ng-template>
             <span>
               Estimativa mensal, ponderada por commits (30%), experiência (20%), diversidade (20%),
               impacto (15%) e consistência (15%), com bônus de até 20% por tempo de carreira.
@@ -149,7 +155,10 @@
         <section class="Box">
           <div class="Box-header">Pontos</div>
           <div class="Box-row Dashboard-figure">
-            <b class="num">{{ profile.analysis.totalScore | number:'':'pt-BR' }} <span class="Counter">nível {{ getLevel(profile.analysis.totalScore) }}</span></b>
+            <b class="num">
+              <span [appCountUp]="profile.analysis.totalScore"></span>
+              <span class="Counter">nível {{ getLevel(profile.analysis.totalScore) }}</span>
+            </b>
             <span>
               Commit vale 1 ponto, estrela 15, seguidor 25, fork 20 e repositório 50.
             </span>
@@ -165,10 +174,12 @@
         </div>
         <div class="Box-row">
           <div class="lang-bar" role="img" [attr.aria-label]="langBarLabel">
-            <i *ngFor="let lang of profile.analysis.topLanguages.slice(0, 5)"
+            <i *ngFor="let lang of profile.analysis.topLanguages.slice(0, 5); let i = index"
+               [appGrowIn]="i"
                [style.width.%]="lang.percentage"
                [style.background]="langColor(lang.name)"></i>
             <i *ngIf="otherLangsPercent > 0"
+               [appGrowIn]="5"
                [style.width.%]="otherLangsPercent"
                style="background: var(--fg-subtle)"></i>
           </div>

@@ -51,3 +51,37 @@
   font-weight: $fw-semibold;
   font-variant-numeric: tabular-nums;
 }
+
+// O polígono de competências cresce do centro quando o radar entra na tela.
+// transform em SVG não mexe no layout da página, então isto não custa reflow.
+.radar-shape {
+  transform-origin: 200px 200px;
+  animation: radar-grow $dur-slow $ease-out both;
+}
+
+@keyframes radar-grow {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Os pontos de cada eixo aparecem logo depois da forma, sem se mover.
+.radar-dot {
+  animation: radar-dot-in $dur-normal $ease-out $dur-slow both;
+}
+
+@keyframes radar-dot-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

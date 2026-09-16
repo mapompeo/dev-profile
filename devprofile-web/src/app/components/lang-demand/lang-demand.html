@@ -6,7 +6,7 @@
     <span class="col-yours">No perfil</span>
   </div>
   <div class="demand-row"
-    *ngFor="let r of rows()"
+    *ngFor="let r of rows(); let i = index"
     [class.in-profile]="r.inProfile"
     [class.not-in-profile]="!r.inProfile">
     <span class="col-lang">
@@ -24,7 +24,7 @@
     <span class="col-yours">
       <ng-container *ngIf="r.inProfile; else notInProfile">
         <span class="pct-bar-wrap">
-          <span class="pct-bar" [style.width.%]="r.percentage"></span>
+          <span class="pct-bar" [appGrowIn]="i" [style.width.%]="r.percentage"></span>
         </span>
         <span class="pct-val">{{ r.percentage.toFixed(1) }}%</span>
       </ng-container>

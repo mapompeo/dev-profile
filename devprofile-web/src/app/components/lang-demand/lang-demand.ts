@@ -1,5 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { GrowInDirective } from '../../directives/grow-in.directive';
 import { LanguageUsage } from '../../models/profile.models';
 
 interface DemandEntry {
@@ -40,7 +41,7 @@ const DEMAND_TABLE: DemandEntry[] = [
 @Component({
   selector: 'app-lang-demand',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, GrowInDirective],
   templateUrl: './lang-demand.html',
   styleUrls: ['./lang-demand.scss']
 })

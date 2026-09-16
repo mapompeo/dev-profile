@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { GrowInDirective } from '../../directives/grow-in.directive';
 import { Profile, ProfileComparisonResult } from '../../models/profile.models';
 
 interface CompareRow {
@@ -14,7 +15,7 @@ interface CompareRow {
 @Component({
   selector: 'app-profile-comparison',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, GrowInDirective],
   templateUrl: './profile-comparison.html',
   styleUrls: ['./profile-comparison.scss']
 })

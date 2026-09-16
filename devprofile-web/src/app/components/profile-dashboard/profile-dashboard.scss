@@ -231,6 +231,8 @@
   height: 26px;
   border-radius: $radius-sm;
   background-color: var(--neutral-muted);
+  // A cor entra com atraso proporcional à posição (ver cellDelay no componente),
+  // então o medidor enche da esquerda para a direita junto com a contagem.
   transition: background-color $dur-normal $ease-out;
 
   &--on {
