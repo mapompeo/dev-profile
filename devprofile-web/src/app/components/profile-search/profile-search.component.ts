@@ -15,7 +15,7 @@ import { ProfileService } from '../../services/profile.service';
 import { ContributionDay, Profile, ProfileComparisonResult } from '../../models/profile.models';
 import { captureElementAsPngDataUrl, downloadDataUrl } from '../../utils/image-export';
 
-const DEFAULT_FAVICON_URL = 'https://img.icons8.com/ios11/512/FFFFFF/github.png';
+const DEFAULT_TITLE = 'DevProfile — o valor técnico de um perfil do GitHub';
 
 @Component({
   selector: 'app-profile-search',
@@ -110,21 +110,16 @@ export class ProfileSearchComponent implements OnInit {
     }
   }
 
-  // ─── Title & Favicon ────────────────────────────────────────────────────────
+  // ─── Título da aba ──────────────────────────────────────────────────────────
+  // O ícone é servido pelo próprio app (public/favicon.svg) e não muda por
+  // perfil, então não há mais nada a trocar em tempo de execução.
   private setDefaultTitle() {
-    this.titleService.setTitle('DevProfile — Mapeie sua Senioridade Técnica');
-    this.setFavicon(DEFAULT_FAVICON_URL);
+    this.titleService.setTitle(DEFAULT_TITLE);
   }
 
   private setProfileTitle(profile: Profile) {
     const name = profile?.name || profile?.username || 'Usuário';
     this.titleService.setTitle(`${name} | DevProfile`);
-    this.setFavicon(DEFAULT_FAVICON_URL);
-  }
-
-  private setFavicon(href: string) {
-    const link = document.getElementById('app-favicon') as HTMLLinkElement;
-    if (link) link.href = href;
   }
 
   // ─── Data Fetching ──────────────────────────────────────────────────────────

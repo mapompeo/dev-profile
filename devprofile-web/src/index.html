@@ -2,19 +2,49 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>DevProfile — Mapeie sua Senioridade Técnica</title>
+    <title>DevProfile — o valor técnico de um perfil do GitHub</title>
     <meta
       name="description"
-      content="Descubra o valor técnico das suas contribuições no GitHub. Análise de senioridade, linguagens, commits e muito mais."
+      content="Transforma um perfil público do GitHub em um diagnóstico de senioridade: score de 0 a 100, radar de competências, comparação entre devs e um card pronto para compartilhar."
     />
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      id="app-favicon"
-      rel="icon"
-      type="image/png"
-      href="https://img.icons8.com/ios11/512/FFFFFF/github.png"
+    <meta name="theme-color" content="#0d1117" />
+
+    <!--
+      Pré-visualização ao colar o link em LinkedIn, WhatsApp e afins. Os
+      crawlers dessas redes não executam JavaScript, então estas marcações
+      precisam existir no HTML servido: uma meta escrita em tempo de execução
+      pelo Angular nunca chega até eles. Por isso a imagem é a do produto, e não
+      a do perfil analisado, que só existe depois da análise.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DevProfile" />
+    <meta property="og:url" content="https://dev-profile-one.vercel.app" />
+    <meta property="og:title" content="DevProfile — o valor técnico de um perfil do GitHub" />
+    <meta
+      property="og:description"
+      content="Score de senioridade de 0 a 100, radar de competências, comparação entre devs e um card pronto para compartilhar."
     />
+    <meta property="og:image" content="https://dev-profile-one.vercel.app/og-cover.png" />
+    <meta property="og:image:width" content="1920" />
+    <meta property="og:image:height" content="991" />
+    <meta property="og:image:alt" content="Painel do DevProfile com score de senioridade, estatísticas do perfil e composição de linguagens" />
+    <meta property="og:locale" content="pt_BR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DevProfile — o valor técnico de um perfil do GitHub" />
+    <meta
+      name="twitter:description"
+      content="Score de senioridade de 0 a 100, radar de competências, comparação entre devs e um card pronto para compartilhar."
+    />
+    <meta name="twitter:image" content="https://dev-profile-one.vercel.app/og-cover.png" />
+
+    <!-- Ícone local: o anterior vinha de um CDN de terceiros, o que colocava a
+         identidade do app na mão de outro serviço e adicionava uma requisição
+         externa a cada carregamento. -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="alternate icon" href="favicon.ico" />
   </head>
   <body>
     <app-root></app-root>
