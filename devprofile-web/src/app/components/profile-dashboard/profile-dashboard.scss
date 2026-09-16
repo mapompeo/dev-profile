@@ -169,14 +169,16 @@
 
   b {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: $space-2;
     font-size: $type-section;
     font-weight: $fw-semibold;
     letter-spacing: $ls-display;
   }
 
-  span {
+  // Filho direto: a legenda embaixo do número. Sem o ">", esta regra também
+  // encolhia o span que o contador escreve dentro do próprio número.
+  > span {
     font-size: $type-small;
     color: var(--fg-muted);
   }

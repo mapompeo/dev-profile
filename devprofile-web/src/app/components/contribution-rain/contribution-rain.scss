@@ -9,9 +9,9 @@
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.13;
+  opacity: 0.34;
   // Some nas bordas para não brigar com o cabeçalho nem com o fim da página.
-  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 82%, transparent);
 }
 
 .Rain-canvas {
@@ -23,7 +23,7 @@
 // Quem pede menos movimento continua vendo a grade, parada e mais discreta.
 @media (prefers-reduced-motion: reduce) {
   .Rain {
-    opacity: 0.06;
+    opacity: 0.16;
   }
 }
 
@@ -31,6 +31,6 @@
 // na leitura em pouco espaço.
 @media (pointer: coarse) {
   .Rain {
-    opacity: 0.06;
+    opacity: 0.16;
   }
 }
