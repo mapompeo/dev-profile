@@ -1,8 +1,12 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Profile, LanguageUsage } from '../../models/profile.models';
 import { captureElementAsPngDataUrl, downloadDataUrl } from '../../utils/image-export';
 import { langColor } from '../../utils/lang-colors';
+import { revealOnce } from '../../utils/reveal-on-scroll';
+
+/** Usado quando o app roda em máquina local: link de localhost não serve para ninguém. */
+const PUBLIC_ORIGIN = 'https://dev-profile-one.vercel.app';
 
 export type CardFormat = 'story' | 'post';
 export type CardTheme = 'dark' | 'light' | 'dimmed';
@@ -36,7 +40,7 @@ interface ThemeConfig {
   templateUrl: './card-generator.html',
   styleUrls: ['./card-generator.scss']
 })
-export class CardGenerator {
+export class CardGenerator implements AfterViewInit, OnDestroy {
   @Input({ required: true }) profile!: Profile;
 
   @ViewChild('scalerContain') scalerContain?: ElementRef<HTMLElement>;
@@ -75,10 +79,15 @@ export class CardGenerator {
   ];
 
   selectedFormat: CardFormat = 'post';
-  selectedTheme: CardTheme  = 'dark';
+  selectedTheme: CardTheme = 'dark';
+
+  /** Verdadeiro enquanto a imagem está sendo desenhada. */
   isExporting = false;
-  showModal = false;
+
+  /** PNG pronto do card, no formato e tema atuais. */
   generatedImageUrl: string | null = null;
+
+  private stopWatching?: () => void;
 
   get format(): FormatConfig {
     return this.formats.find(f => f.id === this.selectedFormat)!;
@@ -128,72 +137,116 @@ export class CardGenerator {
     ];
   }
 
-  setFormat(id: CardFormat) { this.selectedFormat = id; }
-  setTheme(id: CardTheme)   { this.selectedTheme  = id; }
+  ngAfterViewInit(): void {
+    const frame = this.scalerContain?.nativeElement;
+    if (!frame) return;
 
-  async generateAndOpen() {
-    this.isExporting = true;
-    
-    // ── WYSIWYG Approach: Capture the ACTIVE PREVIEW directly ───────
-    // This ensures what the user sees is exactly what they get.
+    // A imagem fica pronta sem ninguém pedir, assim que o bloco entra na tela.
+    // Isso tira uma etapa do caminho e, no celular, mantém o compartilhamento
+    // nativo dentro do toque do usuário, que é condição para a folha abrir.
+    // Fora do ciclo atual de renderização: mudar `isExporting` durante o próprio
+    // AfterViewInit faria o Angular reclamar de valor alterado após a checagem.
+    this.stopWatching = revealOnce(frame, () => setTimeout(() => void this.prepareImage(), 0));
+  }
+
+  ngOnDestroy(): void {
+    this.stopWatching?.();
+  }
+
+  setFormat(id: CardFormat): void {
+    if (this.selectedFormat === id) return;
+    this.selectedFormat = id;
+    void this.prepareImage();
+  }
+
+  setTheme(id: CardTheme): void {
+    if (this.selectedTheme === id) return;
+    this.selectedTheme = id;
+    void this.prepareImage();
+  }
+
+  /** Desenha o card no formato e tema atuais. Silencioso: é trabalho de bastidor. */
+  private async prepareImage(): Promise<void> {
     const previewEl = this.scalerContain?.nativeElement;
-    if (!previewEl) {
-      this.isExporting = false;
-      return;
-    }
+    if (!previewEl || this.isExporting) return;
+
+    // Sem largura não há o que capturar: acontece em ambiente de teste e quando
+    // o bloco ainda não foi disposto na tela.
+    if (previewEl.getBoundingClientRect().width < 1) return;
+
+    this.isExporting = true;
+    this.generatedImageUrl = null;
+    this.cdr.markForCheck();
 
     try {
-      // Small pause for state stability
-      await new Promise(r => setTimeout(r, 400));
+      // Um quadro para o novo formato ou tema assentar antes da captura.
+      await new Promise(r => setTimeout(r, 250));
 
       const rect = previewEl.getBoundingClientRect();
-      const targetWidth = 1080;
-      // Calculate scale to reach exactly 1080px width
-      const captureScale = (targetWidth / rect.width) * window.devicePixelRatio;
+      const captureScale = (1080 / rect.width) * window.devicePixelRatio;
 
       this.generatedImageUrl = await captureElementAsPngDataUrl(previewEl, {
         scale: captureScale,
         backgroundColor: this.theme.bg,
-        imageTimeout: 15000,
+        imageTimeout: 15000
       });
-      this.showModal = true;
     } catch (err) {
-      console.error('Falha ao gerar captura de alta fidelidade:', err);
+      console.error('Falha ao gerar o card:', err);
     } finally {
       this.isExporting = false;
       this.cdr.markForCheck();
     }
   }
 
+  get shareUrl(): string {
+    const { origin, pathname } = window.location;
+    const ehLocal = /^https?:\/\/(localhost|127\.|0\.0\.0\.0|192\.168\.|10\.|\[::1\])/.test(origin);
+    return (ehLocal ? PUBLIC_ORIGIN : origin) + pathname;
+  }
+
+  /** Texto do compartilhamento, com os números do perfil em vez de uma frase genérica. */
+  get shareText(): string {
+    const nome = this.profile.name || this.profile.username;
+    const commits = (this.profile.stats.totalCommits ?? 0).toLocaleString('pt-BR');
+    const repos = this.profile.stats.totalRepositories ?? 0;
+    const analise = this.profile.analysis;
+
+    return (
+      `${nome} tem score ${analise.seniorityScore}/100 no DevProfile, nível ${analise.seniorityLevel}. ` +
+      `${commits} commits em ${repos} repositórios, stack ${analise.mainStack}.`
+    );
+  }
+
+  /** O aparelho sabe compartilhar arquivo? Só então o botão nativo faz sentido. */
+  get canShareImage(): boolean {
+    return typeof navigator !== 'undefined' && typeof navigator.canShare === 'function' && typeof navigator.share === 'function';
+  }
+
   async share(platform: string) {
+    // Quem clicar antes de a imagem ficar pronta espera por ela, em vez de
+    // receber um clique morto.
+    if (!this.generatedImageUrl) {
+      await this.prepareImage();
+    }
     if (!this.generatedImageUrl) return;
 
     if (platform === 'download') {
-      downloadDataUrl(this.generatedImageUrl, `dev-profile-${this.selectedFormat}.png`);
+      downloadDataUrl(this.generatedImageUrl, `devprofile-${this.profile.username}-${this.selectedFormat}.png`);
       return;
     }
 
-    if (platform === 'native' && navigator.share) {
-      try {
-        const response = await fetch(this.generatedImageUrl);
-        const blob = await response.blob();
-        const file = new File([blob], 'card.png', { type: 'image/png' });
-        await navigator.share({
-          files: [file],
-          title: 'Meu Perfil DevProfile',
-          text: 'Minhas estatísticas Git!'
-        });
-      } catch (err) { console.error('Share Error:', err); }
+    if (platform === 'native') {
+      await this.shareImage();
       return;
     }
 
-    const text = encodeURIComponent('Minhas estatísticas GitHub @DevProfile');
-    const url = encodeURIComponent(window.location.href);
+    const texto = encodeURIComponent(`${this.shareText} ${this.shareUrl}`);
+    const url = encodeURIComponent(this.shareUrl);
 
     const shareLinks: Record<string, string> = {
-      twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(this.shareText)}&url=${url}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
-      whatsapp: `https://api.whatsapp.com/send?text=${text}%20${url}`
+      whatsapp: `https://api.whatsapp.com/send?text=${texto}`
     };
 
     if (shareLinks[platform]) {
@@ -201,7 +254,38 @@ export class CardGenerator {
     }
   }
 
-  closeModal() { this.showModal = false; this.generatedImageUrl = null; }
+  /**
+   * Compartilhamento nativo com a imagem anexada: é assim que o card chega
+   * inteiro no WhatsApp, no Instagram ou no Telegram. O link vai dentro do
+   * texto, e não no campo `url`, porque a maioria dos aplicativos descarta esse
+   * campo quando há arquivo junto.
+   */
+  private async shareImage(): Promise<void> {
+    if (!this.generatedImageUrl) return;
+
+    try {
+      const blob = await (await fetch(this.generatedImageUrl)).blob();
+      const arquivo = new File([blob], `devprofile-${this.profile.username}.png`, { type: 'image/png' });
+
+      if (!navigator.canShare?.({ files: [arquivo] })) {
+        // O aparelho compartilha texto, mas não arquivo: melhor mandar o texto
+        // do que abrir uma folha vazia.
+        await navigator.share({ text: `${this.shareText} ${this.shareUrl}` });
+        return;
+      }
+
+      await navigator.share({
+        files: [arquivo],
+        title: `DevProfile de ${this.profile.name || this.profile.username}`,
+        text: `${this.shareText} ${this.shareUrl}`
+      });
+    } catch (err) {
+      // Cancelar a folha de compartilhamento cai aqui e não é erro.
+      if ((err as DOMException)?.name !== 'AbortError') {
+        console.error('Falha ao compartilhar a imagem:', err);
+      }
+    }
+  }
 
   getLangFill(lang: LanguageUsage): number {
     const langs = this.topFiveLangs;

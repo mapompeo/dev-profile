@@ -59,6 +59,21 @@
   font-weight: $fw-regular;
 }
 
+.Studio-actions {
+  display: grid;
+  gap: $space-2;
+}
+
+.Studio-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2 - 2px;
+
+  .btn {
+    flex: 1 1 auto;
+  }
+}
+
 .Studio-note {
   font-size: $type-small;
   color: var(--fg-muted);
@@ -293,50 +308,4 @@
 .DevCard--story {
   gap: 4cqw;
   padding: 6cqw;
-}
-
-// -----------------------------------------------------------------------------
-// Diálogo
-// -----------------------------------------------------------------------------
-.Overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: grid;
-  place-items: center;
-  padding: $space-4;
-  background-color: rgba(1, 4, 9, 0.6);
-}
-
-.Overlay-window {
-  width: 100%;
-  max-width: 520px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-overlay);
-}
-
-.Overlay-close {
-  margin-left: auto;
-  height: 26px;
-  padding: 0 $space-2 - 2px;
-}
-
-.Overlay-preview {
-  display: flex;
-  justify-content: center;
-  background-color: var(--canvas-inset);
-
-  img {
-    max-width: 100%;
-    height: auto;
-    border: $border-w solid var(--border-default);
-    border-radius: $radius-md;
-  }
-}
-
-.Overlay-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $space-2;
 }

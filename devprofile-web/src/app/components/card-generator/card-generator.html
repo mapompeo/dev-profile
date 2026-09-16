@@ -43,14 +43,44 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn--primary btn--block" (click)="generateAndOpen()" [disabled]="isExporting">
-        {{ isExporting ? 'Gerando imagem...' : 'Gerar card' }}
-      </button>
+      <div class="Studio-field">
+        <span class="Studio-label" id="acoes-label">Compartilhar</span>
+        <div class="Studio-actions" role="group" aria-labelledby="acoes-label">
+          <!-- Só onde o aparelho sabe anexar arquivo: é o único caminho que leva
+               a imagem junto, e não apenas o link. -->
+          <button
+              type="button"
+              class="btn btn--primary btn--block"
+              *ngIf="canShareImage"
+              [disabled]="isExporting"
+              (click)="share('native')">
+            <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.25 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 11.75 15h-7.5A1.75 1.75 0 0 1 2.5 13.25v-2.5A.75.75 0 0 1 3.25 10Zm5.28-8.53 3 3a.75.75 0 0 1-1.06 1.06L8.75 3.81v6.44a.75.75 0 0 1-1.5 0V3.81L5.53 5.53a.75.75 0 0 1-1.06-1.06l3-3a.75.75 0 0 1 1.06 0Z"></path></svg>
+            {{ isExporting ? 'Preparando imagem...' : 'Compartilhar com a imagem' }}
+          </button>
+
+          <button
+              type="button"
+              [class]="canShareImage ? 'btn btn--block' : 'btn btn--primary btn--block'"
+              [disabled]="isExporting"
+              (click)="share('download')">
+            <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 14a.75.75 0 0 1 0-1.5h10.5a.75.75 0 0 1 0 1.5Zm4.5-12a.75.75 0 0 1 1.5 0v6.44l2.22-2.22a.75.75 0 1 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 0 1 1.06-1.06L7.25 8.44Z"></path></svg>
+            {{ isExporting ? 'Preparando imagem...' : 'Baixar PNG' }}
+          </button>
+
+          <div class="Studio-social">
+            <button type="button" class="btn btn--sm" (click)="share('linkedin')">LinkedIn</button>
+            <button type="button" class="btn btn--sm" (click)="share('twitter')">X</button>
+            <button type="button" class="btn btn--sm" (click)="share('whatsapp')">WhatsApp</button>
+          </div>
+        </div>
+      </div>
 
       <p class="Studio-note">
-        A imagem sai em 2x, com os mesmos dados que estão no painel. O tema do card é independente do
-        tema do app.
+        A imagem sai em {{ format.width }} × {{ format.height }}px e é preparada sozinha. LinkedIn, X e
+        WhatsApp recebem o link do perfil e montam a prévia; para mandar o arquivo em si, use baixar ou
+        o compartilhamento do aparelho.
       </p>
+
     </div>
 
   </div>
@@ -139,31 +169,5 @@
       </footer>
     </div>
   </ng-template>
-
-  <!-- ── Diálogo de resultado ──────────────────────────────────────────── -->
-  <div class="Overlay" *ngIf="showModal" (click)="closeModal()" (keydown.escape)="closeModal()" tabindex="-1">
-    <div class="Overlay-window Box" role="dialog" aria-modal="true" aria-labelledby="card-ready" (click)="$event.stopPropagation()">
-      <div class="Box-header">
-        <span id="card-ready">Seu card está pronto</span>
-        <button type="button" class="btn btn--sm Overlay-close" (click)="closeModal()" aria-label="Fechar">
-          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg>
-        </button>
-      </div>
-
-      <div class="Box-row Overlay-preview">
-        <img [src]="generatedImageUrl" alt="Prévia do card gerado" />
-      </div>
-
-      <div class="Box-row Overlay-actions">
-        <button type="button" class="btn btn--primary" (click)="share('download')">
-          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 14a.75.75 0 0 1 0-1.5h10.5a.75.75 0 0 1 0 1.5Zm4.5-12a.75.75 0 0 1 1.5 0v6.44l2.22-2.22a.75.75 0 1 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 0 1 1.06-1.06L7.25 8.44Z"></path></svg>
-          Baixar PNG
-        </button>
-        <button type="button" class="btn" (click)="share('linkedin')">LinkedIn</button>
-        <button type="button" class="btn" (click)="share('twitter')">X</button>
-        <button type="button" class="btn" (click)="share('whatsapp')">WhatsApp</button>
-      </div>
-    </div>
-  </div>
 
 </section>

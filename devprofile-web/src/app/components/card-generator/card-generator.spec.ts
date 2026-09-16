@@ -66,11 +66,28 @@ describe('CardGenerator', () => {
     expect(c.langBarLabel).toContain('%');
   });
 
-  it('começa sem diálogo aberto e sem imagem gerada', () => {
+  it('começa sem imagem pronta: ela é preparada quando o bloco aparece', () => {
     const c = criar();
 
-    expect(c.showModal).toBe(false);
     expect(c.generatedImageUrl).toBeNull();
     expect(c.isExporting).toBe(false);
+  });
+
+  it('o texto de compartilhamento leva os números do perfil, não uma frase genérica', () => {
+    const c = criar();
+
+    expect(c.shareText).toContain('Dev da Silva');
+    expect(c.shareText).toContain('60/100');
+    expect(c.shareText).toContain('1.060 commits');
+    expect(c.shareText).toContain('22 repositórios');
+  });
+
+  it('o link compartilhado aponta para o site, mesmo rodando em máquina local', () => {
+    const c = criar();
+
+    // O teste roda em localhost: sem a troca, o link levaria para a máquina de
+    // quem compartilhou, e não abriria para mais ninguém.
+    expect(c.shareUrl.startsWith('https://dev-profile-one.vercel.app')).toBe(true);
+    expect(c.shareUrl).not.toContain('localhost');
   });
 });
