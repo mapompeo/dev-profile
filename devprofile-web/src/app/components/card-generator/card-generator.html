@@ -83,16 +83,19 @@
           <span class="DevCard-score-value" [style.color]="theme.text">{{ profile.analysis.seniorityScore }}<small [style.color]="theme.subtext">/100</small></span>
           <span class="DevCard-score-level" [style.color]="theme.accent" [style.border-color]="theme.accent">{{ badgeTitle }}</span>
         </div>
-        <div class="DevCard-meter" role="img" aria-label="Composição de linguagens">
+        <div class="DevCard-meter" role="img" [attr.aria-label]="langBarLabel">
           <i *ngFor="let lang of topFiveLangs"
              [style.width.%]="lang.percentage"
-             [style.background]="theme.accent"></i>
+             [style.background]="langColor(lang.name)"></i>
           <i *ngIf="otherLangsPercent > 0"
              [style.width.%]="otherLangsPercent"
              [style.background]="theme.subtext"></i>
         </div>
         <div class="DevCard-langs">
-          <span class="DevCard-lang" *ngFor="let lang of topFiveLangs" [style.color]="theme.subtext" [style.border-color]="theme.border">{{ lang.name }}</span>
+          <span class="DevCard-lang" *ngFor="let lang of topFiveLangs" [style.color]="theme.subtext" [style.border-color]="theme.border">
+            <i class="DevCard-lang-dot" [style.background]="langColor(lang.name)"></i>
+            {{ lang.name }}
+          </span>
         </div>
       </section>
 
@@ -104,19 +107,19 @@
       <section class="DevCard-stats" [style.border-color]="theme.border">
         <div class="DevCard-cell" [style.border-color]="theme.border">
           <span [style.color]="theme.subtext">estrelas</span>
-          <b [style.color]="theme.text">{{ profile.stats.totalStars }}</b>
+          <b [style.color]="theme.text">{{ profile.stats.totalStars | number:'':'pt-BR' }}</b>
         </div>
         <div class="DevCard-cell" [style.border-color]="theme.border">
           <span [style.color]="theme.subtext">repos</span>
-          <b [style.color]="theme.text">{{ profile.stats.totalRepositories }}</b>
+          <b [style.color]="theme.text">{{ profile.stats.totalRepositories | number:'':'pt-BR' }}</b>
         </div>
         <div class="DevCard-cell" [style.border-color]="theme.border">
           <span [style.color]="theme.subtext">commits</span>
-          <b [style.color]="theme.text">{{ profile.stats.totalCommits }}</b>
+          <b [style.color]="theme.text">{{ profile.stats.totalCommits | number:'':'pt-BR' }}</b>
         </div>
         <div class="DevCard-cell" [style.border-color]="theme.border">
           <span [style.color]="theme.subtext">forks</span>
-          <b [style.color]="theme.text">{{ profile.stats.totalForks }}</b>
+          <b [style.color]="theme.text">{{ profile.stats.totalForks | number:'':'pt-BR' }}</b>
         </div>
       </section>
 

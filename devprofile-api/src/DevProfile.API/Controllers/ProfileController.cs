@@ -105,20 +105,37 @@ public sealed class ProfileController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// O resumo não repete o placar, que a interface já mostra em destaque: ele
+    /// aponta em qual competência a distância entre os dois é maior, que é a
+    /// informação que o número sozinho não dá.
+    /// </summary>
     private static string BuildComparisonSummary(ProfileResponseDto left, ProfileResponseDto right)
     {
-        var leftScore = left.Analysis.ValueScore;
-        var rightScore = right.Analysis.ValueScore;
-
-        if (leftScore == rightScore)
+        var eixos = new (string Nome, int Esquerda, int Direita)[]
         {
-            return $"{left.Username} and {right.Username} are tied with score {leftScore}.";
+            ("consistência", left.Analysis.Radar.Consistency, right.Analysis.Radar.Consistency),
+            ("diversidade de linguagens", left.Analysis.Radar.Diversity, right.Analysis.Radar.Diversity),
+            ("popularidade", left.Analysis.Radar.Popularity, right.Analysis.Radar.Popularity),
+            ("estrutura", left.Analysis.Radar.Structure, right.Analysis.Radar.Structure),
+            ("colaboração", left.Analysis.Radar.Collaboration, right.Analysis.Radar.Collaboration),
+            ("velocidade", left.Analysis.Radar.Velocity, right.Analysis.Radar.Velocity)
+        };
+
+        var maiorDiferenca = eixos
+            .OrderByDescending(eixo => Math.Abs(eixo.Esquerda - eixo.Direita))
+            .First();
+
+        if (Math.Abs(maiorDiferenca.Esquerda - maiorDiferenca.Direita) == 0)
+        {
+            return "Os dois perfis pontuam igual em todas as competências.";
         }
 
-        var winner = leftScore > rightScore ? left : right;
-        var loser = leftScore > rightScore ? right : left;
-        var gap = Math.Abs(leftScore - rightScore);
-        return $"{winner.Username} leads by {gap} points against {loser.Username}.";
+        var lider = maiorDiferenca.Esquerda > maiorDiferenca.Direita ? left : right;
+        var maior = Math.Max(maiorDiferenca.Esquerda, maiorDiferenca.Direita);
+        var menor = Math.Min(maiorDiferenca.Esquerda, maiorDiferenca.Direita);
+
+        return $"A maior distância está em {maiorDiferenca.Nome}: {maior} contra {menor}, a favor de {lider.Username}.";
     }
 
     private static bool TryNormalizeUsername(string? username, out string normalizedUsername)

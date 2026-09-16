@@ -12,13 +12,12 @@
       <span class="AppHeader-brand">DevProfile</span>
     </button>
 
-    <nav class="AppHeader-nav" *ngIf="!isMainView" aria-label="Links do projeto">
-      <a href="https://linkedin.com/in/mapompeo" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      <a href="https://github.com/mapompeo" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <nav class="AppHeader-nav" aria-label="Links do projeto">
+      <button type="button" class="AppHeader-link" (click)="openMethod()">
+        Como são calculados os valores?
+      </button>
       <a href="https://github.com/mapompeo/dev-profile" target="_blank" rel="noopener noreferrer">Sobre</a>
     </nav>
-
-    <p class="AppHeader-note" *ngIf="isMainView">Como são calculados os valores?</p>
 
     <div class="AppHeader-theme">
       <label class="sr-only" for="theme-select">Tema da interface</label>
@@ -36,3 +35,64 @@
 
   </div>
 </header>
+
+<!-- A pergunta do cabeçalho agora responde de fato: toda regra de cálculo do app. -->
+<dialog class="Method" #methodDialog (click)="onDialogClick($event)">
+  <div class="Method-inner">
+    <div class="Method-head">
+      <h2>Como são calculados os valores</h2>
+      <button type="button" class="btn btn--sm" (click)="closeMethod()" aria-label="Fechar">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg>
+      </button>
+    </div>
+
+    <div class="Method-body">
+      <section>
+        <h3>De onde vêm os dados</h3>
+        <p>
+          Tudo sai da API pública do GitHub, em três requisições por perfil: os dados da conta, a lista
+          de repositórios e o total de commits. Nada é inventado e nada exige login.
+        </p>
+      </section>
+
+      <section>
+        <h3>Score de senioridade, de 0 a 100</h3>
+        <p>Cinco sinais, cada um normalizado em uma escala própria e depois ponderado:</p>
+        <table class="Method-table">
+          <tr><td>Commits</td><td>30%</td><td>satura em 2.000</td></tr>
+          <tr><td>Tempo de conta</td><td>20%</td><td>satura em 8 anos</td></tr>
+          <tr><td>Diversidade de linguagens</td><td>20%</td><td>satura em 6 linguagens</td></tr>
+          <tr><td>Comunidade (estrelas e forks)</td><td>15%</td><td>satura em 500</td></tr>
+          <tr><td>Consistência (commits por mês)</td><td>15%</td><td>satura em 25 por mês</td></tr>
+        </table>
+        <p class="Method-note">
+          Faixas: até 34 é Júnior, de 35 a 64 é Pleno, de 65 em diante é Sênior.
+        </p>
+      </section>
+
+      <section>
+        <h3>Pontos e nível</h3>
+        <p>
+          Cada commit vale 1 ponto, estrela 15, fork 20, seguidor 25 e repositório 50. O nível é
+          logarítmico: cada vez que a pontuação dobra, sobe um nível.
+        </p>
+      </section>
+
+      <section>
+        <h3>Valor agregado</h3>
+        <p>
+          Estimativa de remuneração mensal derivada do score, com bônus de até 20% por tempo de
+          carreira. É uma referência de ordem de grandeza, não uma proposta de salário.
+        </p>
+      </section>
+
+      <section>
+        <h3>Linguagens</h3>
+        <p>
+          Conta a linguagem predominante de cada repositório, ignorando forks, porque o código de um
+          fork não é de quem o copiou. As cores são as do Linguist, as mesmas que o GitHub usa.
+        </p>
+      </section>
+    </div>
+  </div>
+</dialog>

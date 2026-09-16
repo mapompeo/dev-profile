@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild, inject } fr
 import { CommonModule } from '@angular/common';
 import { Profile, LanguageUsage } from '../../models/profile.models';
 import { captureElementAsPngDataUrl, downloadDataUrl } from '../../utils/image-export';
+import { langColor } from '../../utils/lang-colors';
 
 export type CardFormat = 'story' | 'post';
 export type CardTheme = 'dark' | 'light' | 'dimmed';
@@ -39,6 +40,8 @@ export class CardGenerator {
   @Input({ required: true }) profile!: Profile;
 
   @ViewChild('scalerContain') scalerContain?: ElementRef<HTMLElement>;
+
+  readonly langColor = langColor;
 
   // App zoneless: estado alterado depois de um await precisa marcar a view.
   private readonly cdr = inject(ChangeDetectorRef);
@@ -106,6 +109,12 @@ export class CardGenerator {
   get otherLangsPercent(): number {
     const sum = this.topFiveLangs.reduce((total, lang) => total + (lang.percentage ?? 0), 0);
     return Math.max(0, Math.round((100 - sum) * 100) / 100);
+  }
+
+  get langBarLabel(): string {
+    const parts = this.topFiveLangs.map(l => `${l.name} ${l.percentage}%`);
+    if (this.otherLangsPercent > 0) parts.push(`outras ${this.otherLangsPercent}%`);
+    return 'Composição de linguagens: ' + parts.join(', ');
   }
 
   get radarCompetencies(): { label: string; value: number }[] {

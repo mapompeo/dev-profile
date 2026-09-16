@@ -1,15 +1,19 @@
 <section class="Landing">
 
   <div class="Landing-head">
-    <h1 *ngIf="mode === 'single'">Descubra o valor técnico das suas contribuições no GitHub</h1>
-    <h1 *ngIf="mode === 'vs'">Compare duas trajetórias técnicas, lado a lado</h1>
-    <p *ngIf="mode === 'single'">
-      A análise lê seus repositórios públicos e devolve um score de senioridade, o radar de
-      competências, a composição de linguagens e o ritmo de commits.
-    </p>
-    <p *ngIf="mode === 'vs'">
-      Dois perfis, os mesmos cinco sinais, a mesma escala. O veredito sai dos números, não da
-      impressão.
+    <!-- Título fixo: trocar de modo mudava a altura do bloco e empurrava o
+         formulário para cima e para baixo. Só a linha de apoio muda, e ela tem
+         altura reservada para as duas versões. -->
+    <h1>O valor técnico de um perfil do GitHub, em números</h1>
+    <p class="Landing-sub">
+      <ng-container *ngIf="mode === 'single'">
+        A análise lê os repositórios públicos de qualquer usuário e devolve um score de senioridade,
+        o radar de competências e a composição de linguagens.
+      </ng-container>
+      <ng-container *ngIf="mode === 'vs'">
+        Dois perfis, os mesmos cinco sinais, a mesma escala. O veredito sai dos números, não da
+        impressão.
+      </ng-container>
     </p>
   </div>
 
@@ -24,7 +28,7 @@
             [attr.aria-selected]="mode === 'single'"
             (click)="setMode('single')">
           <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.68 11.74a6 6 0 1 1 1.06-1.06l3.04 3.03-1.06 1.07-3.04-3.04ZM11.5 7a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"></path></svg>
-          Meu perfil
+          Um perfil
         </button>
         <button
             type="button"
@@ -149,7 +153,7 @@
         <div class="Box-row">
           <svg class="icon Landing-how-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
           <h3>Gera um card para compartilhar</h3>
-          <p>A análise vira uma imagem em alta resolução, pronta para LinkedIn e para o seu portfólio.</p>
+          <p>A análise vira uma imagem em alta resolução, pronta para compartilhar no LinkedIn.</p>
         </div>
       </div>
     </div>

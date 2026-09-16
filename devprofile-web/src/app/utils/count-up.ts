@@ -10,6 +10,15 @@ function prefersReducedMotion(): boolean {
   return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+/**
+ * Aba em segundo plano não executa requestAnimationFrame. Sem esta checagem, um
+ * link de perfil aberto em nova aba mostra 0 até alguém olhar para ele, que é
+ * justamente o caminho de quem recebe o link compartilhado.
+ */
+function pageIsHidden(): boolean {
+  return typeof document !== 'undefined' && document.visibilityState !== 'visible';
+}
+
 /** Aproximação da cubic-bezier(.22,.61,.36,1), suficiente para uma contagem. */
 function easeOut(t: number): number {
   return 1 - Math.pow(1 - t, 2.4);
@@ -17,7 +26,7 @@ function easeOut(t: number): number {
 
 /** Devolve uma função de cancelamento, para o componente parar no destroy. */
 export function countUp(to: number, onTick: (value: number) => void): () => void {
-  if (prefersReducedMotion() || typeof requestAnimationFrame !== 'function') {
+  if (prefersReducedMotion() || pageIsHidden() || typeof requestAnimationFrame !== 'function') {
     onTick(to);
     return () => {};
   }

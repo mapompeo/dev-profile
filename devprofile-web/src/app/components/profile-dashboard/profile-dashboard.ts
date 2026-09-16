@@ -78,9 +78,15 @@ export class ProfileDashboard implements OnChanges, OnDestroy {
     return 'Composição de linguagens: ' + parts.join(', ');
   }
 
+  /**
+   * Nível em escala logarítmica. A regra anterior era um ponto a cada mil, o que
+   * dava "nível 3188" para um perfil grande: um número que não diz nada e some
+   * do lado do próprio total. Dobrando a pontuação sobe um nível, então a escala
+   * cabe na tela e continua fazendo sentido de ponta a ponta.
+   */
   getLevel(score: number): number {
-    if (!score) return 1;
-    return Math.floor(score / 1000) + 1;
+    if (!score || score < 0) return 1;
+    return 1 + Math.floor(Math.log2(1 + score / 1000));
   }
 
   private startCount(): void {

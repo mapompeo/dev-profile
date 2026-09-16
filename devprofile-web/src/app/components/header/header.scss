@@ -58,6 +58,8 @@
   margin-left: auto;
 
   a {
+    display: inline-flex;
+    align-items: center;
     font-size: $type-body;
     color: var(--fg-muted);
 
@@ -65,13 +67,138 @@
       color: var(--fg-default);
       text-decoration: none;
     }
+
+    // Link de cabeçalho também é alvo de dedo.
+    @media (pointer: coarse) {
+      min-height: 44px;
+    }
   }
 }
 
-.AppHeader-note {
-  margin-left: auto;
-  font-size: $type-small;
+// Botão que abre a metodologia: parece link, comporta-se como botão.
+.AppHeader-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: $type-body;
   color: var(--fg-muted);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color $dur-fast linear;
+
+  &:hover {
+    color: var(--fg-default);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-fg);
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+
+  @media (pointer: coarse) {
+    min-height: 44px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Diálogo da metodologia
+// -----------------------------------------------------------------------------
+.Method {
+  // O reset global zera margin em tudo, e é a margem automática que centraliza
+  // um <dialog> nativo: sem isto ele encosta no canto superior esquerdo.
+  margin: auto;
+  width: min(680px, calc(100vw - #{$space-5}));
+  max-height: min(82vh, 760px);
+  padding: 0;
+  color: var(--fg-default);
+  background-color: var(--canvas-default);
+  border: $border-w solid var(--border-default);
+  border-radius: $radius-md;
+  box-shadow: var(--shadow-overlay);
+
+  &::backdrop {
+    background-color: rgba(1, 4, 9, 0.6);
+  }
+}
+
+.Method-inner {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  max-height: inherit;
+}
+
+.Method-head {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  background-color: var(--canvas-subtle);
+  border-bottom: $border-w solid var(--border-default);
+
+  h2 {
+    font-size: $type-lead;
+    font-weight: $fw-semibold;
+  }
+
+  .btn {
+    margin-left: auto;
+  }
+}
+
+.Method-body {
+  display: grid;
+  gap: $space-5;
+  padding: $space-4;
+  overflow-y: auto;
+
+  h3 {
+    font-family: $font-body;
+    font-size: $type-body;
+    font-weight: $fw-semibold;
+    letter-spacing: 0;
+    margin-bottom: $space-2;
+  }
+
+  p {
+    color: var(--fg-muted);
+  }
+}
+
+.Method-table {
+  width: 100%;
+  margin-top: $space-3;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+
+  td {
+    padding: $space-2 0;
+    border-bottom: $border-w solid var(--border-muted);
+    color: var(--fg-default);
+
+    &:nth-child(2) {
+      width: 64px;
+      text-align: right;
+      font-weight: $fw-semibold;
+    }
+
+    &:last-child {
+      width: 46%;
+      padding-left: $space-3;
+      color: var(--fg-muted);
+      font-size: $type-small;
+    }
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+.Method-note {
+  margin-top: $space-3;
+  font-size: $type-small;
 }
 
 .AppHeader-theme {
@@ -101,7 +228,7 @@
     gap: $space-3;
   }
 
-  .AppHeader-note {
-    display: none;
+  .AppHeader-link {
+    font-size: $type-small;
   }
 }

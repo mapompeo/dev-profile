@@ -74,8 +74,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1.6cqw;
-  padding: 3.6cqw;
+  gap: 1.4cqw;
+  padding: 3.4cqw;
   border: 1px solid;
   border-radius: 2cqw;
   font-family: $font-body;
@@ -175,16 +175,17 @@
   border-radius: 100px;
 }
 
+// Barra única, como a de linguagens de um repositório: sem vão entre segmentos,
+// senão as fatias pequenas viram tracinhos soltos e a barra perde a leitura.
 .DevCard-meter {
   display: flex;
-  gap: 0.6cqw;
-  height: 1.6cqw;
+  height: 2cqw;
+  border-radius: 1cqw;
+  overflow: hidden;
 
   i {
     display: block;
     height: 100%;
-    border-radius: 1cqw;
-    opacity: 0.85;
   }
 }
 
@@ -195,10 +196,21 @@
 }
 
 .DevCard-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 1cqw;
   padding: 0.4cqw 1.8cqw;
   font-size: 2.6cqw;
   border: 1px solid;
   border-radius: 100px;
+}
+
+.DevCard-lang-dot {
+  display: block;
+  width: 1.6cqw;
+  height: 1.6cqw;
+  border-radius: 50%;
+  flex: none;
 }
 
 .DevCard-worth {
@@ -233,6 +245,8 @@
 .DevCard-cell {
   display: grid;
   gap: 0.6cqw;
+  justify-items: center;
+  text-align: center;
   padding: 1.8cqw 0;
   border-right: 1px solid;
 
@@ -252,14 +266,17 @@
 }
 
 .DevCard-foot {
-  display: flex;
-  gap: 4cqw;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2cqw;
   padding-top: 2cqw;
   border-top: 1px solid;
 
   div {
     display: grid;
     gap: 0.4cqw;
+    justify-items: center;
+    text-align: center;
   }
 
   span {

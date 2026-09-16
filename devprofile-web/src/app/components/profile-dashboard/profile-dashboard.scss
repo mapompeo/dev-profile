@@ -106,7 +106,10 @@
   }
 }
 
+// O Angular remove o espaço entre elementos no template, então o respiro do
+// separador tem que vir daqui, senão sai "seguidores ·174 seguindo".
 .Dashboard-dot {
+  margin: 0 $space-1;
   color: var(--fg-subtle);
 }
 

@@ -35,7 +35,11 @@
             <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0ZM8 9c-3 0-5.5 1.6-5.5 3.6V14h11v-1.4C13.5 10.6 11 9 8 9Z"></path></svg>
             <span class="sr-only">Seguidores e seguindo</span>
           </dt>
-          <dd><b class="num">{{ profile.stats.followers }}</b> seguidores <span class="Dashboard-dot">·</span> <b class="num">{{ profile.stats.following }}</b> seguindo</dd>
+          <dd>
+            <b class="num">{{ profile.stats.followers | number:'':'pt-BR' }}</b> seguidores
+            <span class="Dashboard-dot">·</span>
+            <b class="num">{{ profile.stats.following | number:'':'pt-BR' }}</b> seguindo
+          </dd>
         </div>
 
         <div class="Dashboard-meta-row" *ngIf="profile.company">
@@ -102,9 +106,9 @@
 
         <div class="stat-grid">
           <div class="stat"><b class="num">{{ profile.stats.totalCommits | number:'':'pt-BR' }}</b><span>commits</span></div>
-          <div class="stat"><b class="num">{{ profile.stats.totalRepositories }}</b><span>repositórios</span></div>
-          <div class="stat"><b class="num">{{ profile.stats.totalStars }}</b><span>estrelas</span></div>
-          <div class="stat"><b class="num">{{ profile.stats.totalForks || 0 }}</b><span>forks</span></div>
+          <div class="stat"><b class="num">{{ profile.stats.totalRepositories | number:'':'pt-BR' }}</b><span>repositórios</span></div>
+          <div class="stat"><b class="num">{{ profile.stats.totalStars | number:'':'pt-BR' }}</b><span>estrelas</span></div>
+          <div class="stat"><b class="num">{{ (profile.stats.totalForks || 0) | number:'':'pt-BR' }}</b><span>forks</span></div>
         </div>
       </section>
 
