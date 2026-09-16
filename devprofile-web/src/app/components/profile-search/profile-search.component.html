@@ -1,5 +1,8 @@
 <div class="app-container" #appContainer>
 
+  <!-- Chuva de contribuições: só aparece quando há um perfil na tela. -->
+  <app-contribution-rain *ngIf="contributionDays.length" [days]="contributionDays"></app-contribution-rain>
+
   <!-- Header — always visible across all states -->
   <app-header
       [isMainView]="!!(profile || comparison)"

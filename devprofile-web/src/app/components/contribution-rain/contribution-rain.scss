@@ -1,0 +1,36 @@
+@use '../../styles/theme' as *;
+
+// A chuva vive atrás de tudo e não interage com nada. A opacidade é baixa de
+// propósito: o fundo é textura, não conteúdo, e o contraste do texto acima dele
+// continua sendo o do tema.
+.Rain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.13;
+  // Some nas bordas para não brigar com o cabeçalho nem com o fim da página.
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
+}
+
+.Rain-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+// Quem pede menos movimento continua vendo a grade, parada e mais discreta.
+@media (prefers-reduced-motion: reduce) {
+  .Rain {
+    opacity: 0.06;
+  }
+}
+
+// Em tela de toque a grade fica parada, então baixa ainda mais para não pesar
+// na leitura em pouco espaço.
+@media (pointer: coarse) {
+  .Rain {
+    opacity: 0.06;
+  }
+}

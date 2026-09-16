@@ -19,3 +19,13 @@ app-header {
 .hero-landing {
   flex: 1;
 }
+
+// A chuva é um canvas com position: fixed, e elemento posicionado passa por cima
+// de elemento estático. Sem empilhar o conteúdo acima dela, o fundo cobriria o
+// painel inteiro.
+.hero-landing,
+app-profile-dashboard,
+app-profile-comparison {
+  position: relative;
+  z-index: 1;
+}

@@ -13,6 +13,12 @@
 
 </div>
 
+<a href="https://dev-profile-one.vercel.app">
+  <img src="docs/img/devprofile-dashboard.png" alt="Painel do DevProfile mostrando score de senioridade 60 de 100, estatísticas do perfil, análise de stack, valor agregado e composição de linguagens">
+</a>
+
+<div align="center"><sub>Clique na imagem para abrir a aplicação</sub></div>
+
 ---
 
 ## Sobre
@@ -22,7 +28,7 @@ DevProfile lê dados públicos da [GitHub API](https://docs.github.com/rest) e d
 - **Score de senioridade (0 a 100)** com nível Júnior, Pleno ou Sênior
 - **Radar de competências** em seis eixos, calculado no servidor e desenhado em SVG
 - **Modo VS**: dois perfis lado a lado, com vencedor por score
-- **Projeção de carreira**, demanda de mercado das suas linguagens e pitch pronto para copiar
+- **Projeção de carreira**, demanda de mercado das linguagens do perfil e pitch pronto para copiar
 - **Card compartilhável** em PNG, formato feed (1:1) ou story (9:16), tema claro ou escuro
 - **Resposta crua**: qualquer rota aceita o sufixo `/json` e redireciona para o payload da API
 

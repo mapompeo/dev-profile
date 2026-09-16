@@ -10,10 +10,12 @@ namespace DevProfile.API.Controllers;
 public sealed class ProfileController : ControllerBase
 {
     private readonly IScoreEngine _scoreEngine;
+    private readonly IContributionCalendarService _calendar;
 
-    public ProfileController(IScoreEngine scoreEngine)
+    public ProfileController(IScoreEngine scoreEngine, IContributionCalendarService calendar)
     {
         _scoreEngine = scoreEngine;
+        _calendar = calendar;
     }
 
     /// <summary>
@@ -25,6 +27,24 @@ public sealed class ProfileController : ControllerBase
     [HttpGet("health")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Health() => Ok(new { status = "ok" });
+
+    /// <summary>
+    /// Calendário de contribuições do perfil, usado como pano de fundo do painel.
+    /// Fica separado da análise de propósito: é opcional, vem de outra fonte e não
+    /// pode atrasar nem derrubar o carregamento do que importa.
+    /// </summary>
+    [HttpGet("{username}/contributions")]
+    [ProducesResponseType(typeof(ContributionCalendarDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetContributions(string username, CancellationToken cancellationToken)
+    {
+        if (!TryNormalizeUsername(username, out var normalizedUsername))
+        {
+            return BadRequest(new { message = "Invalid username." });
+        }
+
+        return Ok(await _calendar.GetCalendarAsync(normalizedUsername, cancellationToken));
+    }
 
     [HttpGet("{username}")]
     [ProducesResponseType(typeof(ProfileResponseDto), StatusCodes.Status200OK)]

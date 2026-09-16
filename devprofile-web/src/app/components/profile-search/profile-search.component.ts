@@ -10,8 +10,9 @@ import { Hero } from '../hero/hero';
 import { LoadingStatus } from '../hero/hero';
 import { ProfileDashboard } from '../profile-dashboard/profile-dashboard';
 import { ProfileComparison } from '../profile-comparison/profile-comparison';
+import { ContributionRain } from '../contribution-rain/contribution-rain';
 import { ProfileService } from '../../services/profile.service';
-import { Profile, ProfileComparisonResult } from '../../models/profile.models';
+import { ContributionDay, Profile, ProfileComparisonResult } from '../../models/profile.models';
 import { captureElementAsPngDataUrl, downloadDataUrl } from '../../utils/image-export';
 
 const DEFAULT_FAVICON_URL = 'https://img.icons8.com/ios11/512/FFFFFF/github.png';
@@ -25,7 +26,8 @@ const DEFAULT_FAVICON_URL = 'https://img.icons8.com/ios11/512/FFFFFF/github.png'
     Header,
     Hero,
     ProfileDashboard,
-    ProfileComparison
+    ProfileComparison,
+    ContributionRain
   ],
   templateUrl: './profile-search.component.html',
   styleUrls: ['./profile-search.component.scss']
@@ -36,6 +38,7 @@ export class ProfileSearchComponent implements OnInit {
   loading: boolean = false;
   error: string | null = null;
   isJsonView: boolean = false;
+  contributionDays: ContributionDay[] = [];
   loadingStatus: LoadingStatus = LoadingStatus.IDLE;
 
   private wakingUpTimer: ReturnType<typeof setTimeout> | null = null;
@@ -97,6 +100,7 @@ export class ProfileSearchComponent implements OnInit {
   resetView(navigate: boolean = true) {
     this.profile = null;
     this.comparison = null;
+    this.contributionDays = [];
     this.loading = false;
     this.error = null;
     this.isJsonView = false;
@@ -139,6 +143,7 @@ export class ProfileSearchComponent implements OnInit {
         this.clearWakingUpTimer();
         this.setProfileTitle(data);
         this.cdr.markForCheck();
+        this.loadContributions(data.username);
         // Navigate to shareable URL only after success
         if (pushUrl) this.router.navigate(['/dashboard', user], { replaceUrl: true });
       },
@@ -165,6 +170,7 @@ export class ProfileSearchComponent implements OnInit {
         this.loading = false;
         this.clearWakingUpTimer();
         this.cdr.markForCheck();
+        this.loadContributions(data.winnerByScore);
         // Navigate to shareable URL only after success
         if (pushUrl) this.router.navigate(['/dashboard/compare', user1, user2], { replaceUrl: true });
       },
@@ -172,6 +178,24 @@ export class ProfileSearchComponent implements OnInit {
         this.error = err.error?.message || 'Erro ao buscar dados. Verifique os usuários.';
         this.loading = false;
         this.clearWakingUpTimer();
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  /**
+   * Pano de fundo do painel. Roda depois da análise, de propósito: se demorar ou
+   * falhar, ninguém percebe, porque a tela já está inteira na frente do usuário.
+   */
+  private loadContributions(username: string) {
+    this.contributionDays = [];
+    this.profileService.getContributions(username).subscribe({
+      next: calendar => {
+        this.contributionDays = calendar?.days ?? [];
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.contributionDays = [];
         this.cdr.markForCheck();
       }
     });

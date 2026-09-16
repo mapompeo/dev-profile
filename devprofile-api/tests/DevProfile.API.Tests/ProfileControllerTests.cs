@@ -16,10 +16,16 @@ public class ProfileControllerTests
             => throw new InvalidOperationException("A sonda de saúde não pode tocar na API do GitHub.");
     }
 
+    private sealed class NeverCalledCalendar : IContributionCalendarService
+    {
+        public Task<ContributionCalendarDto> GetCalendarAsync(string username, CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("A sonda de saúde não pode buscar calendário.");
+    }
+
     [Fact]
     public void Health_responde_ok_sem_consultar_o_github()
     {
-        var controller = new ProfileController(new NeverCalledScoreEngine());
+        var controller = new ProfileController(new NeverCalledScoreEngine(), new NeverCalledCalendar());
 
         var result = controller.Health();
 

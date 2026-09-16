@@ -41,6 +41,16 @@ builder.Services.AddHttpClient<IGitHubService, GitHubService>((provider, client)
     }
 }).AddStandardResilienceHandler();
 
+// O calendário de contribuições vem do HTML público do perfil, não da API, então
+// é outro cliente: base github.com, sem token e sem consumir a cota de 60/h.
+builder.Services.AddHttpClient<IContributionCalendarService, ContributionCalendarService>((provider, client) =>
+{
+    var config = provider.GetRequiredService<IConfiguration>();
+    client.BaseAddress = new Uri("https://github.com/");
+    client.DefaultRequestHeaders.UserAgent.ParseAdd(config["GitHub:AppName"] ?? "DevProfile");
+    client.Timeout = TimeSpan.FromSeconds(15);
+}).AddStandardResilienceHandler();
+
 builder.Services.AddScoped<IScoreEngine, ScoreEngine>();
 
 var app = builder.Build();

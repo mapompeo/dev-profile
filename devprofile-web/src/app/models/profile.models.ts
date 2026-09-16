@@ -66,3 +66,14 @@ export interface ProfileComparisonResult {
   scoreDifference: number;
   summary: string;
 }
+
+export interface ContributionDay {
+  date: string;
+  level: number;
+}
+
+export interface ContributionCalendar {
+  username: string;
+  days: ContributionDay[];
+  activeDays: number;
+}
